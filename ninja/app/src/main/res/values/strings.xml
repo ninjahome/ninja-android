@@ -1,6 +1,47 @@
 <resources>
-    <string name="app_name">Ninia</string>
+    <string name="app_name">忍者</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="sure">确认</string>
+    <string name="message">消息</string>
+    <string name="contact">通讯录</string>
+    <string name="my">我的</string>
+    <string name="cancel">取消</string>
+    <string name="input_id">input ID</string>
+
+    <!--    create account-->
+    <string name="create_account_register">注册账号</string>
+    <string name="create_account_input_password">请输入密码</string>
+    <string name="create_account_input_repassword">请再次请输入密码</string>
+    <string name="create_account_password_is_null">密码不能为空</string>
+    <string name="create_account_password_not_equal">两次密码不相同</string>
+    <string name="create_account_sure">确定</string>
+    <string name="create_account_has_account">已有账号,</string>
+    <string name="create_account_import_account">导入二维码</string>
+    <string name="createAccount_error">创建账号失败</string>
+
+    <!--    个人信息-->
+    <string name="edit_user_info_title">个人信息</string>
+    <string name="edit_user_info_name">用户名</string>
+    <string name="back_up_id_title">您的账号ID已经生成</string>
+    <string name="back_up_des">本app使用区块链加密技术，密码一旦丢失，将不可找回。建议您保存二维码到您的手机或其他设备中。</string>
+    <string name="back_up_save_local">保存到本地</string>
+    <string name="back_up_not_yet">暂不</string>
+
+    <!--    contact-->
+    <string name="apply_list_title">申请列表</string>
+    <string name="apply_list_accept">接受</string>
+    <string name="apply_list_reject">拒绝</string>
+    <string name="apply_list_expired">已失效</string>
+    <string name="apply_list_added">已添加</string>
+
+<!--    search contact-->
+    <string name="search_contact_scan_qr_code">扫描二维码</string>
+    <string name="my_set">安全设置</string>
+    <string name="my_help">帮助与反馈</string>
+    <string name="my_version">版本号</string>
+    <string name="my_about">关于我们</string>
+    <string name="my_change_account">切换账号</string>
+
 </resources>
