@@ -11,9 +11,16 @@ import kotlinx.coroutines.withContext
  */
 class CreateAccountModel {
 
-    suspend fun createAccount(password:String):String{
-        return withContext(Dispatchers.IO){
-           return@withContext Androidlib.newWallet(password)
+    suspend fun createAccount(password: String): String {
+        return withContext(Dispatchers.IO) {
+            return@withContext Androidlib.newWallet(password)
         }
     }
+
+    suspend fun activeAccount(accountJson: String, password: String) {
+        return withContext(Dispatchers.IO) {
+            return@withContext Androidlib.activeWallet(accountJson, password)
+        }
+    }
+
 }

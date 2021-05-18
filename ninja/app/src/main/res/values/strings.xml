@@ -9,6 +9,28 @@
     <string name="my">我的</string>
     <string name="cancel">取消</string>
     <string name="input_id">input ID</string>
+    <string name="load_account_error">加载账号数据失败</string>
+    <string name="open_error">账号开启失败</string>
+    <string name="unlock">解锁</string>
+    <string name="save">保存</string>
+    <string name="copy">复制</string>
+    <string name="share">分享</string>
+    <string name="copy_success">复制成功</string>
+    <string name="fingerprint_recognition_title">指纹识别</string>
+    <string name="fingerprint_recognition_subtitle">请手指放入指纹识别处</string>
+    <string name="my_input">去录入</string>
+    <string name="my_no_fingerprint">你尚未录入指纹，请先在手机系统中录入指纹，再返回本页面开启指纹解锁</string>
+    <string name="fingerprint_recognition_use_password">使用密码</string>
+    <string name="guide_import_account">导入账号</string>
+    <string name="guide_dialog_title">选择导入方式</string>
+    <string name="guide_import_album">相册</string>
+    <string name="guide_import_camera">扫描二维码</string>
+    <string name="import_apply_album_permission">申请读取相册权限</string>
+    <string name="import_qr_error">忍者二维码不正确</string>
+    <string name="send">发送</string>
+    <string name="input_send_message">请输入发送内容</string>
+    <string name="main_click_exit_application">再次点击退出应用</string>
+
 
     <!--    create account-->
     <string name="create_account_register">注册账号</string>
@@ -20,8 +42,9 @@
     <string name="create_account_has_account">已有账号,</string>
     <string name="create_account_import_account">导入二维码</string>
     <string name="createAccount_error">创建账号失败</string>
+    <string name="createAccount_import_error">导入账号失败</string>
 
-    <!--    个人信息-->
+    <!--    info-->
     <string name="edit_user_info_title">个人信息</string>
     <string name="edit_user_info_name">用户名</string>
     <string name="back_up_id_title">您的账号ID已经生成</string>
@@ -35,13 +58,38 @@
     <string name="apply_list_reject">拒绝</string>
     <string name="apply_list_expired">已失效</string>
     <string name="apply_list_added">已添加</string>
+    <string name="detail_send">发消息</string>
+    <string name="detail_add_contact">添加好友</string>
+    <string name="detail_edit_contact">编辑资料</string>
 
-<!--    search contact-->
+    <!--    search contact-->
     <string name="search_contact_scan_qr_code">扫描二维码</string>
+    <string name="search_contact_input_nick_name">填写备注</string>
+    <string name="search_contact_remark">备注信息</string>
+    <string name="search_contact_add">保存到通讯录</string>
+    <string name="search_contact_save_success">保存成功</string>
+    <string name="search_contact_save_error">保存失败</string>
+    <string name="search_contact_add_title">好友信息</string>
+    <string name="search_contact_address_error">地址有误</string>
+    <string name="create_account_input_alias">请输入备注名称</string>
+    <!--    my-->
     <string name="my_set">安全设置</string>
     <string name="my_help">帮助与反馈</string>
     <string name="my_version">版本号</string>
     <string name="my_about">关于我们</string>
     <string name="my_change_account">切换账号</string>
+    <string name="my_id">我的ID</string>
+    <string name="my_fingerprint">指纹识别</string>
+    <string name="my_user_name">用户名</string>
+    <string name="my_account_manager">管理账号</string>
+    <string name="my_no_support_fingerprint">当前手机不支持指纹识别</string>
 
+    <!--    accountManager-->
+    <string name="account_manager_new_account">新建账号</string>
+    <string name="account_manager_import_account">导入账号二维码</string>
+    <string name="account_manager_export_account">导出账号二维码</string>
+    <string name="account_manager_qr_name">ninja.png</string>
+    <string name="account_manager_qr_id_name">ninja_id.png</string>
+    <string name="account_manager_save_account_success">保存成功</string>
+    <string name="account_manager_save_account_failure">保存失败</string>
 </resources>

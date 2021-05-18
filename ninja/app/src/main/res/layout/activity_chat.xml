@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.ninjahome.ninja.viewmodel.ChatViewModel" />
@@ -13,8 +15,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include layout="@layout/title_layout"
-            app:viewModel="@{viewModel}"/>
+        <include
+            layout="@layout/title_layout"
+            app:viewModel="@{viewModel}" />
 
         <com.stfalcon.chatkit.messages.MessagesList
             android:id="@+id/messagesList"
@@ -22,14 +25,14 @@
             android:layout_height="0dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_bottom_line"
+            app:layout_constraintTop_toBottomOf="@+id/titleLayout"
             app:layout_constraintBottom_toTopOf="@+id/line"
             app:incomingAvatarHeight="56dp"
             app:incomingAvatarWidth="56dp"
             app:incomingBubbleDrawable="@drawable/bg_custom_outcoming_message"
             app:outcomingBubbleDrawable="@drawable/bg_custom_incoming_message"
             app:incomingTextColor="@color/color_0c123d"
-            app:outcomingTextColor="@color/color_0c123d"/>
+            app:outcomingTextColor="@color/color_0c123d" />
 
         <View
             android:id="@+id/line"
@@ -38,22 +41,34 @@
             android:layout_marginLeft="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/input"
+            app:layout_constraintBottom_toTopOf="@+id/inputMessageEt"
             android:layout_marginRight="16dp"
             android:background="@drawable/split_line" />
 
-        <com.stfalcon.chatkit.messages.MessageInput
-            android:id="@+id/input"
-            android:layout_width="0dp"
+        <EditText
+            android:id="@+id/inputMessageEt"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:inputButtonIcon="@drawable/message_add"
-            app:inputButtonDefaultBgColor="@color/transparent"
-            app:inputButtonDefaultIconDisabledColor="@color/transparent"
-            app:inputButtonDefaultBgDisabledColor="@color/transparent"
-            app:inputButtonDefaultBgPressedColor="@color/transparent"
-            app:inputHint="" />
+            app:layout_constraintEnd_toStartOf="@+id/sendTv"
+            android:layout_width="0dp"
+            android:gravity="center_vertical"
+            android:background="@color/transparent"
+            android:text="@={viewModel.message}"
+            android:layout_height="45dp"
+            android:importantForAutofill="no"
+            tools:ignore="LabelFor,TextFields" />
+
+        <TextView
+            android:id="@+id/sendTv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/inputMessageEt"
+            app:layout_constraintBottom_toBottomOf="@+id/inputMessageEt"
+            android:layout_width="80dp"
+            android:gravity="center"
+            android:text="@string/send"
+            onClickCommand="@{viewModel.clickSend}"
+            android:layout_height="45dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

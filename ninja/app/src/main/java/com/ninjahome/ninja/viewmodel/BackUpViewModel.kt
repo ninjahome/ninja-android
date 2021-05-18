@@ -11,7 +11,7 @@ import com.ninja.android.lib.utils.toast
  *Time:
  *Description:
  */
-class BackUpViewModel:BaseViewModel() {
+class BackUpViewModel : BaseViewModel() {
 
     val id = MutableLiveData("")
 

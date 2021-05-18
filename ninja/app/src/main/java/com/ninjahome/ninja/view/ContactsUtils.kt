@@ -10,15 +10,14 @@ import java.util.*
  *Description:
  */
 class ContactsUtils {
-    companion object{
-        fun sortData(list: List<Contact>) {
+    companion object {
+        fun sortData(list: List<Contact>?) {
             if (list == null || list.size == 0) return
             for (i in list.indices) {
                 val bean: Contact = list[i]
-                val tag: String =
-                    Pinyin.toPinyin(bean.name.substring(0, 1).toCharArray()[0]).substring(0, 1)
+                val tag: String = Pinyin.toPinyin(bean.nickName.substring(0, 1).toCharArray()[0]).substring(0, 1)
                 if (tag.matches(Regex("[A-Z]"))) {
-                    bean.indexTag=tag
+                    bean.indexTag = tag
                 } else {
                     bean.indexTag = "#"
                 }

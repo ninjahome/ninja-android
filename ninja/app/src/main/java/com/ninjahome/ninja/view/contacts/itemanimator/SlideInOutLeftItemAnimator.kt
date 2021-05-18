@@ -24,65 +24,53 @@ import androidx.recyclerview.widget.RecyclerView
 /**
  * @see RecyclerView.setItemAnimator
  */
-class SlideInOutLeftItemAnimator(recyclerView: RecyclerView?) : BaseItemAnimator(
-    recyclerView!!
-) {
+class SlideInOutLeftItemAnimator(recyclerView: RecyclerView?) : BaseItemAnimator(recyclerView!!) {
     override fun animateRemoveImpl(holder: RecyclerView.ViewHolder?) {
         val view = holder!!.itemView
         val animation = ViewCompat.animate(view)
         mRemoveAnimations.add(holder)
-        animation
-            .setDuration(removeDuration)
-            .alpha(0f)
-            .translationX(-mRecyclerView.layoutManager!!.width.toFloat())
-            .setListener(object : VpaListenerAdapter() {
-                override fun onAnimationStart(view: View) {
-                    dispatchRemoveStarting(holder)
-                }
+        animation.setDuration(removeDuration).alpha(0f).translationX(-mRecyclerView.layoutManager!!.width.toFloat()).setListener(object : VpaListenerAdapter() {
+            override fun onAnimationStart(view: View) {
+                dispatchRemoveStarting(holder)
+            }
 
-                override fun onAnimationEnd(view: View) {
-                    animation.setListener(null)
-                    ViewCompat.setAlpha(view, 1f)
-                    ViewCompat.setTranslationX(view, -mRecyclerView.layoutManager!!.width.toFloat())
-                    dispatchRemoveFinished(holder)
-                    mRemoveAnimations.remove(holder)
-                    dispatchFinishedWhenDone()
-                }
-            }).start()
+            override fun onAnimationEnd(view: View) {
+                animation.setListener(null)
+                ViewCompat.setAlpha(view, 1f)
+                ViewCompat.setTranslationX(view, -mRecyclerView.layoutManager!!.width.toFloat())
+                dispatchRemoveFinished(holder)
+                mRemoveAnimations.remove(holder)
+                dispatchFinishedWhenDone()
+            }
+        }).start()
     }
 
     override fun prepareAnimateAdd(holder: RecyclerView.ViewHolder?) {
-        ViewCompat.setTranslationX(
-            holder!!.itemView,
-            -mRecyclerView.layoutManager!!.width.toFloat()
-        )
+        ViewCompat.setTranslationX(holder!!.itemView, -mRecyclerView.layoutManager!!.width.toFloat())
     }
 
     override fun animateAddImpl(holder: RecyclerView.ViewHolder?) {
         val view = holder!!.itemView
         val animation = ViewCompat.animate(view)
         mAddAnimations.add(holder)
-        animation.translationX(0f)
-            .alpha(1f)
-            .setDuration(addDuration)
-            .setListener(object : VpaListenerAdapter() {
-                override fun onAnimationStart(view: View) {
-                    dispatchAddStarting(holder)
-                }
+        animation.translationX(0f).alpha(1f).setDuration(addDuration).setListener(object : VpaListenerAdapter() {
+            override fun onAnimationStart(view: View) {
+                dispatchAddStarting(holder)
+            }
 
-                override fun onAnimationCancel(view: View) {
-                    ViewCompat.setTranslationX(view, 0f)
-                    ViewCompat.setAlpha(view, 1f)
-                }
+            override fun onAnimationCancel(view: View) {
+                ViewCompat.setTranslationX(view, 0f)
+                ViewCompat.setAlpha(view, 1f)
+            }
 
-                override fun onAnimationEnd(view: View) {
-                    animation.setListener(null)
-                    ViewCompat.setTranslationX(view, 0f)
-                    ViewCompat.setAlpha(view, 1f)
-                    dispatchAddFinished(holder)
-                    mAddAnimations.remove(holder)
-                    dispatchFinishedWhenDone()
-                }
-            }).start()
+            override fun onAnimationEnd(view: View) {
+                animation.setListener(null)
+                ViewCompat.setTranslationX(view, 0f)
+                ViewCompat.setAlpha(view, 1f)
+                dispatchAddFinished(holder)
+                mAddAnimations.remove(holder)
+                dispatchFinishedWhenDone()
+            }
+        }).start()
     }
 }

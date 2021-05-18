@@ -6,8 +6,8 @@ ext {
             applicationId    : "com.ninjahome.ninja",
             minSdkVersion    : 23,
             targetSdkVersion : 30,
-            versionCode      : 1,
-            versionName      : "0.0.1"
+            versionCode      : 3,
+            versionName      : "0.0.3"
     ]
     //version配置
     versions = [
@@ -82,6 +82,7 @@ ext {
             "xpopup"                               : "com.lxj:xpopup:${versions["xpopup"]}",
             "logger"                               : "com.orhanobut:logger:${versions["logger"]}",
             "moshi"                                : "com.squareup.moshi:moshi:${versions["moshi"]}",
+            "moshi-kotlin-codegen"                 : "com.squareup.moshi:moshi-kotlin-codegen:${versions["moshi"]}",
             "material"                             : "com.google.android.material:material:${versions["material"]}",
     ]
 

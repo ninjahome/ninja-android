@@ -24,6 +24,7 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -39,12 +40,11 @@ import java.lang.reflect.Field;
 /**
  * Component for input outcoming messages
  */
-@SuppressWarnings({"WeakerAccess", "unused"})
 public class MessageInput extends RelativeLayout
         implements View.OnClickListener, TextWatcher, View.OnFocusChangeListener {
 
     protected EditText messageInput;
-    protected ImageButton messageSendButton;
+    protected Button messageSendButton;
     protected ImageButton attachmentButton;
     protected Space sendButtonSpace, attachmentButtonSpace;
 
@@ -112,7 +112,7 @@ public class MessageInput extends RelativeLayout
      *
      * @return ImageButton
      */
-    public ImageButton getButton() {
+    public Button getButton() {
         return messageSendButton;
     }
 
@@ -204,9 +204,9 @@ public class MessageInput extends RelativeLayout
         this.attachmentButtonSpace.setVisibility(style.showAttachmentButton() ? VISIBLE : GONE);
         this.attachmentButtonSpace.getLayoutParams().width = style.getAttachmentButtonMargin();
 
-        this.messageSendButton.setImageDrawable(style.getInputButtonIcon());
-        this.messageSendButton.getLayoutParams().width = style.getInputButtonWidth();
-        this.messageSendButton.getLayoutParams().height = style.getInputButtonHeight();
+//        this.messageSendButton.setImageDrawable(style.getInputButtonIcon());
+//        this.messageSendButton.getLayoutParams().width = style.getInputButtonWidth();
+//        this.messageSendButton.getLayoutParams().height = style.getInputButtonHeight();
         ViewCompat.setBackground(messageSendButton, style.getInputButtonBackground());
         this.sendButtonSpace.getLayoutParams().width = style.getInputButtonMargin();
 

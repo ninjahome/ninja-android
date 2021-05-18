@@ -7,10 +7,16 @@ import androidx.lifecycle.rxLifeScope
 import com.ninja.android.lib.base.BaseViewModel
 import com.ninja.android.lib.command.BindingAction
 import com.ninja.android.lib.command.BindingCommand
-import com.ninja.android.lib.utils.toast
+import com.ninja.android.lib.event.SingleLiveEvent
+import com.ninja.android.lib.provider.context
+import com.ninja.android.lib.utils.SharedPref
+import com.ninjahome.ninja.Constants
+import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.CreateAccountModel
 import com.ninjahome.ninja.ui.activity.edituserinfo.EditUserInfoActivity
+import com.ninjahome.ninja.utils.AccountUtils
+import com.ninjahome.ninja.utils.fromJson
 import com.orhanobut.logger.Logger
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
@@ -27,6 +33,9 @@ class CreateAccountViewModel : BaseViewModel(), KoinComponent {
 
     val password = MutableLiveData("")
     val rePassword = MutableLiveData("")
+    val showImportDialog = SingleLiveEvent<Boolean>()
+    var userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "", commit = true)
+    var openFingerPrint: Boolean by SharedPref(context(), Constants.KEY_OPEN_FINGERPRINT, false)
     val model: CreateAccountModel by inject()
 
     val clickSure = BindingCommand<Any>(object : BindingAction {
@@ -46,17 +55,51 @@ class CreateAccountViewModel : BaseViewModel(), KoinComponent {
 
     private fun createAccount() {
         rxLifeScope.launch({
-           val account= model.createAccount(password.value!!)
-            startActivity(EditUserInfoActivity::class.java)
-        },{
+            val account = model.createAccount(password.value!!)
+            NinjaApp.instance.configApp()
+            model.activeAccount(account, password.value!!)
+            Logger.d(account)
+            createAccountSuccess(account)
+
+        }, {
             println(it.message)
+            dismissDialog()
             showToast(R.string.createAccount_error)
+        }, {
+            showDialog()
+        })
+    }
+
+    fun importAccount(accountJson: String, password: String) {
+        rxLifeScope.launch({
+            NinjaApp.instance.configApp()
+            model.activeAccount(accountJson, password)
+            createAccountSuccess(accountJson)
+            dismissDialog()
+        }, {
+            println(it.message)
+            dismissDialog()
+            showToast(R.string.createAccount_import_error)
+        }, {
+            showDialog()
         })
     }
 
     val clickImport = BindingCommand<Any>(object : BindingAction {
         override fun call() {
-            toast("导入二维码")
+            showImportDialog.call()
         }
     })
+
+    private fun createAccountSuccess(account: String) {
+        AccountUtils.saveAccountToPath(AccountUtils.getAccountPath(context()), account)
+        NinjaApp.instance.account = account.fromJson()!!
+        dismissDialog()
+        openFingerPrint = false
+        userName = ""
+        NinjaApp.instance.conversations.clear()
+        NinjaApp.instance.configApp()
+        startActivityAndFinish(EditUserInfoActivity::class.java)
+
+    }
 }

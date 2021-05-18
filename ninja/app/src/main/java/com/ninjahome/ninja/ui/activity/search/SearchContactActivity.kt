@@ -1,13 +1,18 @@
 package com.ninjahome.ninja.ui.activity.search
 
 import android.content.Intent
+import androidlib.Androidlib
 import com.google.zxing.integration.android.IntentIntegrator
 import com.ninja.android.lib.base.BaseActivity
+import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.BR
+import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivitySearchContactBinding
+import com.ninjahome.ninja.ui.activity.contact.addcontact.AddContactActivity
 import com.ninjahome.ninja.ui.activity.scan.ScanActivity
 import com.ninjahome.ninja.viewmodel.SearchContactViewModel
+import kotlinx.android.synthetic.main.activity_search_contact.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -15,11 +20,20 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  *Time:
  *Description:
  */
-class SearchContactActivity :
-    BaseActivity<SearchContactViewModel, ActivitySearchContactBinding>(R.layout.activity_search_contact) {
+class SearchContactActivity : BaseActivity<SearchContactViewModel, ActivitySearchContactBinding>(R.layout.activity_search_contact) {
     override val mViewModel: SearchContactViewModel by viewModel()
 
     override fun initView() {
+        contactIdEt.setOnEditorActionListener { v, actionId, event ->
+            if (!Androidlib.isValidNinjaAddr(mViewModel.inputID.value)) {
+                toast(getString(R.string.search_contact_address_error))
+            } else {
+                val intent = Intent(this, AddContactActivity::class.java)
+                intent.putExtra(IntentKey.UID, mViewModel.inputID.value)
+                startActivity(intent)
+            }
+            return@setOnEditorActionListener true
+        }
     }
 
     override fun initData() {
@@ -27,13 +41,7 @@ class SearchContactActivity :
 
     override fun initObserve() {
         mViewModel.startScanActivityEvnet.observe(this) {
-            val ii = IntentIntegrator(this)
-            ii.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
-            ii.captureActivity = ScanActivity::class.java
-            ii.setCameraId(0)
-            ii.setBarcodeImageEnabled(true)
-            ii.setRequestCode(IntentIntegrator.REQUEST_CODE)
-            ii.initiateScan()
+            ScanActivity.start(this)
         }
     }
 
@@ -48,6 +56,9 @@ class SearchContactActivity :
             return
         }
         mViewModel.inputID.value = result.contents
+        val intent = Intent(this, AddContactActivity::class.java)
+        intent.putExtra(IntentKey.UID, result.contents)
+        startActivity(intent)
 
 
     }

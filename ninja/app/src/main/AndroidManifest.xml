@@ -2,13 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ninjahome.ninja">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:name=".NinjaApp"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:resizeableActivity="true"
         android:maxAspectRatio="2.4"
@@ -26,26 +29,44 @@
         </activity>
         <activity
             android:name="com.ninjahome.ninja.ui.activity.main.MainActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity android:name="com.ninjahome.ninja.ui.activity.createaccount.CreateAccountActivity"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ninjahome.ninja.ui.activity.createaccount.CreateAccountActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ninjahome.ninja.ui.activity.edituserinfo.EditUserInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ninjahome.ninja.ui.activity.contact.applylist.ApplyListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ninjahome.ninja.ui.activity.search.SearchContactActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ninjahome.ninja.ui.activity.scan.ScanActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ninjahome.ninja.ui.activity.chat.ChatActivity"
+            android:screenOrientation="portrait" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name="com.ninjahome.ninja.ui.activity.edituserinfo.EditUserInfoActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ninjahome.ninja.ui.activity.contact.applylist.ApplyListActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ninjahome.ninja.ui.activity.search.SearchContactActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ninjahome.ninja.ui.activity.scan.ScanActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ninjahome.ninja.ui.activity.chat.ChatActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.activity.unlock.UnLockActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.ninjahome.ninja.ui.activity.contact.addcontact.AddContactActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.showidqrcode.ShowIDQRCodeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.contact.detail.ContactDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.accountmanager.AccountManagerActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="android.max_aspect"
@@ -53,7 +74,7 @@
         <!--适配华为（huawei）刘海屏-->
         <meta-data
             android:name="android.notch_support"
-            android:value="true"/>
+            android:value="true" />
         <!--适配小米（xiaomi）刘海屏-->
         <meta-data
             android:name="notch.config"

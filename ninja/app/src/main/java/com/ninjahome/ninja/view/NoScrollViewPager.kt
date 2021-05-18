@@ -13,9 +13,7 @@ class NoScrollViewPager : ViewPager {
     private var isScroll = false
 
     constructor(context: Context?) : super(context!!)
-    constructor(context: Context?, attrs: AttributeSet?) : super(
-        context!!, attrs
-    )
+    constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs)
 
     /**
      * Sets scroll. true 可以滑动  false 不可以滑动

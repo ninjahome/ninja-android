@@ -4,27 +4,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-    <variable
-        name="viewModel"
-        type="com.ninjahome.ninja.viewmodel.EditUserInfoViewModel" />
+
+        <variable
+            name="viewModel"
+            type="com.ninjahome.ninja.viewmodel.EditUserInfoViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <include
             layout="@layout/title_layout"
             app:viewModel="@{viewModel}" />
+
         <ImageView
             android:id="@+id/portraitIv"
             android:layout_width="90dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:src="@drawable/profile_photo"
-            app:layout_constraintTop_toBottomOf="@+id/title_bottom_line"
+            app:layout_constraintTop_toBottomOf="@+id/titleLayout"
             android:layout_marginTop="60dp"
             android:layout_height="90dp"
             tools:ignore="ContentDescription" />
+
         <EditText
             android:id="@+id/nameEt"
             style="@style/EditTextStyle"
@@ -36,6 +40,7 @@
             app:layout_constraintTop_toBottomOf="@+id/portraitIv"
             tools:ignore="MissingConstraints,TextFields"
             android:importantForAutofill="no" />
+
         <TextView
             android:id="@+id/sureTv"
             style="@style/ButtonStyle"

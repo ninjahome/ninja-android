@@ -1,13 +1,15 @@
 package com.ninjahome.ninja.ui.activity.scan
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.KeyEvent
+import com.google.zxing.integration.android.IntentIntegrator
 import com.journeyapps.barcodescanner.BarcodeView
 import com.journeyapps.barcodescanner.CaptureManager
 import com.journeyapps.barcodescanner.ViewfinderView
 import com.ninja.android.lib.base.BaseActivity
-import com.ninjahome.ninja.R
 import com.ninjahome.ninja.BR
+import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityScanBinding
 import com.ninjahome.ninja.viewmodel.ScanViewModel
 import kotlinx.android.synthetic.main.activity_scan.*
@@ -19,6 +21,17 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  *Description:
  */
 class ScanActivity : BaseActivity<ScanViewModel, ActivityScanBinding>(R.layout.activity_scan) {
+    companion object {
+        fun start(activity: Activity) {
+            val ii = IntentIntegrator(activity)
+            ii.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
+            ii.captureActivity = ScanActivity::class.java
+            ii.setCameraId(0)
+            ii.setBarcodeImageEnabled(true)
+            ii.setRequestCode(IntentIntegrator.REQUEST_CODE)
+            ii.initiateScan()
+        }
+    }
 
     private val capture: CaptureManager by lazy { CaptureManager(this, zxing_barcode_scanner) }
     var bundle: Bundle? = null

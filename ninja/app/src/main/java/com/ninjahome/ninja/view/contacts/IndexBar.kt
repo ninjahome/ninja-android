@@ -11,13 +11,7 @@ import com.ninjahome.ninja.view.contacts.ColorUtil.setPaintColor
 /**
  * Created by MQ on 2017/5/18.
  */
-class IndexBar @JvmOverloads constructor(
-    private val mContext: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : ViewGroup(
-    mContext, attrs, defStyleAttr
-) {
+class IndexBar @JvmOverloads constructor(private val mContext: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ViewGroup(mContext, attrs, defStyleAttr) {
     private var mHeight = 0
     private var mWidth = 0
     private var mPaint: Paint? = null
@@ -102,20 +96,10 @@ class IndexBar @JvmOverloads constructor(
             //根据位置来不断变换Paint的颜色
             setPaintColor(mPaint!!, position)
             //绘制圆和文字
-            canvas.drawCircle(
-                ((mWidth - childWidth) / 2).toFloat(),
-                centerY,
-                circleRadius,
-                mPaint!!
-            )
+            canvas.drawCircle(((mWidth - childWidth) / 2).toFloat(), centerY, circleRadius, mPaint!!)
             mPaint!!.color = Color.WHITE
             mPaint!!.textSize = 80f
-            canvas.drawText(
-                tag,
-                (mWidth - childWidth - mPaint!!.measureText(tag)) / 2,
-                centerY - (mPaint!!.ascent() + mPaint!!.descent()) / 2,
-                mPaint!!
-            )
+            canvas.drawText(tag, (mWidth - childWidth - mPaint!!.measureText(tag)) / 2, centerY - (mPaint!!.ascent() + mPaint!!.descent()) / 2, mPaint!!)
         }
     }
 

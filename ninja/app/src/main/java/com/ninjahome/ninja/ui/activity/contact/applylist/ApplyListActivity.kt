@@ -12,8 +12,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  *Time:
  *Description:
  */
-class ApplyListActivity :
-    BaseActivity<ApplyListViewModel, ActivityApplyListBinding>(R.layout.activity_apply_list) {
+class ApplyListActivity : BaseActivity<ApplyListViewModel, ActivityApplyListBinding>(R.layout.activity_apply_list) {
     override val mViewModel: ApplyListViewModel by viewModel()
     override fun initView() {
     }

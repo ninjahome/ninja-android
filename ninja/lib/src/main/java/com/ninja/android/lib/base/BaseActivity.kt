@@ -37,12 +37,14 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> (@LayoutRe
         AppManager.addActivity(this)
         mDataBinding = DataBindingUtil.setContentView(this, layoutId)
         mDataBinding.lifecycleOwner = this
+        actionBar?.let {
+        }
         if (statusBarStyle() == STATUSBAR_STYLE_TRANSPARENT){
-            ImmersionBar.with(this).transparentBar().fullScreen(false).statusBarDarkFont(true).init()
+            ImmersionBar.with(this).transparentStatusBar().barEnable(true).statusBarDarkFont(true).init()
         }else if(statusBarStyle() == STATUSBAR_STYLE_WHITE){
-            ImmersionBar.with(this).statusBarColor(R.color.white).statusBarDarkFont(true).fitsSystemWindows(true).init()
+            ImmersionBar.with(this).statusBarColor(R.color.white).barEnable(true).statusBarDarkFont(true).fitsSystemWindows(true).init()
         }else if(statusBarStyle() == STATUSBAR_STYLE_GRAY){
-            ImmersionBar.with(this).statusBarColor(R.color.color_f8f8f9).statusBarDarkFont(true).fitsSystemWindows(true).init()
+            ImmersionBar.with(this).statusBarColor(R.color.color_f8f8f9).barEnable(true).statusBarDarkFont(true).fitsSystemWindows(true).init()
         }
         lifecycle.addObserver(mViewModel)
         viewModelId = initVariableId()

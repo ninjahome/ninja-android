@@ -1,12 +1,16 @@
 package com.ninjahome.ninja.ui.activity.splash
 
 import android.os.Handler
-import androidx.lifecycle.ViewModel
+import android.text.TextUtils
 import com.ninja.android.lib.base.BaseActivity
-import com.ninjahome.ninja.R
+import com.ninja.android.lib.utils.SharedPref
 import com.ninjahome.ninja.BR
+import com.ninjahome.ninja.Constants
+import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivitySplashBinding
 import com.ninjahome.ninja.ui.activity.createaccount.CreateAccountActivity
+import com.ninjahome.ninja.ui.activity.edituserinfo.EditUserInfoActivity
+import com.ninjahome.ninja.ui.activity.unlock.UnLockActivity
 import com.ninjahome.ninja.viewmodel.SplashViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinApiExtension
@@ -18,19 +22,26 @@ import org.koin.core.component.KoinApiExtension
  */
 @KoinApiExtension
 class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>(R.layout.activity_splash) {
+    val userName: String by SharedPref(this, Constants.KEY_USER_NAME, "")
     override val mViewModel: SplashViewModel by viewModel()
 
 
     override fun initView() {
         Handler(mainLooper).postDelayed({
-//            if (mViewModel.hasAccount) {
-//                mViewModel.loadCard()
-//            } else {
-//                startActivity(GuideActivity::class.java)
-//                finish()
-//            }
-            startActivity(CreateAccountActivity::class.java)
+            if (!mViewModel.hasAccount) {
+                startActivity(CreateAccountActivity::class.java)
                 finish()
+                return@postDelayed
+            }
+
+            if (TextUtils.isEmpty(userName)) {
+                startActivity(EditUserInfoActivity::class.java)
+                finish()
+            } else {
+                startActivity(UnLockActivity::class.java)
+                finish()
+            }
+
         }, 1000)
 
     }

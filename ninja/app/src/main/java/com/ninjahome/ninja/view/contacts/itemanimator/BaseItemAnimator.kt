@@ -34,12 +34,11 @@ import java.util.*
 abstract class BaseItemAnimator     //------------------------------------------------------------
 // Constructor
 //------------------------------------------------------------
-    (
-    /**
-     * RecyclerView
-     */
-    protected var mRecyclerView: RecyclerView
-) : SimpleItemAnimator() {
+(
+        /**
+         * RecyclerView
+         */
+        protected var mRecyclerView: RecyclerView) : SimpleItemAnimator() {
     private val mPendingRemovals = ArrayList<RecyclerView.ViewHolder>()
     private val mPendingAdditions = ArrayList<RecyclerView.ViewHolder>()
     private val mPendingMoves = ArrayList<MoveInfo>()
@@ -47,25 +46,18 @@ abstract class BaseItemAnimator     //------------------------------------------
     private val mAdditionsList = ArrayList<ArrayList<RecyclerView.ViewHolder>>()
     private val mMovesList = ArrayList<ArrayList<MoveInfo>>()
     private val mChangesList = ArrayList<ArrayList<ChangeInfo>>()
+
     @JvmField
     protected var mAddAnimations = ArrayList<RecyclerView.ViewHolder?>()
     protected var mMoveAnimations = ArrayList<RecyclerView.ViewHolder?>()
+
     @JvmField
     protected var mRemoveAnimations = ArrayList<RecyclerView.ViewHolder?>()
     protected var mChangeAnimations = ArrayList<RecyclerView.ViewHolder?>()
 
-    private class MoveInfo(
-        var holder: RecyclerView.ViewHolder,
-        var fromX: Int,
-        var fromY: Int,
-        var toX: Int,
-        var toY: Int
-    )
+    private class MoveInfo(var holder: RecyclerView.ViewHolder, var fromX: Int, var fromY: Int, var toX: Int, var toY: Int)
 
-    private class ChangeInfo private constructor(
-        oldHolder: RecyclerView.ViewHolder,
-        newHolder: RecyclerView.ViewHolder
-    ) {
+    private class ChangeInfo private constructor(oldHolder: RecyclerView.ViewHolder, newHolder: RecyclerView.ViewHolder) {
         var oldHolder: RecyclerView.ViewHolder?
         var newHolder: RecyclerView.ViewHolder?
         var fromX = 0
@@ -73,10 +65,7 @@ abstract class BaseItemAnimator     //------------------------------------------
         var toX = 0
         var toY = 0
 
-        constructor(
-            oldHolder: RecyclerView.ViewHolder, newHolder: RecyclerView.ViewHolder,
-            fromX: Int, fromY: Int, toX: Int, toY: Int
-        ) : this(oldHolder, newHolder) {
+        constructor(oldHolder: RecyclerView.ViewHolder, newHolder: RecyclerView.ViewHolder, fromX: Int, fromY: Int, toX: Int, toY: Int) : this(oldHolder, newHolder) {
             this.fromX = fromX
             this.fromY = fromY
             this.toX = toX
@@ -84,14 +73,7 @@ abstract class BaseItemAnimator     //------------------------------------------
         }
 
         override fun toString(): String {
-            return "ChangeInfo{" +
-                    "oldHolder=" + oldHolder +
-                    ", newHolder=" + newHolder +
-                    ", fromX=" + fromX +
-                    ", fromY=" + fromY +
-                    ", toX=" + toX +
-                    ", toY=" + toY +
-                    '}'
+            return "ChangeInfo{" + "oldHolder=" + oldHolder + ", newHolder=" + newHolder + ", fromX=" + fromX + ", fromY=" + fromY + ", toX=" + toX + ", toY=" + toY + '}'
         }
 
         init {
@@ -122,10 +104,7 @@ abstract class BaseItemAnimator     //------------------------------------------
             mPendingMoves.clear()
             val mover = Runnable {
                 for (moveInfo in moves) {
-                    animateMoveImpl(
-                        moveInfo.holder, moveInfo.fromX, moveInfo.fromY,
-                        moveInfo.toX, moveInfo.toY
-                    )
+                    animateMoveImpl(moveInfo.holder, moveInfo.fromX, moveInfo.fromY, moveInfo.toX, moveInfo.toY)
                 }
                 moves.clear()
                 mMovesList.remove(moves)
@@ -200,10 +179,7 @@ abstract class BaseItemAnimator     //------------------------------------------
     }
 
     protected abstract fun animateRemoveImpl(holder: RecyclerView.ViewHolder?)
-    override fun animateMove(
-        holder: RecyclerView.ViewHolder, fromX: Int, fromY: Int,
-        toX: Int, toY: Int
-    ): Boolean {
+    override fun animateMove(holder: RecyclerView.ViewHolder, fromX: Int, fromY: Int, toX: Int, toY: Int): Boolean {
         var fromX = fromX
         var fromY = fromY
         val view = holder.itemView
@@ -226,13 +202,7 @@ abstract class BaseItemAnimator     //------------------------------------------
         return true
     }
 
-    private fun animateMoveImpl(
-        holder: RecyclerView.ViewHolder,
-        fromX: Int,
-        fromY: Int,
-        toX: Int,
-        toY: Int
-    ) {
+    private fun animateMoveImpl(holder: RecyclerView.ViewHolder, fromX: Int, fromY: Int, toX: Int, toY: Int) {
         val view = holder.itemView
         val deltaX = toX - fromX
         val deltaY = toY - fromY
@@ -270,10 +240,7 @@ abstract class BaseItemAnimator     //------------------------------------------
         }).start()
     }
 
-    override fun animateChange(
-        oldHolder: RecyclerView.ViewHolder, newHolder: RecyclerView.ViewHolder,
-        fromX: Int, fromY: Int, toX: Int, toY: Int
-    ): Boolean {
+    override fun animateChange(oldHolder: RecyclerView.ViewHolder, newHolder: RecyclerView.ViewHolder, fromX: Int, fromY: Int, toX: Int, toY: Int): Boolean {
         if (oldHolder === newHolder) {
             // Don't know how to run change animations when the same view holder is re-used.
             // run a move animation to handle position changes.
@@ -306,9 +273,7 @@ abstract class BaseItemAnimator     //------------------------------------------
         val newHolder = changeInfo.newHolder
         val newView = newHolder?.itemView
         if (view != null) {
-            val oldViewAnim = ViewCompat.animate(view).setDuration(
-                changeDuration
-            )
+            val oldViewAnim = ViewCompat.animate(view).setDuration(changeDuration)
             mChangeAnimations.add(changeInfo.oldHolder)
             oldViewAnim.translationX((changeInfo.toX - changeInfo.fromX).toFloat())
             oldViewAnim.translationY((changeInfo.toY - changeInfo.fromY).toFloat())
@@ -331,29 +296,25 @@ abstract class BaseItemAnimator     //------------------------------------------
         if (newView != null) {
             val newViewAnimation = ViewCompat.animate(newView)
             mChangeAnimations.add(changeInfo.newHolder)
-            newViewAnimation.translationX(0f).translationY(0f).setDuration(changeDuration).alpha(1f)
-                .setListener(object : VpaListenerAdapter() {
-                    override fun onAnimationStart(view: View) {
-                        dispatchChangeStarting(changeInfo.newHolder, false)
-                    }
+            newViewAnimation.translationX(0f).translationY(0f).setDuration(changeDuration).alpha(1f).setListener(object : VpaListenerAdapter() {
+                override fun onAnimationStart(view: View) {
+                    dispatchChangeStarting(changeInfo.newHolder, false)
+                }
 
-                    override fun onAnimationEnd(view: View) {
-                        newViewAnimation.setListener(null)
-                        ViewCompat.setAlpha(newView, 1f)
-                        ViewCompat.setTranslationX(newView, 0f)
-                        ViewCompat.setTranslationY(newView, 0f)
-                        dispatchChangeFinished(changeInfo.newHolder, false)
-                        mChangeAnimations.remove(changeInfo.newHolder)
-                        dispatchFinishedWhenDone()
-                    }
-                }).start()
+                override fun onAnimationEnd(view: View) {
+                    newViewAnimation.setListener(null)
+                    ViewCompat.setAlpha(newView, 1f)
+                    ViewCompat.setTranslationX(newView, 0f)
+                    ViewCompat.setTranslationY(newView, 0f)
+                    dispatchChangeFinished(changeInfo.newHolder, false)
+                    mChangeAnimations.remove(changeInfo.newHolder)
+                    dispatchFinishedWhenDone()
+                }
+            }).start()
         }
     }
 
-    private fun endChangeAnimation(
-        infoList: MutableList<ChangeInfo>,
-        item: RecyclerView.ViewHolder
-    ) {
+    private fun endChangeAnimation(infoList: MutableList<ChangeInfo>, item: RecyclerView.ViewHolder) {
         for (i in infoList.indices.reversed()) {
             val changeInfo = infoList[i]
             if (endChangeAnimationIfNecessary(changeInfo, item)) {
@@ -373,10 +334,7 @@ abstract class BaseItemAnimator     //------------------------------------------
         }
     }
 
-    private fun endChangeAnimationIfNecessary(
-        changeInfo: ChangeInfo,
-        item: RecyclerView.ViewHolder?
-    ): Boolean {
+    private fun endChangeAnimationIfNecessary(changeInfo: ChangeInfo, item: RecyclerView.ViewHolder?): Boolean {
         var oldItem = false
         if (changeInfo.newHolder === item) {
             changeInfo.newHolder = null
@@ -452,42 +410,28 @@ abstract class BaseItemAnimator     //------------------------------------------
 
         // animations should be ended by the cancel above.
         check(!(mRemoveAnimations.remove(item) && DEBUG)) {
-            ("after animation is cancelled, item should not be in "
-                    + "mRemoveAnimations list")
+            ("after animation is cancelled, item should not be in " + "mRemoveAnimations list")
         }
         check(!(mAddAnimations.remove(item) && DEBUG)) {
-            ("after animation is cancelled, item should not be in "
-                    + "mAddAnimations list")
+            ("after animation is cancelled, item should not be in " + "mAddAnimations list")
         }
         check(!(mChangeAnimations.remove(item) && DEBUG)) {
-            ("after animation is cancelled, item should not be in "
-                    + "mChangeAnimations list")
+            ("after animation is cancelled, item should not be in " + "mChangeAnimations list")
         }
         check(!(mMoveAnimations.remove(item) && DEBUG)) {
-            ("after animation is cancelled, item should not be in "
-                    + "mMoveAnimations list")
+            ("after animation is cancelled, item should not be in " + "mMoveAnimations list")
         }
         dispatchFinishedWhenDone()
     }
 
     private fun resetAnimation(holder: RecyclerView.ViewHolder) {
         //TODO 暂时注释这里 后续把这里整体梳理一下
-//        AnimatorCompatHelper.clearInterpolator(holder.itemView);
+        //        AnimatorCompatHelper.clearInterpolator(holder.itemView);
         endAnimation(holder)
     }
 
     override fun isRunning(): Boolean {
-        return !mPendingAdditions.isEmpty() ||
-                !mPendingChanges.isEmpty() ||
-                !mPendingMoves.isEmpty() ||
-                !mPendingRemovals.isEmpty() ||
-                !mMoveAnimations.isEmpty() ||
-                !mRemoveAnimations.isEmpty() ||
-                !mAddAnimations.isEmpty() ||
-                !mChangeAnimations.isEmpty() ||
-                !mMovesList.isEmpty() ||
-                !mAdditionsList.isEmpty() ||
-                !mChangesList.isEmpty()
+        return !mPendingAdditions.isEmpty() || !mPendingChanges.isEmpty() || !mPendingMoves.isEmpty() || !mPendingRemovals.isEmpty() || !mMoveAnimations.isEmpty() || !mRemoveAnimations.isEmpty() || !mAddAnimations.isEmpty() || !mChangeAnimations.isEmpty() || !mMovesList.isEmpty() || !mAdditionsList.isEmpty() || !mChangesList.isEmpty()
     }
 
     /**

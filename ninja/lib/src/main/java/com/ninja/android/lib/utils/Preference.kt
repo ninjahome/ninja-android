@@ -11,7 +11,7 @@ import kotlin.reflect.KProperty
  *Time:
  *Description:
  */
-class SharedPref<T>(private val context: Context, private val name: String, private val defValue: T, private val pref: String = "id_card_preference", private val commit: Boolean = false) : ReadWriteProperty<Any?, T> {
+class SharedPref<T>(private val context: Context, private val name: String, private val defValue: T, private val pref: String = "ninja_preference", private val commit: Boolean = false) : ReadWriteProperty<Any?, T> {
 
     private val prefs by lazy {
         context.getSharedPreferences(pref, Context.MODE_PRIVATE)

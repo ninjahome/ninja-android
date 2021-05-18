@@ -12,8 +12,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  *Time:
  *Description:
  */
-class BackUpActivity :
-    BaseActivity<BackUpViewModel, ActivityBackUpBinding>(R.layout.activity_back_up) {
+class BackUpActivity : BaseActivity<BackUpViewModel, ActivityBackUpBinding>(R.layout.activity_back_up) {
     override val mViewModel: BackUpViewModel by viewModel()
 
 

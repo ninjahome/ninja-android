@@ -3,22 +3,24 @@ package com.ninjahome.ninja.ui.activity.main
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.google.android.material.tabs.TabLayout
-import com.gyf.immersionbar.ImmersionBar
+import androidlib.Androidlib
 import com.ninja.android.lib.base.BaseActivity
+import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.BR
+import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityMainBinding
 import com.ninjahome.ninja.ui.adapter.MainFragmentPagerAdapter
 import com.ninjahome.ninja.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.component.KoinApiExtension
 
+@KoinApiExtension
 class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.activity_main) {
     private val TAB_MESSAGE = 0
     private val TAB_CONTACT = 1
-    private val tabIcons =
-        arrayListOf(R.drawable.tab_message, R.drawable.tab_contact, R.drawable.tab_my)
+    private val tabIcons = arrayListOf(R.drawable.tab_message, R.drawable.tab_contact, R.drawable.tab_my)
     private val tabName = arrayListOf(R.string.message, R.string.contact, R.string.my)
     override val mViewModel: MainViewModel by viewModel()
 
@@ -32,33 +34,9 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
 
     private fun initTabLayout() {
         tabIcons.forEachIndexed { index, i ->
-            val tab = tabLayout.getTabAt(index)!!.setCustomView(getTabItemView(index))
+            tabLayout.getTabAt(index)!!.setCustomView(getTabItemView(index))
 
         }
-
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                when (tab.position) {
-                    TAB_MESSAGE, TAB_CONTACT -> ImmersionBar.with(this@MainActivity)
-                        .fitsSystemWindows(true)
-                        .statusBarColor(R.color.white)
-                        .init()
-                    else -> {
-                        ImmersionBar.with(this@MainActivity).transparentBar().fullScreen(false)
-                            .statusBarDarkFont(true).init()
-                    }
-                }
-
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
-
-        })
 
     }
 
@@ -79,6 +57,30 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
     override fun statusBarStyle(): Int = STATUSBAR_STYLE_WHITE
 
     override fun initVariableId(): Int = BR.viewModel
+
+    var last: Long = -1
+
+    override fun onBackPressed() {
+        val now = System.currentTimeMillis()
+        if (last == -1L) {
+            toast(getString(R.string.main_click_exit_application))
+            last = now
+        } else {
+            val doubleClickDifference = 2000
+            if (now - last < doubleClickDifference) {
+                finish()
+            } else {
+                last = now
+                toast(getString(R.string.main_click_exit_application))
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Androidlib.wsOffline()
+        NinjaApp.instance.conversations.clear()
+    }
 
 
 }

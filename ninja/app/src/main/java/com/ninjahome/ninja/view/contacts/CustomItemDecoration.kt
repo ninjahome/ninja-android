@@ -43,22 +43,12 @@ class CustomItemDecoration(private val mContext: Context) : ItemDecoration() {
             }
             if (position == 0) {
                 //第一条数据有bar
-                drawTitleBar(
-                    canvas,
-                    parent,
-                    child,
-                    mBeans!![position],
-                    tagsStr!!.indexOf(mBeans!![position].indexTag)
-                )
+                drawTitleBar(canvas, parent, child, mBeans!![position], tagsStr!!.indexOf(mBeans!![position].indexTag))
             } else if (position > 0) {
                 if (TextUtils.isEmpty(mBeans!![position].indexTag)) continue
                 //与上一条数据中的tag不同时，该显示bar了
                 if (mBeans!![position].indexTag != mBeans!![position - 1].indexTag) {
-                    drawTitleBar(
-                        canvas, parent, child, mBeans!![position], tagsStr!!.indexOf(
-                            mBeans!![position].indexTag
-                        )
-                    )
+                    drawTitleBar(canvas, parent, child, mBeans!![position], tagsStr!!.indexOf(mBeans!![position].indexTag))
                 }
             }
         }
@@ -72,13 +62,7 @@ class CustomItemDecoration(private val mContext: Context) : ItemDecoration() {
      * @param parent RecyclerView
      * @param child  ItemView
      */
-    private fun drawTitleBar(
-        canvas: Canvas,
-        parent: RecyclerView,
-        child: View,
-        bean: Contact,
-        position: Int
-    ) {
+    private fun drawTitleBar(canvas: Canvas, parent: RecyclerView, child: View, bean: Contact, position: Int) {
         val left = 0
         val right = parent.width
         //返回一个包含Decoration和Margin在内的Rect
@@ -90,60 +74,28 @@ class CustomItemDecoration(private val mContext: Context) : ItemDecoration() {
         //根据位置不断变换Paint的颜色
         setPaintColor(mPaint, position)
         mPaint.textSize = 40f
-        canvas.drawCircle(
-            43.dp,
-            (bottom - dividerHeight / 2).toFloat(),
-            35f,
-            mPaint
-        )
+        canvas.drawCircle(43.dp, (bottom - dividerHeight / 2).toFloat(), 35f, mPaint)
         mPaint.color = Color.WHITE
-        canvas.drawText(
-            bean.indexTag,
-            43.dp,
-            (bottom - dividerHeight / 3).toFloat(),
-            mPaint
-        )
+        canvas.drawText(bean.indexTag, 43.dp, (bottom - dividerHeight / 3).toFloat(), mPaint)
     }
 
     override fun onDrawOver(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         //用来绘制悬浮框
-        val position =
-            (parent.layoutManager as LinearLayoutManager?)!!.findFirstVisibleItemPosition()
+        val position = (parent.layoutManager as LinearLayoutManager?)!!.findFirstVisibleItemPosition()
         if (mBeans == null || mBeans!!.size == 0 || mBeans!!.size <= position || position < 0) {
             return
         }
         val bottom = parent.paddingTop + dividerHeight
         mPaint.color = Color.WHITE
-        canvas.drawRect(
-            parent.left.toFloat(),
-            parent.paddingTop.toFloat(),
-            (parent.right - parent.paddingRight).toFloat(),
-            (parent.paddingTop + dividerHeight).toFloat(),
-            mPaint
-        )
+        canvas.drawRect(parent.left.toFloat(), parent.paddingTop.toFloat(), (parent.right - parent.paddingRight).toFloat(), (parent.paddingTop + dividerHeight).toFloat(), mPaint)
         setPaintColor(mPaint, tagsStr!!.indexOf(mBeans!![position].indexTag))
         mPaint.textSize = 40f
-        canvas.drawCircle(
-            43.dp,
-            (bottom - dividerHeight / 2).toFloat(),
-            35f,
-            mPaint
-        )
+        canvas.drawCircle(43.dp, (bottom - dividerHeight / 2).toFloat(), 35f, mPaint)
         mPaint.color = Color.WHITE
-        canvas.drawText(
-            mBeans!![position].indexTag,
-            43.dp,
-            (bottom - dividerHeight / 3).toFloat(),
-            mPaint
-        )
+        canvas.drawText(mBeans!![position].indexTag, 43.dp, (bottom - dividerHeight / 3).toFloat(), mPaint)
     }
 
-    override fun getItemOffsets(
-        outRect: Rect,
-        view: View,
-        parent: RecyclerView,
-        state: RecyclerView.State
-    ) {
+    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val position = parent.getChildAdapterPosition(view)
         if (mBeans == null || mBeans!!.size == 0 || mBeans!!.size <= position || position < 0) {
             super.getItemOffsets(outRect, view, parent, state)

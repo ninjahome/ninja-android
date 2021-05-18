@@ -4,7 +4,6 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 
-
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
     buildToolsVersion rootProject.ext.android.buildToolsVersion
@@ -21,11 +20,28 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                def fileName
+                if (variant.buildType.name == 'release') {
+                    fileName = "ninja_${defaultConfig.versionName}.apk"
+                } else if (variant.buildType.name == 'debug') {
+                    fileName = "ninja_${defaultConfig.versionName}_debug.apk"
+                } else {
+                    fileName = "ninja_${defaultConfig.versionName}_${defaultConfig.versionCode}_other.apk"
+                }
+                outputFileName = fileName
+            }
+        }
+    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -51,6 +67,11 @@ dependencies {
     implementation rootProject.ext.androidx["lifecycle-livedata-ktx"]
     implementation rootProject.ext.androidx["lifecycle-viewmodel-ktx"]
     implementation rootProject.ext.dependencies["immersionbar-components"]
+    api rootProject.ext.dependencies['moshi']
+    kapt rootProject.ext.dependencies['moshi-kotlin-codegen']
+
+    implementation "androidx.room:room-runtime:2.3.0-alpha03"
+    kapt "androidx.room:room-compiler:2.3.0-alpha03"
 
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.2'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
@@ -68,4 +89,14 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'org.greenrobot:eventbus:3.1.1'
+
+
+    implementation "com.umeng.umsdk:common:9.3.8"
+    implementation "com.umeng.umsdk:asms:1.2.2"
+    implementation 'com.umeng.umsdk:apm:1.2.0'
+
+    implementation 'androidx.security:security-crypto:1.1.0-alpha02'
+    implementation 'androidx.biometric:biometric:1.1.0'
+    implementation 'pub.devrel:easypermissions:3.0.0'
 }

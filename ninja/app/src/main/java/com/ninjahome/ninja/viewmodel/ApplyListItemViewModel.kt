@@ -8,5 +8,4 @@ import com.ninjahome.ninja.model.bean.Contact
  *Time:
  *Description:
  */
-class ApplyListItemViewModel(viewModel: ApplyListViewModel, val contact: Contact):ItemViewModel<ApplyListViewModel>(viewModel) {
-}
+class ApplyListItemViewModel(viewModel: ApplyListViewModel, val contact: Contact) : ItemViewModel<ApplyListViewModel>(viewModel) {}

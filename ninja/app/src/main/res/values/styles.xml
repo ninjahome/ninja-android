@@ -11,6 +11,10 @@
         <item name="android:paddingEnd">12dp</item>
     </style>
 
+    <style name="PasswordEditTextStyle" parent="EditTextStyle">
+        <item name="android:inputType">textPassword</item>
+    </style>
+
     <style name="ButtonStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">52dp</item>
@@ -34,4 +38,17 @@
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/color_26253c</item>
     </style>
+
+    <style name="SwitchStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/switch_bg</item>
+        <item name="trackTint">@android:color/transparent</item>
+        <item name="showText">false</item>
+        <item name="thumbTint">@color/white</item>
+        <item name="thumbTintMode">multiply</item>
+        <item name="splitTrack">false</item>
+    </style>
+
+
 </resources>

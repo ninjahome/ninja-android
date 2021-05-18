@@ -34,15 +34,13 @@
         android:layout_toLeftOf="@id/messageSendButton"
         android:layout_toStartOf="@id/messageSendButton" />
 
-    <ImageButton
+    <Button
         android:id="@id/messageSendButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="45dp"
+        android:text="发送"
+        android:background="@color/transparent"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true" />
-<TextView
-    android:id="@+id/messageSendTv"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"/>
 </merge>

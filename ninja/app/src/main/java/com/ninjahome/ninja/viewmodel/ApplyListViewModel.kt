@@ -16,7 +16,7 @@ import me.tatarka.bindingcollectionadapter2.ItemBinding
  *Time:
  *Description:
  */
-class ApplyListViewModel:BaseViewModel() {
+class ApplyListViewModel : BaseViewModel() {
 
     var finishRefreshingEvent = SingleLiveEvent<Any>()
     var finishResultActivityEvent = SingleLiveEvent<String>()
@@ -30,6 +30,7 @@ class ApplyListViewModel:BaseViewModel() {
         showRightIv.set(true)
         showBackImage.set(false)
     }
+
     val refreshCommand = BindingCommand<Any>(object : BindingAction {
         override fun call() {
 

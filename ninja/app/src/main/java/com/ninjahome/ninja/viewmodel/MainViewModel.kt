@@ -7,5 +7,4 @@ import com.ninja.android.lib.base.BaseViewModel
  *Time:
  *Description:
  */
-class MainViewModel:BaseViewModel() {
-}
+class MainViewModel : BaseViewModel()
