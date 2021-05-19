@@ -56,6 +56,7 @@ class CreateAccountViewModel : BaseViewModel(), KoinComponent {
     private fun createAccount() {
         rxLifeScope.launch({
             val account = model.createAccount(password.value!!)
+            Androidlib.wsOffline()
             NinjaApp.instance.configApp()
             model.activeAccount(account, password.value!!)
             Logger.d(account)
@@ -72,6 +73,7 @@ class CreateAccountViewModel : BaseViewModel(), KoinComponent {
 
     fun importAccount(accountJson: String, password: String) {
         rxLifeScope.launch({
+            Androidlib.wsOffline()
             NinjaApp.instance.configApp()
             model.activeAccount(accountJson, password)
             createAccountSuccess(accountJson)

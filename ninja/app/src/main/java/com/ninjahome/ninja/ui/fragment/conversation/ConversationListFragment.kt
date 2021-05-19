@@ -48,11 +48,30 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
 
     override fun initObserve() {
         mViewModel.finishRefreshingEvent.observe(this) {
-            swipeRefreshLayout.isRefreshing = false
+            try {
+                Androidlib.wsOnline()
+                setLineState()
+                swipeRefreshLayout.isRefreshing = false
+            }catch (e:Exception){
+
+            }
+
         }
     }
 
 
+    override fun onShow() {
+        super.onShow()
+        setLineState()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setLineState()
+    }
+    fun setLineState(){
+        mViewModel.unline.value = !Androidlib.wsIsOnline()
+    }
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun receiveNewConversation(eventConversation: EventReceiveConversation) {
         addAdapterData(eventConversation.fromAddress, eventConversation.chatMessage, false)
