@@ -8,10 +8,7 @@ import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.FragmentConversationListBinding
-import com.ninjahome.ninja.event.EventReceiveConversation
-import com.ninjahome.ninja.event.EventSendConversation
-import com.ninjahome.ninja.event.EventUnReadMessages
-import com.ninjahome.ninja.event.EventUpdateConversationNickName
+import com.ninjahome.ninja.event.*
 import com.ninjahome.ninja.model.bean.ChatMessage
 import com.ninjahome.ninja.model.bean.Conversation
 import com.ninjahome.ninja.model.bean.TextData
@@ -87,6 +84,11 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
         mViewModel.updateConversation()
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun changeAccount(eventChangeAccount: EventChangeAccount) {
+        mViewModel.updateConversation()
+    }
+
     private fun addAdapterData(fromAddress: String, chatMessage: ChatMessage, isSend: Boolean) {
 
         if (NinjaApp.instance.conversations.contains(fromAddress)) {
@@ -108,7 +110,11 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
                 if (TextUtils.isEmpty(nickName)) {
                     nickName = fromAddress
                 }
-                val conversation = Conversation(fromAddress, chatMessages, chatMessage, 1, "1", System.currentTimeMillis(), nickName!!, "https://img0.baidu.com/it/u=1950977217,4151841346&fm=26&fmt=auto&gp=0.jpg")
+                var unreadNo = 1
+                if (isSend) {
+                    unreadNo = 0
+                }
+                val conversation = Conversation(fromAddress, chatMessages, chatMessage, unreadNo, unreadNo.toString(), System.currentTimeMillis(), nickName!!, "https://img0.baidu.com/it/u=1950977217,4151841346&fm=26&fmt=auto&gp=0.jpg")
                 NinjaApp.instance.conversations.put(fromAddress, conversation)
                 mViewModel.updateConversation()
             }

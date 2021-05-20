@@ -8,6 +8,7 @@ import androidx.lifecycle.rxLifeScope
 import com.ninja.android.lib.base.BaseViewModel
 import com.ninja.android.lib.command.BindingAction
 import com.ninja.android.lib.command.BindingCommand
+import com.ninja.android.lib.event.SingleLiveEvent
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
@@ -19,6 +20,7 @@ import com.ninjahome.ninja.utils.JsonUtils
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import org.greenrobot.eventbus.EventBus
 import org.koin.core.component.KoinApiExtension
 
@@ -30,6 +32,8 @@ import org.koin.core.component.KoinApiExtension
 @KoinApiExtension
 class ChatViewModel : BaseViewModel() {
     lateinit var uid: String
+    val unline = MutableLiveData<Boolean>()
+    var finishRefreshingEvent = SingleLiveEvent<Any>()
     var message = MutableLiveData<String>()
     override fun clickRightIv() {
         super.clickRightIv()
@@ -37,6 +41,24 @@ class ChatViewModel : BaseViewModel() {
         bundle.putString(IntentKey.UID, uid)
         startActivity(ContactDetailActivity::class.java, bundle)
     }
+
+    val refreshCommand = BindingCommand<Any>(object : BindingAction {
+        override fun call() {
+            rxLifeScope.launch {
+                withTimeout(200){
+                    withContext(Dispatchers.IO){
+                        if(!Androidlib.wsIsOnline()){
+                            Androidlib.wsOnline()
+                        }
+                    }
+
+                }
+
+            }
+
+            finishRefreshingEvent.call()
+        }
+    })
 
     val clickSend = BindingCommand<Any>(object : BindingAction {
         override fun call() {

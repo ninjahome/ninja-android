@@ -13,11 +13,13 @@ import com.ninja.android.lib.utils.SharedPref
 import com.ninjahome.ninja.Constants
 import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
+import com.ninjahome.ninja.event.EventChangeAccount
 import com.ninjahome.ninja.model.CreateAccountModel
 import com.ninjahome.ninja.ui.activity.edituserinfo.EditUserInfoActivity
 import com.ninjahome.ninja.utils.AccountUtils
 import com.ninjahome.ninja.utils.fromJson
 import com.orhanobut.logger.Logger
+import org.greenrobot.eventbus.EventBus
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -100,6 +102,8 @@ class CreateAccountViewModel : BaseViewModel(), KoinComponent {
         openFingerPrint = false
         userName = ""
         NinjaApp.instance.conversations.clear()
+        EventBus.getDefault().post(EventChangeAccount())
+
         NinjaApp.instance.configApp()
         startActivityAndFinish(EditUserInfoActivity::class.java)
 

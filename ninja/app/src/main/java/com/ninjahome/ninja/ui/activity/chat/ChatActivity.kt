@@ -2,6 +2,7 @@ package com.ninjahome.ninja.ui.activity.chat
 
 import android.text.TextUtils
 import android.widget.ImageView
+import androidlib.Androidlib
 import androidx.lifecycle.rxLifeScope
 import coil.load
 import com.ninja.android.lib.base.BaseActivity
@@ -18,10 +19,13 @@ import com.ninjahome.ninja.model.bean.Conversation
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.utils.ChatMessageFactory
 import com.ninjahome.ninja.viewmodel.ChatViewModel
+import com.orhanobut.logger.Logger
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import kotlinx.android.synthetic.main.activity_chat.*
+import kotlinx.android.synthetic.main.activity_chat.swipeRefreshLayout
+import kotlinx.android.synthetic.main.fragment_conversation_list.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -82,6 +86,25 @@ open class ChatActivity : BaseActivity<ChatViewModel, ActivityChatBinding>(R.lay
     }
 
     override fun initObserve() {
+        mViewModel.finishRefreshingEvent.observe(this) {
+            try {
+                Androidlib.wsOnline()
+                setLineState()
+                swipeRefreshLayout.isRefreshing = false
+            }catch (e:Exception){
+                Logger.d(e.message)
+                swipeRefreshLayout.isRefreshing = false
+            }
+
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setLineState()
+    }
+    fun setLineState(){
+        mViewModel.unline.value = !Androidlib.wsIsOnline()
     }
 
     override fun statusBarStyle(): Int = STATUSBAR_STYLE_WHITE

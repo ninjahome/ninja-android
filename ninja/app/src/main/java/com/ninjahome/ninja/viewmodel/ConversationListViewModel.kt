@@ -13,6 +13,8 @@ import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import me.tatarka.bindingcollectionadapter2.ItemBinding
 import org.koin.core.component.KoinApiExtension
 
@@ -40,9 +42,12 @@ class ConversationListViewModel : BaseViewModel() {
     val refreshCommand = BindingCommand<Any>(object : BindingAction {
         override fun call() {
             rxLifeScope.launch {
-                if(!Androidlib.wsIsOnline()){
-                    Androidlib.wsOnline()
+                withContext(Dispatchers.IO){
+                    if(!Androidlib.wsIsOnline()){
+                        Androidlib.wsOnline()
+                    }
                 }
+
             }
 
             finishRefreshingEvent.call()
