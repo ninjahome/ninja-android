@@ -30,6 +30,7 @@
     <string name="send">发送</string>
     <string name="input_send_message">请输入发送内容</string>
     <string name="main_click_exit_application">再次点击退出应用</string>
+    <string name="send_error">发送失败</string>
 
     <!--  conversation  -->
     <string name="conversation_unline_tip">离线状态，下拉更新状态</string>
