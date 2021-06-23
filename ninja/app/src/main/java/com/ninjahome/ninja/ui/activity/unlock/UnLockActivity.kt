@@ -34,7 +34,7 @@ class UnLockActivity : BaseActivity<UnLockViewModel, ActivityUnlockBinding>(R.la
 
 
     override fun initView() {
-        NinjaApp.instance.configApp()
+
     }
 
     override fun initData() {

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.ninjahome.ninja.viewmodel.LocationSearchViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <EditText
+            android:id="@+id/contactIdEt"
+            android:layout_width="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="20dp"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp"
+            android:text="@={viewModel.address}"
+            android:layout_marginStart="20dp"
+            android:imeOptions="actionSearch"
+            android:background="@drawable/edit_text_bg"
+            app:layout_constraintEnd_toStartOf="@+id/cancelTv"
+            android:layout_height="45dp"
+            textChanged="@{viewModel.changeAddress}"
+            android:inputType="text"
+            tools:ignore="LabelFor"
+            android:importantForAutofill="no" />
+
+        <TextView
+            android:id="@+id/cancelTv"
+            android:layout_width="65dp"
+            android:layout_height="45dp"
+            android:text="@string/cancel"
+            onClickCommand="@{viewModel.clickCancel}"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/color_3b877f"
+            android:textSize="17sp"
+            android:layout_marginStart="16dp"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/contactIdEt"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@color/color_eaeaed"
+            android:layout_marginTop="6dp"
+            app:layout_constraintTop_toBottomOf="@+id/contactIdEt"
+            android:layout_height="1dp" />
+
+        <com.lqr.recyclerview.LQRRecyclerView
+            android:id="@+id/rvPOI"
+            android:layout_width="0dp"
+            app:layout_constraintTop_toBottomOf="@+id/line"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/transparent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

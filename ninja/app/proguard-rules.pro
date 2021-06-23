@@ -20,22 +20,7 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class * extends com.stfalcon.chatkit.messages.MessageHolders$OutcomingTextMessageViewHolder {
-     public <init>(android.view.View, java.lang.Object);
-     public <init>(android.view.View);
- }
--keep class * extends com.stfalcon.chatkit.messages.MessageHolders$IncomingTextMessageViewHolder {
-     public <init>(android.view.View, java.lang.Object);
-     public <init>(android.view.View);
- }
--keep class * extends com.stfalcon.chatkit.messages.MessageHolders$IncomingImageMessageViewHolder {
-     public <init>(android.view.View, java.lang.Object);
-     public <init>(android.view.View);
- }
--keep class * extends com.stfalcon.chatkit.messages.MessageHolders$OutcomingImageMessageViewHolder {
-     public <init>(android.view.View, java.lang.Object);
-     public <init>(android.view.View);
- }
+
 
  -dontwarn org.jetbrains.annotations.**
  -keep class kotlin.Metadata { *; }
@@ -54,6 +39,33 @@
 -keep class com.umeng.** {*;}
 -keep class com.ninjahome.ninja.model.bean.** {*;}
 
+-dontwarn com.umeng.**
+-dontwarn com.taobao.**
+-dontwarn anet.channel.**
+-dontwarn anetwork.channel.**
+-dontwarn org.android.**
+-dontwarn org.apache.thrift.**
+-dontwarn com.xiaomi.**
+-dontwarn com.huawei.**
+-dontwarn com.meizu.**
+
+-keepattributes *Annotation*
+
+-keep class com.taobao.** {*;}
+-keep class org.android.** {*;}
+-keep class anet.channel.** {*;}
+-keep class com.umeng.** {*;}
+-keep class com.xiaomi.** {*;}
+-keep class com.huawei.** {*;}
+-keep class com.meizu.** {*;}
+-keep class org.apache.thrift.** {*;}
+
+-keep class com.alibaba.sdk.android.** {*;}
+-keep class com.ut.** {*;}
+-keep class com.uc.** {*;}
+-keep class com.ta.** {*;}
+
+
 -keepclassmembers class * {
    public <init> (org.json.JSONObject);
 }
@@ -69,3 +81,50 @@
 -keep class com.heytap.**{*;}
 -keep class a.**{*;}
 -keep class com.vivo.**{*;}
+
+
+#小米推送
+-keep class org.android.agoo.xiaomi.MiPushBroadcastReceiver {*;}
+-dontwarn com.xiaomi.push.**
+
+#华为推送
+-ignorewarnings
+-keepattributes *Annotation*, Exceptions, InnerClasses, Signature, SourceFile, LineNumberTable
+-keep class com.hianalytics.android.** {*;}
+-keep class com.huawei.updatesdk.** {*;}
+-keep class com.huawei.hms.** {*;}
+#oppo
+-keep public class * extends android.app.Service
+
+
+-keepclassmembers class ** {
+    public void on*Event(...);
+}
+
+-keep class com.tencent.tencentmap.**{*;}
+-keep class com.tencent.map.**{*;}
+-keep class com.tencent.beacontmap.**{*;}
+-keep class navsns.**{*;}
+-dontwarn com.qq.**
+-dontwarn com.tencent.**
+
+-keepclassmembers class ** {
+    public void on*Event(...);
+}
+
+-keep class c.t.**{*;}
+-keep class com.tencent.map.geolocation.**{*;}
+
+-keep public class com.tencent.location.**{
+    public protected *;
+}
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+-dontwarn  org.eclipse.jdt.annotation.**
+-dontwarn  c.t.**
+
+-dontwarn  org.eclipse.jdt.annotation.**
+-dontwarn  c.t.**
+

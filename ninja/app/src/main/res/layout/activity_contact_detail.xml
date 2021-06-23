@@ -20,10 +20,11 @@
             layout="@layout/title_layout"
             app:viewModel="@{viewModel}" />
 
-        <com.stfalcon.chatkit.utils.RoundedImageView
+        <com.github.siyamed.shapeimageview.CircularImageView
             android:id="@+id/avatarIv"
             android:layout_width="72dp"
             android:layout_height="72dp"
+            app:siBorderWidth="0dp"
             android:layout_marginTop="60dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

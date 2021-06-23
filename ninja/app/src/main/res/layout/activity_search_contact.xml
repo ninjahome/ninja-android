@@ -27,7 +27,6 @@
             android:imeOptions="actionSearch"
             android:background="@drawable/edit_text_bg"
             android:hint="@string/input_id"
-
             app:layout_constraintEnd_toStartOf="@+id/cancelTv"
             android:layout_height="45dp"
             android:inputType="text"

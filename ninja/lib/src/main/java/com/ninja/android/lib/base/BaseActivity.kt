@@ -3,11 +3,11 @@ package com.ninja.android.lib.base
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.gyf.immersionbar.ImmersionBar
@@ -22,28 +22,27 @@ import com.ninja.android.lib.utils.toast
  * @author:  Mr.x
  * @date :   2020/11/3 8:01 AM
  */
-abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> (@LayoutRes val layoutId:Int): AppCompatActivity() {
+abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding>(@LayoutRes val layoutId: Int) : AppCompatActivity() {
     val TAG = this.javaClass.name
-    protected  lateinit var mDataBinding: DB
+    private lateinit var mDataBinding: DB
     private var viewModelId = 0
     protected val STATUSBAR_STYLE_TRANSPARENT = 1
     protected val STATUSBAR_STYLE_WHITE = 2
     protected val STATUSBAR_STYLE_GRAY = 3
-    private  lateinit var loadingDialog: LoadingPopupView
-    protected abstract val mViewModel :VM
+    private lateinit var loadingDialog: LoadingPopupView
+    protected abstract val mViewModel: VM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppManager.addActivity(this)
         mDataBinding = DataBindingUtil.setContentView(this, layoutId)
         mDataBinding.lifecycleOwner = this
-        actionBar?.let {
-        }
-        if (statusBarStyle() == STATUSBAR_STYLE_TRANSPARENT){
+        actionBar?.let {}
+        if (statusBarStyle() == STATUSBAR_STYLE_TRANSPARENT) {
             ImmersionBar.with(this).transparentStatusBar().barEnable(true).statusBarDarkFont(true).init()
-        }else if(statusBarStyle() == STATUSBAR_STYLE_WHITE){
+        } else if (statusBarStyle() == STATUSBAR_STYLE_WHITE) {
             ImmersionBar.with(this).statusBarColor(R.color.white).barEnable(true).statusBarDarkFont(true).fitsSystemWindows(true).init()
-        }else if(statusBarStyle() == STATUSBAR_STYLE_GRAY){
+        } else if (statusBarStyle() == STATUSBAR_STYLE_GRAY) {
             ImmersionBar.with(this).statusBarColor(R.color.color_f8f8f9).barEnable(true).statusBarDarkFont(true).fitsSystemWindows(true).init()
         }
         lifecycle.addObserver(mViewModel)
@@ -70,61 +69,52 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> (@LayoutRe
     //注册ViewModel与View的契约UI回调事件
     protected open fun registorUIChangeLiveDataCallBack() {
         //加载对话框显示
-        mViewModel.uc.showDialogEvent.observe(
-            this,
-            Observer { titleId -> showDialog(resources.getString(titleId), true) })
+        mViewModel.uc.showDialogEvent.observe(this, { titleId -> showDialog(resources.getString(titleId), true) })
 
-        mViewModel.uc.showDialogNotCancelEvent.observe(
-            this,
-            Observer { titleId -> showDialog(resources.getString(titleId), false) })
+        mViewModel.uc.showDialogNotCancelEvent.observe(this, { titleId -> showDialog(resources.getString(titleId), false) })
 
-        mViewModel.uc.showDialogNotCancelStrEvent.observe(
-            this,
-            Observer { title -> showDialog(title, false) })
+        mViewModel.uc.showDialogNotCancelStrEvent.observe(this, { title -> showDialog(title, false) })
 
         //加载对话框消失
-        mViewModel.uc.dismissDialogEvent.observe(this, Observer { dismissDialog() })
+        mViewModel.uc.dismissDialogEvent.observe(this, { dismissDialog() })
 
-        mViewModel.uc.toastEvent.observe(this, Observer { msgId -> toast(getString(msgId)) })
+        mViewModel.uc.toastEvent.observe(this, { msgId -> toast(getString(msgId)) })
 
-        mViewModel.uc.toastStrEvent.observe(this, Observer { msg -> toast(msg) })
+        mViewModel.uc.toastStrEvent.observe(this, { msg -> toast(msg) })
         //跳入新页面
-        mViewModel.uc.startActivityEvent.observe(this, Observer { params ->
+        mViewModel.uc.startActivityEvent.observe(this, { params ->
             val clz = params[ParameterField.CLASS] as Class<*>
             val bundle = params[ParameterField.BUNDLE] as Bundle?
             val finishActivity = params[ParameterField.FINISH] as Boolean
             startActivity(clz, bundle)
-            if(finishActivity){
+            if (finishActivity) {
                 finish()
             }
         })
 
-        mViewModel.uc.startWebActivityEvent.observe(this, Observer { url ->
+        mViewModel.uc.startWebActivityEvent.observe(this, { url ->
             val intent = Intent()
             intent.action = "android.intent.action.VIEW"
             intent.data = Uri.parse(url)
             startActivity(intent, null)
         })
         //关闭界面
-        mViewModel.uc.finishEvent.observe(this, Observer { finish() })
+        mViewModel.uc.finishEvent.observe(this, { finish() })
         //关闭上一层
-        mViewModel.uc.onBackPressedEvent.observe(this, Observer { onBackPressed() })
+        mViewModel.uc.onBackPressedEvent.observe(this, { onBackPressed() })
     }
 
     @JvmOverloads
-    open fun showDialog(title: String , cancelable: Boolean = true) {
-        if(this::loadingDialog.isInitialized && loadingDialog.isShow){
+    open fun showDialog(title: String, cancelable: Boolean = true) {
+        if (this::loadingDialog.isInitialized && loadingDialog.isShow) {
             loadingDialog.setTitle(title)
             return
         }
-        loadingDialog= XPopup.Builder(this)
-            .dismissOnBackPressed(cancelable)
-            .asLoading(title)
-            .show() as LoadingPopupView
+        loadingDialog = XPopup.Builder(this).dismissOnBackPressed(cancelable).asLoading(title).show() as LoadingPopupView
     }
 
     open fun dismissDialog() {
-        if (this::loadingDialog.isInitialized && loadingDialog != null && loadingDialog.isShow) {
+        if (this::loadingDialog.isInitialized && loadingDialog.isShow) {
             loadingDialog.dismiss()
         }
     }
@@ -158,4 +148,21 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> (@LayoutRe
         AppManager.removeActivity(this)
     }
 
+    protected fun gone(vararg view:View){
+        view.forEach {
+          it.visibility = View.GONE
+        }
+    }
+
+    protected fun visible(vararg view:View){
+        view.forEach {
+            it.visibility = View.VISIBLE
+        }
+    }
+
+    protected fun inVisible(vararg view:View){
+        view.forEach {
+            it.visibility = View.INVISIBLE
+        }
+    }
 }

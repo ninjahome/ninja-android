@@ -18,6 +18,7 @@
         <include
             layout="@layout/title_layout"
             app:viewModel="@{viewModel}" />
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshLayout"
             android:layout_width="0dp"
@@ -30,30 +31,32 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:onRefreshCommand="@{viewModel.refreshCommand}">
-        <com.stfalcon.chatkit.messages.MessagesList
-            android:id="@+id/messagesList"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
 
-            app:incomingAvatarHeight="56dp"
-            app:incomingAvatarWidth="56dp"
-            app:incomingBubbleDrawable="@drawable/bg_custom_outcoming_message"
-            app:outcomingBubbleDrawable="@drawable/bg_custom_incoming_message"
-            app:incomingTextColor="@color/color_0c123d"
-            app:outcomingTextColor="@color/color_0c123d" />
+<!--            <com.stfalcon.chatkit.messages.MessagesList-->
+<!--                android:id="@+id/messagesList"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="0dp"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+
+<!--                app:incomingAvatarHeight="56dp"-->
+<!--                app:incomingAvatarWidth="56dp"-->
+<!--                app:incomingBubbleDrawable="@drawable/bg_custom_outcoming_message"-->
+<!--                app:outcomingBubbleDrawable="@drawable/bg_custom_incoming_message"-->
+<!--                app:incomingTextColor="@color/color_0c123d"-->
+<!--                app:outcomingTextColor="@color/color_0c123d" />-->
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
         <View
             android:id="@+id/line"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/inputMessageEt"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/split_line" />
 
         <EditText
@@ -81,6 +84,7 @@
             android:text="@string/send"
             onClickCommand="@{viewModel.clickSend}"
             android:layout_height="45dp" />
+
         <TextView
             android:layout_width="0dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -91,6 +95,6 @@
             isVisible="@{viewModel.unline}"
             android:text="@string/conversation_unline_tip"
             app:layout_constraintTop_toBottomOf="@+id/titleLayout"
-            android:layout_height="30dp"/>
+            android:layout_height="30dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

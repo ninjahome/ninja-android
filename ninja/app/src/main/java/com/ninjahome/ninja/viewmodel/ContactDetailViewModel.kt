@@ -10,8 +10,8 @@ import com.ninja.android.lib.event.SingleLiveEvent
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.room.ContactDBManager
-import com.ninjahome.ninja.ui.activity.contact.addcontact.AddContactActivity
-import com.ninjahome.ninja.ui.activity.chat.ChatActivity
+import com.ninjahome.ninja.ui.activity.contact.AddContactActivity
+import com.ninjahome.ninja.ui.activity.conversation.ConversationActivity
 import org.koin.core.component.KoinApiExtension
 
 /**
@@ -31,7 +31,7 @@ class ContactDetailViewModel : BaseViewModel() {
         override fun call() {
             val bundle = Bundle()
             bundle.putString(IntentKey.UID, uid.value)
-            startActivity(ChatActivity::class.java, bundle)
+            startActivity(ConversationActivity::class.java, bundle)
         }
     })
 

@@ -8,6 +8,7 @@ import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.event.EventUpdateConversationNickName
 import com.ninjahome.ninja.model.bean.Conversation
 import com.ninjahome.ninja.ui.activity.chat.ChatActivity
+import com.ninjahome.ninja.ui.activity.conversation.ConversationActivity
 import org.greenrobot.eventbus.EventBus
 import org.koin.core.component.KoinApiExtension
 
@@ -25,7 +26,7 @@ class ConversationItemViewModel(viewModel: ConversationListViewModel, val conver
             EventBus.getDefault().post(EventUpdateConversationNickName(conversation.address))
             val bundle = Bundle()
             bundle.putString(IntentKey.UID, conversation.address)
-            viewModel.startActivity(ChatActivity::class.java, bundle)
+            viewModel.startActivity(ConversationActivity::class.java, bundle)
         }
     })
 }

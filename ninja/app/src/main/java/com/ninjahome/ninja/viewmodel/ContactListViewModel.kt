@@ -5,7 +5,7 @@ import com.ninja.android.lib.command.BindingAction
 import com.ninja.android.lib.command.BindingCommand
 import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.R
-import com.ninjahome.ninja.ui.activity.contact.applylist.ApplyListActivity
+import com.ninjahome.ninja.ui.activity.contact.ApplyListActivity
 import com.ninjahome.ninja.ui.activity.search.SearchContactActivity
 
 /**

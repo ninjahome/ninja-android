@@ -3,11 +3,14 @@ package com.ninjahome.ninja.utils
 import androidx.appcompat.app.AppCompatActivity
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
+import com.lxj.xpopup.enums.PopupPosition
+import com.lxj.xpopup.enums.PopupType
 import com.lxj.xpopup.interfaces.OnCancelListener
 import com.lxj.xpopup.interfaces.OnConfirmListener
 import com.lxj.xpopup.interfaces.OnSelectListener
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.ninjahome.ninja.R
+import com.ninjahome.ninja.view.ConversationMoreActionPop
 import com.ninjahome.ninja.view.PasswordPop
 import com.orhanobut.logger.Logger
 
@@ -22,19 +25,19 @@ object DialogUtils {
 
     internal class NinjaXPopupListener : SimpleCallback() {
         override fun onCreated(pv: BasePopupView) {
-            Logger.d("tag", "弹窗创建了")
+            Logger.d("弹窗创建了")
         }
 
         override fun onShow(popupView: BasePopupView) {
-            Logger.d("tag", "onShow")
+            Logger.d( "onShow")
         }
 
         override fun onDismiss(popupView: BasePopupView) {
-            Logger.d("tag", "onDismiss")
+            Logger.d("onDismiss")
         }
 
         override fun beforeDismiss(popupView: BasePopupView) {
-            Logger.d("tag", "准备消失的时候执行")
+            Logger.d( "准备消失的时候执行")
         }
 
         //如果你自己想拦截返回按键事件，则重写这个方法，返回true即可
@@ -60,6 +63,11 @@ object DialogUtils {
 
     fun showStartFingerPrintsDialog(activity: AppCompatActivity, confirmListerer: OnConfirmListener, cancelListener: OnCancelListener): BasePopupView {
         return XPopup.Builder(activity).dismissOnTouchOutside(false).dismissOnBackPressed(false).isDestroyOnDismiss(true).asConfirm("", activity.getString(R.string.my_no_fingerprint), activity.getString(R.string.cancel), activity.getString(R.string.my_input), confirmListerer, cancelListener, false).show()
+
+    }
+
+    fun showMoreActionDialog(activity: AppCompatActivity, listener: ConversationMoreActionPop.ConversationMoreActionListener, xpopListener: SimpleCallback = NinjaXPopupListener()): BasePopupView {
+        return XPopup.Builder(activity).popupType(PopupType.Bottom).dismissOnTouchOutside(false).dismissOnBackPressed(true).setPopupCallback(xpopListener).asCustom(ConversationMoreActionPop(activity, listener)).show()
 
     }
 

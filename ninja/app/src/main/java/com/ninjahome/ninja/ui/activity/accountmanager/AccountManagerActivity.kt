@@ -1,7 +1,6 @@
 package com.ninjahome.ninja.ui.activity.accountmanager
 
 import android.Manifest
-import androidx.activity.viewModels
 import com.ninja.android.lib.base.BaseActivity
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.Constants
@@ -12,6 +11,7 @@ import com.ninjahome.ninja.viewmodel.AccountManagerViewModel
 import org.koin.core.component.KoinApiExtension
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  *Author:Mr'x
@@ -20,7 +20,7 @@ import pub.devrel.easypermissions.EasyPermissions
  */
 @KoinApiExtension
 class AccountManagerActivity : BaseActivity<AccountManagerViewModel, ActivityAccountManagerBinding>(R.layout.activity_account_manager) {
-    override val mViewModel: AccountManagerViewModel by viewModels()
+    override val mViewModel: AccountManagerViewModel by viewModel()
 
     override fun initView() {
         mViewModel.title.set(getString(R.string.my_account_manager))

@@ -20,12 +20,7 @@ import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.utils.ChatMessageFactory
 import com.ninjahome.ninja.viewmodel.ChatViewModel
 import com.orhanobut.logger.Logger
-import com.stfalcon.chatkit.commons.ImageLoader
-import com.stfalcon.chatkit.messages.MessageHolders
-import com.stfalcon.chatkit.messages.MessagesListAdapter
 import kotlinx.android.synthetic.main.activity_chat.*
-import kotlinx.android.synthetic.main.activity_chat.swipeRefreshLayout
-import kotlinx.android.synthetic.main.fragment_conversation_list.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -38,24 +33,18 @@ import org.koin.core.component.KoinApiExtension
  *Description:
  */
 @KoinApiExtension
-open class ChatActivity : BaseActivity<ChatViewModel, ActivityChatBinding>(R.layout.activity_chat), MessagesListAdapter.OnLoadMoreListener {
+open class ChatActivity : BaseActivity<ChatViewModel, ActivityChatBinding>(R.layout.activity_chat) {
 
     companion object {
         var conversation: Conversation? = null
     }
 
-
-    private lateinit var messagesAdapter: MessagesListAdapter<ChatMessage>
-    private lateinit var imageLoader: ImageLoader
     override val mViewModel: ChatViewModel by viewModel()
 
     override fun initView() {
         EventBus.getDefault().register(this)
         mViewModel.uid = intent.getStringExtra(IntentKey.UID)!!
 
-        imageLoader = ImageLoader { imageView: ImageView?, url: String?, payload: Any? ->
-            imageView?.load(url)
-        }
 
         mViewModel.rightIv.set(R.drawable.contact_new_friend)
         mViewModel.showRightIv.set(true)
@@ -79,7 +68,7 @@ open class ChatActivity : BaseActivity<ChatViewModel, ActivityChatBinding>(R.lay
         conversation = NinjaApp.instance.conversations.get(mViewModel.uid)
         conversation?.let {
             it.messages.forEach {
-                messagesAdapter.addToStart(ChatMessageFactory.createChatMessage(it.user.id, it.user.name, it.user.avatar, true, it.text), true)
+//                messagesAdapter.addToStart(ChatMessageFactory.createChatMessage(it.user.id, it.user.name, it.user.avatar, true, it.text), true)
             }
 
         }
@@ -91,7 +80,7 @@ open class ChatActivity : BaseActivity<ChatViewModel, ActivityChatBinding>(R.lay
                 Androidlib.wsOnline()
                 setLineState()
                 swipeRefreshLayout.isRefreshing = false
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 Logger.d(e.message)
                 swipeRefreshLayout.isRefreshing = false
             }
@@ -103,7 +92,8 @@ open class ChatActivity : BaseActivity<ChatViewModel, ActivityChatBinding>(R.lay
         super.onResume()
         setLineState()
     }
-    fun setLineState(){
+
+    fun setLineState() {
         mViewModel.unline.value = !Androidlib.wsIsOnline()
     }
 
@@ -113,22 +103,20 @@ open class ChatActivity : BaseActivity<ChatViewModel, ActivityChatBinding>(R.lay
 
 
     private fun initAdapter() {
-        val holdersConfig = MessageHolders().setIncomingTextLayout(R.layout.item_custom_incoming_text_message).setOutcomingTextLayout(R.layout.item_custom_outcoming_text_message).setIncomingImageLayout(R.layout.item_custom_incoming_image_message).setOutcomingImageLayout(R.layout.item_custom_outcoming_image_message)
-        messagesAdapter = MessagesListAdapter<ChatMessage>(NinjaApp.instance.account.address, holdersConfig, imageLoader)
-        //        messagesAdapter.setOnMessageLongClickListener(this)
-        messagesAdapter.setLoadMoreListener(this)
-        messagesList.setAdapter(messagesAdapter)
+//        val holdersConfig = MessageHolders().setIncomingTextLayout(R.layout.item_custom_incoming_text_message).setOutcomingTextLayout(R.layout.item_custom_outcoming_text_message).setIncomingImageLayout(R.layout.item_custom_incoming_image_message).setOutcomingImageLayout(R.layout.item_custom_outcoming_image_message)
+//        messagesAdapter = MessagesListAdapter<ChatMessage>(NinjaApp.instance.account.address, holdersConfig, imageLoader)
+//        //        messagesAdapter.setOnMessageLongClickListener(this)
+//        messagesAdapter.setLoadMoreListener(this)
+//        messagesList.setAdapter(messagesAdapter)
     }
 
-    override fun onLoadMore(page: Int, totalItemsCount: Int) {
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun receiveNewConversation(eventConversation: EventReceiveConversation) {
         if (eventConversation.fromAddress == mViewModel.uid) {
             NinjaApp.instance.conversations[mViewModel.uid]!!.unreadNo = 0
             NinjaApp.instance.conversations[mViewModel.uid]!!.unreadNoStr = "0"
-            messagesAdapter.addToStart(ChatMessageFactory.createChatMessage(eventConversation.fromAddress, mViewModel.title.get()!!, eventConversation.chatMessage.user.avatar, true, eventConversation.chatMessage.text), true)
+//            messagesAdapter.addToStart(ChatMessageFactory.createChatMessage(eventConversation.fromAddress, mViewModel.title.get()!!, eventConversation.chatMessage.user.avatar, true, eventConversation.chatMessage.text), true)
         }
 
     }
@@ -144,7 +132,7 @@ open class ChatActivity : BaseActivity<ChatViewModel, ActivityChatBinding>(R.lay
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun sendConversation(eventSendConversation: EventSendConversation) {
-        messagesAdapter.addToStart(ChatMessageFactory.createChatMessage(NinjaApp.instance.account.address, "xiaoming", "https://img0.baidu.com/it/u=232786431,3173227563&fm=26&fmt=auto&gp=0.jpg", true, mViewModel.message.value!!), true)
+//        messagesAdapter.addToStart(ChatMessageFactory.createChatMessage(NinjaApp.instance.account.address, "xiaoming", "https://img0.baidu.com/it/u=232786431,3173227563&fm=26&fmt=auto&gp=0.jpg", true, mViewModel.message.value!!), true)
         mViewModel.message.value = ""
     }
 

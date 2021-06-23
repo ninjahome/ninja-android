@@ -1,5 +1,6 @@
 package com.ninjahome.ninja
 
+import com.ninjahome.ninja.utils.FileUtils
 import rxhttp.wrapper.annotation.DefaultDomain
 
 /**
@@ -18,7 +19,22 @@ object Constants {
     const val CODE_OPEN_ALBUM = 100
     const val CODE_OPEN_CAMERA = 101
 
+    const val RC_LOCAL_MEMORY_PERM = 123
+
     @DefaultDomain
     const val URL = "http://39.99.198.143:60998"
     const val TAG_NAME = "ninja"
+
+    //语音存放位置
+     val AUDIO_SAVE_DIR: String = FileUtils.getDir("audio")
+    const val DEFAULT_MAX_AUDIO_RECORD_TIME_SECOND = 60
+
+    //视频存放位置
+     val VIDEO_SAVE_DIR: String = FileUtils.getDir("video")
+
+    //照片存放位置
+     val PHOTO_SAVE_DIR: String = FileUtils.getDir("photo")
+
+    //头像保存位置
+     val HEADER_SAVE_DIR: String = FileUtils.getDir("header")
 }

@@ -12,7 +12,7 @@ import com.ninjahome.ninja.databinding.FragmentContactListBinding
 import com.ninjahome.ninja.event.EventRefreshContact
 import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.room.ContactDBManager
-import com.ninjahome.ninja.ui.activity.contact.detail.ContactDetailActivity
+import com.ninjahome.ninja.ui.activity.contact.ContactDetailActivity
 import com.ninjahome.ninja.ui.adapter.ContactAdapter
 import com.ninjahome.ninja.view.ContactsUtils
 import com.ninjahome.ninja.view.contacts.CustomItemDecoration

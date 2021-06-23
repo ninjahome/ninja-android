@@ -1,3 +1,2 @@
-include ':golib'
-include ':app',':lib','chatkit'
+include ':golib',':app',':lib','audiolib','cameralib'
 rootProject.name = "Ninja"

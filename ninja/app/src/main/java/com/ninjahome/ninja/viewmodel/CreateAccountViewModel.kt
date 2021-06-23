@@ -57,8 +57,8 @@ class CreateAccountViewModel : BaseViewModel(), KoinComponent {
 
     private fun createAccount() {
         rxLifeScope.launch({
-            val account = model.createAccount(password.value!!)
             Androidlib.wsOffline()
+            val account = model.createAccount(password.value!!)
             NinjaApp.instance.configApp()
             model.activeAccount(account, password.value!!)
             Logger.d(account)
@@ -103,8 +103,6 @@ class CreateAccountViewModel : BaseViewModel(), KoinComponent {
         userName = ""
         NinjaApp.instance.conversations.clear()
         EventBus.getDefault().post(EventChangeAccount())
-
-        NinjaApp.instance.configApp()
         startActivityAndFinish(EditUserInfoActivity::class.java)
 
     }

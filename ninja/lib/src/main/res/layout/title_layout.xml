@@ -60,7 +60,7 @@
             android:textSize="16sp"
             android:text="@{viewModel.rightText}"
             android:background="@android:color/transparent"
-            android:gravity="center_vertical"
+            android:gravity="center"
             isVisible="@{viewModel.showRightText}"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_width="wrap_content"

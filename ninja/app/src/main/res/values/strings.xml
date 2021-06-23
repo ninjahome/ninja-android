@@ -31,9 +31,31 @@
     <string name="input_send_message">请输入发送内容</string>
     <string name="main_click_exit_application">再次点击退出应用</string>
     <string name="send_error">发送失败</string>
+    <string name="no_support_msg_type">不支持的消息类型</string>
 
     <!--  conversation  -->
     <string name="conversation_unline_tip">离线状态，下拉更新状态</string>
+    <string name="please_to_talk">按住 说话</string>
+    <string name="shot">拍摄</string>
+    <string name="location">位置</string>
+    <string name="red_pack">红包</string>
+    <string name="wx_red_pack">微信红包</string>
+    <string name="file_out_of_date">文件已过期</string>
+    <string name="SET_TEXT_TYPING_TITLE">对方正在输入</string>
+    <string name="SET_VOICE_TYPING_TITLE">对方正在讲话</string>
+    <string name="album">相册</string>
+    <string name="search">search</string>
+
+    <string name="voice_rec">手指上滑，取消发送</string>
+    <string name="voice_cancel">松开手指，取消发送</string>
+    <string name="voice_short">录音时间太短</string>
+    <string name="voice_failure">录音失败！</string>
+    <string name="send_audio_fail">发送语音失败，文件长度为0或语音权限没有开启</string>
+    <string name="take_photo_send_user_name">发送给：</string>
+    <string name="rationale_extra_write">需要申请读写权限和麦克风权限</string>
+    <string name="message_type_image">[图片]</string>
+    <string name="message_type_voice">[语音]</string>
+
     <!--    create account-->
     <string name="create_account_register">注册账号</string>
     <string name="create_account_input_password">请输入密码</string>

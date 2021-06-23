@@ -1,9 +1,11 @@
 package com.ninja.android.lib.viewadapter.view
 
+import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import androidx.databinding.BindingAdapter
 import com.ninja.android.lib.command.BindingCommand
+import com.ninja.android.lib.command.ResponseCommand
 import com.ninja.android.lib.utils.clickWithTrigger
 
 /**
@@ -74,3 +76,17 @@ fun isVisible(view: View, visibility: Boolean) {
         view.visibility = View.GONE
     }
 }
+
+    @BindingAdapter("onTouchCommand")
+   fun onTouchCommand(view:View, onTouchCommand : ResponseCommand<MotionEvent, Boolean>) {
+        view.setOnTouchListener(object: View.OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent): Boolean {
+                if (onTouchCommand != null) {
+                    onTouchCommand.execute(event)
+                    return false
+                }
+                return false
+            }
+
+        })
+    }

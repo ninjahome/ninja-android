@@ -9,5 +9,8 @@ object IntentKey {
     const val NAME = "name"
     const val EDIT_NAME = "edit_name"
     const val SHOW_IMPORT_DIALOG = "show_import_dialog"
+    const val URL = "url"
+    const val LOCATION_LAT = "location_lat"
+    const val LOCATION_LNG = "location_lng"
 
 }

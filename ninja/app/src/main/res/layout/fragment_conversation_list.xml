@@ -39,6 +39,7 @@
                 app:items="@{viewModel.items}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
         <TextView
             android:layout_width="0dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,6 +50,6 @@
             isVisible="@{viewModel.unline}"
             android:text="@string/conversation_unline_tip"
             app:layout_constraintTop_toBottomOf="@+id/titleLayout"
-            android:layout_height="30dp"/>
+            android:layout_height="30dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

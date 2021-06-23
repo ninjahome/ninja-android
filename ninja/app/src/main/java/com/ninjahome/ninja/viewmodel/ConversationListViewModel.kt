@@ -42,8 +42,8 @@ class ConversationListViewModel : BaseViewModel() {
     val refreshCommand = BindingCommand<Any>(object : BindingAction {
         override fun call() {
             rxLifeScope.launch {
-                withContext(Dispatchers.IO){
-                    if(!Androidlib.wsIsOnline()){
+                withContext(Dispatchers.IO) {
+                    if (!Androidlib.wsIsOnline()) {
                         Androidlib.wsOnline()
                     }
                 }
@@ -56,7 +56,7 @@ class ConversationListViewModel : BaseViewModel() {
 
     override fun clickRightIv() {
         super.clickRightIv()
-//        showToast("点击了+")
+        //        showToast("点击了+")
         //        startActivity(ChatActivity::class.java)
     }
 

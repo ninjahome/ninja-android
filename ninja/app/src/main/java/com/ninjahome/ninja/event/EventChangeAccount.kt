@@ -5,5 +5,4 @@ package com.ninjahome.ninja.event
  *Time:
  *Description:
  */
-class EventChangeAccount {
-}
+class EventChangeAccount {}

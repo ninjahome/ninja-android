@@ -1,7 +1,10 @@
 package com.ninjahome.ninja.ui.fragment.conversation
 
+import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
 import androidlib.Androidlib
+import androidlib.Androidlib.*
 import androidx.lifecycle.rxLifeScope
 import com.ninja.android.lib.base.BaseFragment
 import com.ninjahome.ninja.BR
@@ -9,15 +12,13 @@ import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.FragmentConversationListBinding
 import com.ninjahome.ninja.event.*
-import com.ninjahome.ninja.model.bean.ChatMessage
-import com.ninjahome.ninja.model.bean.Conversation
-import com.ninjahome.ninja.model.bean.TextData
-import com.ninjahome.ninja.model.bean.UnreadMessageItem
+import com.ninjahome.ninja.model.bean.*
 import com.ninjahome.ninja.room.ContactDBManager
-import com.ninjahome.ninja.utils.ChatMessageFactory
-import com.ninjahome.ninja.utils.fromJson
 import com.ninjahome.ninja.viewmodel.ConversationListViewModel
+import kotlinx.android.synthetic.main.activity_conversation.*
 import kotlinx.android.synthetic.main.fragment_conversation_list.*
+import kotlinx.android.synthetic.main.fragment_conversation_list.swipeRefreshLayout
+import okhttp3.internal.wait
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -30,8 +31,9 @@ import org.koin.core.component.KoinApiExtension
  *Description:
  */
 @KoinApiExtension
-class ConversationListFragment : BaseFragment<ConversationListViewModel, FragmentConversationListBinding>(R.layout.fragment_conversation_list) {
+class ConversationListFragment : BaseFragment<ConversationListViewModel, FragmentConversationListBinding>(R.layout.fragment_conversation_list), Handler.Callback {
     override val mViewModel: ConversationListViewModel by viewModel()
+    private val handler: Handler by lazy { Handler(Looper.getMainLooper(), this@ConversationListFragment) }
 
     override fun initView() {
         EventBus.getDefault().register(this)
@@ -45,13 +47,8 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
 
     override fun initObserve() {
         mViewModel.finishRefreshingEvent.observe(this) {
-            try {
-                Androidlib.wsOnline()
-                setLineState()
-                swipeRefreshLayout.isRefreshing = false
-            }catch (e:Exception){
-
-            }
+            setLineState()
+            swipeRefreshLayout.isRefreshing = false
 
         }
     }
@@ -66,18 +63,64 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
         super.onResume()
         setLineState()
     }
-    fun setLineState(){
-        mViewModel.unline.value = !Androidlib.wsIsOnline()
+
+    fun setLineState() {
+        handler.postDelayed({
+            mViewModel.unline.value = !Androidlib.wsIsOnline()
+        }, 1000)
+
     }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun receiveTextMessage(eventReceiveTextMessage: EventReceiveTextMessage) {
+        addAdapterData(eventReceiveTextMessage.fromAddress, eventReceiveTextMessage.textMessage, false)
+    }
+
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun receiveImageMessage(eventReceiveImageMessage: EventReceiveImageMessage) {
+        addAdapterData(eventReceiveImageMessage.fromAddress, eventReceiveImageMessage.imageMessage, false)
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun receiveVoiceMessage(eventReceiveVoiceMessage: EventReceiveVoiceMessage) {
+        addAdapterData(eventReceiveVoiceMessage.fromAddress, eventReceiveVoiceMessage.voiceMessage, false)
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun receiveLocationMessage(eventReceiveLocationMessage: EventReceiveLocationMessage) {
+        addAdapterData(eventReceiveLocationMessage.fromAddress, eventReceiveLocationMessage.locationMessage, false)
+    }
+
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun receiveNewConversation(eventConversation: EventReceiveConversation) {
-        addAdapterData(eventConversation.fromAddress, eventConversation.chatMessage, false)
+//        addAdapterData(eventConversation.fromAddress, eventConversation.chatMessage, false)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun sendConversation(eventSendConversation: EventSendConversation) {
-        addAdapterData(eventSendConversation.fromAddress, eventSendConversation.chatMessage, true)
+    fun sendTextMessage(eventSendTextMessage: EventSendTextMessage) {
+                addAdapterData(eventSendTextMessage.fromAddress, eventSendTextMessage.message, true)
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun sendImageMessage(eventSendImageMessage: EventSendImageMessage) {
+        addAdapterData(eventSendImageMessage.fromAddress, eventSendImageMessage.message, true)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun sendVoiceMessage(eventSendVoiceMessage: EventSendVoiceMessage) {
+        addAdapterData(eventSendVoiceMessage.fromAddress, eventSendVoiceMessage.message, true)
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun sendLocationMessage(eventSendLocationMessage: EventSendLocationMessage) {
+        addAdapterData(eventSendLocationMessage.fromAddress, eventSendLocationMessage.message, true)
+    }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun updateNickName(eventUpdateConversationNickName: EventUpdateConversationNickName) {
@@ -89,73 +132,57 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
         mViewModel.updateConversation()
     }
 
-    private fun addAdapterData(fromAddress: String, chatMessage: ChatMessage, isSend: Boolean) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun offline(eventOffline: EventOffline) {
+        setLineState()
+    }
+
+
+    private fun addAdapterData(fromAddress: String, message: Message, isSend: Boolean) {
+        message.direction = if (isSend) Message.MessageDirection.SEND else Message.MessageDirection.RECEIVE
 
         if (NinjaApp.instance.conversations.contains(fromAddress)) {
-            NinjaApp.instance.conversations.get(fromAddress)!!.lastMessage = chatMessage
-            NinjaApp.instance.conversations.get(fromAddress)!!.messages.add(chatMessage)
+
+            NinjaApp.instance.conversations[fromAddress]!!.messages.add(message)
+            NinjaApp.instance.conversations[fromAddress]!!.lastMessage = message
+
             if (isSend) {
-                NinjaApp.instance.conversations.get(fromAddress)!!.unreadNo = 0
-                NinjaApp.instance.conversations.get(fromAddress)!!.unreadNoStr = "0"
+                NinjaApp.instance.conversations[fromAddress]!!.unreadNo = 0
+                NinjaApp.instance.conversations[fromAddress]!!.unreadNoStr = "0"
             } else {
-                NinjaApp.instance.conversations.get(fromAddress)!!.unreadNo = NinjaApp.instance.conversations.get(fromAddress)!!.unreadNo + 1
-                NinjaApp.instance.conversations.get(fromAddress)!!.unreadNoStr = (NinjaApp.instance.conversations.get(fromAddress)!!.unreadNo).toString()
+                NinjaApp.instance.conversations[fromAddress]!!.unreadNo = NinjaApp.instance.conversations[fromAddress]!!.unreadNo + 1
+                NinjaApp.instance.conversations[fromAddress]!!.unreadNoStr = (NinjaApp.instance.conversations[fromAddress]!!.unreadNo).toString()
             }
             mViewModel.updateConversation()
         } else {
-            val chatMessages = mutableListOf<ChatMessage>()
-            chatMessages.add(chatMessage)
-            rxLifeScope.launch {
+            val chatMessages = mutableListOf<Message>()
+            chatMessages.add(message)
+            var unreadNo = 1
+            if (isSend) {
+                unreadNo = 0
+            }
+            val conversation = Conversation(fromAddress, chatMessages, message, unreadNo, unreadNo.toString(), System.currentTimeMillis(), fromAddress, "https://img0.baidu.com/it/u=1950977217,4151841346&fm=26&fmt=auto&gp=0.jpg")
+            NinjaApp.instance.conversations[fromAddress] = conversation
+           rxLifeScope.launch {
                 var nickName = ContactDBManager.queryNickNameByUID(fromAddress)
                 if (TextUtils.isEmpty(nickName)) {
                     nickName = fromAddress
                 }
-                var unreadNo = 1
-                if (isSend) {
-                    unreadNo = 0
-                }
-                val conversation = Conversation(fromAddress, chatMessages, chatMessage, unreadNo, unreadNo.toString(), System.currentTimeMillis(), nickName!!, "https://img0.baidu.com/it/u=1950977217,4151841346&fm=26&fmt=auto&gp=0.jpg")
-                NinjaApp.instance.conversations.put(fromAddress, conversation)
+               conversation.nickName = nickName!!
                 mViewModel.updateConversation()
             }
 
         }
-
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
-    fun receiveUnReadMessage(eventUnReadMessages: EventUnReadMessages) {
-        val unreadMessageItems = eventUnReadMessages.unReadMessagesJson.fromJson<List<UnreadMessageItem>>()
-        unreadMessageItems?.forEach {
-            val textData: TextData = String(Androidlib.unmarshalGoByte(it.payLoad)).fromJson()!!
-            val chatMessage = ChatMessageFactory.createChatMessage("0", it.from, "https://img0.baidu.com/it/u=1950977217,4151841346&fm=26&fmt=auto&gp=0.jpg", true, textData.data)
-            if (NinjaApp.instance.conversations.contains(it.from)) {
-                NinjaApp.instance.conversations.get(it.from)!!.lastMessage = chatMessage
-                NinjaApp.instance.conversations.get(it.from)!!.unreadNo = NinjaApp.instance.conversations.get(it.from)!!.unreadNo + 1
-                NinjaApp.instance.conversations.get(it.from)!!.unreadNoStr = NinjaApp.instance.conversations.get(it.from)!!.unreadNo.toString()
-                NinjaApp.instance.conversations.get(it.from)!!.messages.add(chatMessage)
-            } else {
-                val chatMessages = mutableListOf<ChatMessage>()
-                chatMessages.add(chatMessage)
-                rxLifeScope.launch {
-                    var nickName = ContactDBManager.queryNickNameByUID(it.from)
-                    if (TextUtils.isEmpty(nickName)) {
-                        nickName = it.from
-                    }
-                    val conversation = Conversation(it.from, chatMessages, chatMessage, 1, "1", System.currentTimeMillis(), it.from)
-                    NinjaApp.instance.conversations.put(it.from, conversation)
-                }
-
-            }
-        }
-
-        mViewModel.updateConversation()
-
-    }
 
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
+    }
+
+    override fun handleMessage(msg: android.os.Message): Boolean {
+        return false
     }
 
 }

@@ -9,7 +9,7 @@ import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivitySearchContactBinding
-import com.ninjahome.ninja.ui.activity.contact.addcontact.AddContactActivity
+import com.ninjahome.ninja.ui.activity.contact.AddContactActivity
 import com.ninjahome.ninja.ui.activity.scan.ScanActivity
 import com.ninjahome.ninja.viewmodel.SearchContactViewModel
 import kotlinx.android.synthetic.main.activity_search_contact.*
