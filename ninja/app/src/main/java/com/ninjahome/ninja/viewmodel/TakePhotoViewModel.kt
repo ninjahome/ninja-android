@@ -13,7 +13,7 @@ import com.ninjahome.ninja.R
  *Time:
  *Description:
  */
-class TakePhotoViewModel:BaseViewModel() {
+class TakePhotoViewModel : BaseViewModel() {
     val backEvent = SingleLiveEvent<Any>()
     val sendEvent = SingleLiveEvent<Any>()
     val sendUserName = MutableLiveData<String>(context().getString(R.string.take_photo_send_user_name))

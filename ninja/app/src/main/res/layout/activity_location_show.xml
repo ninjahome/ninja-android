@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.ninjahome.ninja.viewmodel.LocationShowViewModel" />
@@ -11,8 +12,10 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <include layout="@layout/title_layout"
-            app:viewModel="@{viewModel}"/>
+
+        <include
+            layout="@layout/title_layout"
+            app:viewModel="@{viewModel}" />
 
         <com.tencent.tencentmap.mapsdk.map.MapView
             android:id="@+id/map"
@@ -23,6 +26,7 @@
             android:layout_width="0dp"
             android:background="@drawable/bg_location_result"
             android:layout_height="0dp" />
+
         <View
             android:id="@+id/bottomView"
             app:layout_constraintStart_toStartOf="parent"
@@ -30,7 +34,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_width="0dp"
             android:background="@color/white"
-            android:layout_height="100dp"/>
+            android:layout_height="100dp" />
+
         <TextView
             android:id="@+id/addressTv"
             android:layout_width="0dp"
@@ -42,7 +47,8 @@
             android:textColor="@color/color_0c123d"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
         <ImageView
             android:layout_width="50dp"
             app:layout_constraintTop_toTopOf="@+id/bottomView"
@@ -52,6 +58,6 @@
             onClickCommand="@{viewModel.clickNavigation}"
             android:visibility="gone"
             android:background="@drawable/location_navigation"
-            android:layout_height="50dp"/>
+            android:layout_height="50dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

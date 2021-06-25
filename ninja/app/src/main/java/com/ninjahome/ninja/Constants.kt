@@ -27,15 +27,15 @@ object Constants {
     const val TAG_NAME = "ninja"
 
     //语音存放位置
-     val AUDIO_SAVE_DIR: String = FileUtils.getDir("audio")
+    val AUDIO_SAVE_DIR: String = FileUtils.getDir("audio")
     const val DEFAULT_MAX_AUDIO_RECORD_TIME_SECOND = 60
 
     //视频存放位置
-     val VIDEO_SAVE_DIR: String = FileUtils.getDir("video")
+    val VIDEO_SAVE_DIR: String = FileUtils.getDir("video")
 
     //照片存放位置
-     val PHOTO_SAVE_DIR: String = FileUtils.getDir("photo")
+    val PHOTO_SAVE_DIR: String = FileUtils.getDir("photo")
 
     //头像保存位置
-     val HEADER_SAVE_DIR: String = FileUtils.getDir("header")
+    val HEADER_SAVE_DIR: String = FileUtils.getDir("header")
 }

@@ -18,7 +18,6 @@ import com.ninjahome.ninja.viewmodel.ConversationListViewModel
 import kotlinx.android.synthetic.main.activity_conversation.*
 import kotlinx.android.synthetic.main.fragment_conversation_list.*
 import kotlinx.android.synthetic.main.fragment_conversation_list.swipeRefreshLayout
-import okhttp3.internal.wait
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -78,7 +77,6 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
     }
 
 
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun receiveImageMessage(eventReceiveImageMessage: EventReceiveImageMessage) {
         addAdapterData(eventReceiveImageMessage.fromAddress, eventReceiveImageMessage.imageMessage, false)
@@ -98,13 +96,8 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun receiveNewConversation(eventConversation: EventReceiveConversation) {
-//        addAdapterData(eventConversation.fromAddress, eventConversation.chatMessage, false)
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     fun sendTextMessage(eventSendTextMessage: EventSendTextMessage) {
-                addAdapterData(eventSendTextMessage.fromAddress, eventSendTextMessage.message, true)
+        addAdapterData(eventSendTextMessage.fromAddress, eventSendTextMessage.message, true)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -116,6 +109,7 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
     fun sendVoiceMessage(eventSendVoiceMessage: EventSendVoiceMessage) {
         addAdapterData(eventSendVoiceMessage.fromAddress, eventSendVoiceMessage.message, true)
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun sendLocationMessage(eventSendLocationMessage: EventSendLocationMessage) {
         addAdapterData(eventSendLocationMessage.fromAddress, eventSendLocationMessage.message, true)
@@ -163,12 +157,12 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
             }
             val conversation = Conversation(fromAddress, chatMessages, message, unreadNo, unreadNo.toString(), System.currentTimeMillis(), fromAddress, "https://img0.baidu.com/it/u=1950977217,4151841346&fm=26&fmt=auto&gp=0.jpg")
             NinjaApp.instance.conversations[fromAddress] = conversation
-           rxLifeScope.launch {
+            rxLifeScope.launch {
                 var nickName = ContactDBManager.queryNickNameByUID(fromAddress)
                 if (TextUtils.isEmpty(nickName)) {
                     nickName = fromAddress
                 }
-               conversation.nickName = nickName!!
+                conversation.nickName = nickName!!
                 mViewModel.updateConversation()
             }
 

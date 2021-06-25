@@ -8,7 +8,6 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.view.View
 import androidx.core.content.ContextCompat
 import com.cjt2325.cameralibrary.JCameraView
 import com.cjt2325.cameralibrary.listener.JCameraListener
@@ -33,14 +32,14 @@ import java.io.IOException
  *Time:
  *Description:
  */
-class TakePhotoActivity:BaseActivity<TakePhotoViewModel, ActivityTakePhotoBinding>(R.layout.activity_take_photo){
+class TakePhotoActivity : BaseActivity<TakePhotoViewModel, ActivityTakePhotoBinding>(R.layout.activity_take_photo) {
 
     val handler = Handler(Looper.getMainLooper())
     override val mViewModel: TakePhotoViewModel by viewModel()
 
     override fun initView() {
         val name = intent.getStringExtra(IntentKey.NAME)
-        mViewModel.sendUserName.value = mViewModel.sendUserName.value+name
+        mViewModel.sendUserName.value = mViewModel.sendUserName.value + name
         initPermission()
         cameraview.setSaveVideoPath(Environment.getExternalStorageDirectory().path)
         cameraview.setFeatures(JCameraView.BUTTON_STATE_ONLY_CAPTURE)
@@ -61,7 +60,7 @@ class TakePhotoActivity:BaseActivity<TakePhotoViewModel, ActivityTakePhotoBindin
             }
 
             override fun takePhoto() {
-                visible(sendTv,userAvatarIv)
+                visible(sendTv, userAvatarIv)
                 gone(userNameTv)
             }
 
@@ -79,7 +78,7 @@ class TakePhotoActivity:BaseActivity<TakePhotoViewModel, ActivityTakePhotoBindin
 
     @AfterPermissionGranted(Constants.CODE_OPEN_CAMERA)
     private fun initPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !== PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !== PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) !== PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !== PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !== PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) !== PackageManager.PERMISSION_GRANTED) {
             EasyPermissions.requestPermissions(this, getString(R.string.import_apply_album_permission), Constants.CODE_OPEN_CAMERA, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO)
         }
     }
@@ -93,24 +92,24 @@ class TakePhotoActivity:BaseActivity<TakePhotoViewModel, ActivityTakePhotoBindin
     }
 
     override fun initObserve() {
-        mViewModel.backEvent.observe(this){
-            if(cameraview.isTaked){
-                gone(sendTv,userAvatarIv)
+        mViewModel.backEvent.observe(this) {
+            if (cameraview.isTaked) {
+                gone(sendTv, userAvatarIv)
                 visible(userNameTv)
                 cameraview.resetScreen()
-            }else{
+            } else {
                 finish()
             }
         }
 
-        mViewModel.sendEvent.observe(this){
+        mViewModel.sendEvent.observe(this) {
             cameraview.confirm()
         }
     }
 
     override fun statusBarStyle(): Int = STATUSBAR_STYLE_WHITE
 
-    override fun initVariableId(): Int= BR.viewModel
+    override fun initVariableId(): Int = BR.viewModel
 
 
     fun saveBitmap(bm: Bitmap, dir: String?): String {

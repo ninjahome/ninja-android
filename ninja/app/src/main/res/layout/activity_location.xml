@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.ninjahome.ninja.viewmodel.LocationViewModel" />
@@ -15,8 +16,9 @@
         android:background="@color/transparent"
         android:orientation="vertical">
 
-        <include layout="@layout/title_layout"
-            app:viewModel="@{viewModel}"/>
+        <include
+            layout="@layout/title_layout"
+            app:viewModel="@{viewModel}" />
 
         <RelativeLayout
             android:id="@+id/rlMap"
@@ -64,6 +66,7 @@
                 android:background="@drawable/bg_search_location"
                 android:layout_height="48dp"
                 tools:ignore="ContentDescription" />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:text="@string/search"
@@ -74,7 +77,8 @@
                 app:layout_constraintEnd_toEndOf="@+id/searchIv"
                 app:layout_constraintBottom_toBottomOf="@+id/searchIv"
                 app:drawableLeftCompat="@drawable/location_search_icon"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
+
             <com.lqr.recyclerview.LQRRecyclerView
                 android:id="@+id/rvPOI"
                 android:layout_width="0dp"

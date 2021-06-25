@@ -7,7 +7,6 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.TypedValue
-import android.widget.ImageView
 import com.ninjahome.ninja.R
 
 /**
@@ -234,7 +233,7 @@ class BubbleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
             dy = (mDrawableRect!!.height() - mBitmapHeight * scale) * 0.5f
         }
         mShaderMatrix!!.setScale(scale, scale)
-        mShaderMatrix!!.postTranslate((dx + 0.5f) , (dy + 0.5f))
+        mShaderMatrix!!.postTranslate((dx + 0.5f), (dy + 0.5f))
         mBitmapShader!!.setLocalMatrix(mShaderMatrix)
     }
 

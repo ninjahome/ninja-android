@@ -145,11 +145,11 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                         }
                     }
                 })
-            }else if (message is LocationMessage) {
+            } else if (message is LocationMessage) {
                 val intent = Intent(this@ConversationActivity, LocationShowActivity::class.java)
-                intent.putExtra(IntentKey.LOCATION_LAT,message.lat)
-                intent.putExtra(IntentKey.LOCATION_LNG,message.lng)
-                intent.putExtra(IntentKey.LOCATION_ADDRESS,message.poi)
+                intent.putExtra(IntentKey.LOCATION_LAT, message.lat)
+                intent.putExtra(IntentKey.LOCATION_LNG, message.lng)
+                intent.putExtra(IntentKey.LOCATION_ADDRESS, message.poi)
                 startActivity(intent)
             }
         }
@@ -274,7 +274,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     private fun startTakePhotoActivity() {
         val intent = Intent(this, TakePhotoActivity::class.java)
-        intent.putExtra(IntentKey.NAME,mViewModel.title.get())
+        intent.putExtra(IntentKey.NAME, mViewModel.title.get())
         startActivityForResult(intent, REQUEST_TAKE_PHOTO)
     }
 
@@ -341,15 +341,14 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                     return@setOnEmotionButtonOnClickListener false
                 }
                 R.id.ivMore -> {
-                    handler.postDelayed(({
-                        rvMsg.smoothMoveToPosition((rvMsg.adapter?.itemCount ?: 0) - 1)
-                    }), 50)
+
                     etContent.clearFocus()
                     flEmotionView.visibility = View.GONE
                     hideEmotionLayout()
                     hideAudioButton()
-                    showMoreLayout()
-
+                    handler.postDelayed(({
+                        showMoreLayout()
+                    }), 50)
                     return@setOnEmotionButtonOnClickListener true
                 }
             }
@@ -555,7 +554,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             }
 
             override fun onAudioDBChanged(db: Int) {
-                timerTV.setText(String.format("%d\"", (System.currentTimeMillis() - startRecordTime) / 1000))
+                timerTV.text = String.format("%d\"", (System.currentTimeMillis() - startRecordTime) / 1000)
             }
         }
     }
@@ -569,15 +568,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun receiveNewConversation(eventConversation: EventReceiveConversation) {
-        if (eventConversation.fromAddress == mViewModel.uid) {
-            NinjaApp.instance.conversations[mViewModel.uid]!!.unreadNo = 0
-            NinjaApp.instance.conversations[mViewModel.uid]!!.unreadNoStr = "0"
-            rvMsg.smoothMoveToPosition((rvMsg.adapter?.itemCount ?: 1) - 1)
-        }
-
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun receiveTextMessage(eventReceiveTextMessage: EventReceiveTextMessage) {
@@ -587,6 +577,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         }
 
     }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun receiveImageMessage(eventReceiveImageMessage: EventReceiveImageMessage) {
@@ -616,6 +607,8 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     private fun notifyAdapter() {
         conversationAdapter.data.sortBy { message -> message.time }
         conversationAdapter.notifyDataSetChanged()
+        NinjaApp.instance.conversations[mViewModel.uid]!!.unreadNo = 0
+        NinjaApp.instance.conversations[mViewModel.uid]!!.unreadNoStr = "0"
         rvMsg.smoothMoveToPosition((rvMsg.adapter?.itemCount ?: 1) - 1)
     }
 

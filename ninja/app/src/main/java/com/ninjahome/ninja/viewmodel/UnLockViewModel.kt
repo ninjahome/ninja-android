@@ -1,7 +1,6 @@
 package com.ninjahome.ninja.viewmodel
 
 import android.text.TextUtils
-import androidlib.Androidlib
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.rxLifeScope
 import com.ninja.android.lib.base.BaseViewModel
@@ -17,11 +16,9 @@ import com.ninjahome.ninja.ui.activity.main.MainActivity
 import com.ninjahome.ninja.utils.AccountUtils
 import com.ninjahome.ninja.utils.fromJson
 import com.orhanobut.logger.Logger
-import kotlinx.coroutines.delay
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import kotlin.concurrent.thread
 
 /**
  *Author:Mr'x
@@ -55,8 +52,8 @@ class UnLockViewModel : BaseViewModel(), KoinComponent {
                 NinjaApp.instance.configApp()
                 model.openAccount(accountJson.value!!, password.value!!)
                 startActivityAndFinish(MainActivity::class.java)
-//                delay(1000)
-//                showToast(Androidlib.wsIsOnline().toString())
+                //                delay(1000)
+                //                showToast(Androidlib.wsIsOnline().toString())
                 dismissDialog()
             }, {
                 dismissDialog()

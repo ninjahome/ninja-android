@@ -19,21 +19,21 @@ import java.io.File
  *Time:
  *Description:
  */
-class ShowBigImageActivity:BaseActivity<ShowBigImageViewModel, ActivityShowBigImageBinding>(R.layout.activity_show_big_image) {
+class ShowBigImageActivity : BaseActivity<ShowBigImageViewModel, ActivityShowBigImageBinding>(R.layout.activity_show_big_image) {
     override val mViewModel: ShowBigImageViewModel by viewModel()
 
     override fun initView() {
-       val mUrl = intent.getStringExtra(IntentKey.URL)
-        if(TextUtils.isEmpty(mUrl)){
+        val mUrl = intent.getStringExtra(IntentKey.URL)
+        if (TextUtils.isEmpty(mUrl)) {
             finish()
         }
-        if(mUrl!!.startsWith("http")){
+        if (mUrl!!.startsWith("http")) {
             Glide.with(this).load(Uri.parse(mUrl)).placeholder(R.mipmap.default_image).into(pv)
-        }else{
+        } else {
             Glide.with(this).load(File(mUrl)).placeholder(R.mipmap.default_image).into(pv)
         }
 
-        pv.setOnClickListener{
+        pv.setOnClickListener {
             ActivityCompat.finishAfterTransition(this@ShowBigImageActivity)
         }
     }

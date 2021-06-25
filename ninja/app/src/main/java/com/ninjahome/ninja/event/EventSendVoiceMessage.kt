@@ -8,4 +8,4 @@ import com.ninjahome.ninja.model.bean.VoiceMessage
  *Time:
  *Description:
  */
-class EventSendVoiceMessage(var fromAddress: String, var toAddress: String,var message: VoiceMessage)
+class EventSendVoiceMessage(var fromAddress: String, var toAddress: String, var message: VoiceMessage)

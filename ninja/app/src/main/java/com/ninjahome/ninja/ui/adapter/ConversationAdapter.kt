@@ -102,36 +102,36 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
     }
 
     private fun setTime(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
-                val msgTime = item.time
-                if (position > 0) {
-                    val preMsg = mData.get(position - 1)
-                    val preMsgTime =preMsg.time
-                    if (msgTime - preMsgTime > (5 * 60 * 1000)) {
-                        helper.setViewVisibility(R.id.tvTime, View.VISIBLE).setText(R.id.tvTime, TimeUtils.getMsgFormatTime(msgTime))
-                    } else {
-                        helper.setViewVisibility(R.id.tvTime, View.GONE)
-                    }
-                } else {
-                    helper.setViewVisibility(R.id.tvTime, View.VISIBLE).setText(R.id.tvTime, TimeUtils.getMsgFormatTime(msgTime))
-                }
+        val msgTime = item.time
+        if (position > 0) {
+            val preMsg = mData.get(position - 1)
+            val preMsgTime = preMsg.time
+            if (msgTime - preMsgTime > (5 * 60 * 1000)) {
+                helper.setViewVisibility(R.id.tvTime, View.VISIBLE).setText(R.id.tvTime, TimeUtils.getMsgFormatTime(msgTime))
+            } else {
+                helper.setViewVisibility(R.id.tvTime, View.GONE)
+            }
+        } else {
+            helper.setViewVisibility(R.id.tvTime, View.VISIBLE).setText(R.id.tvTime, TimeUtils.getMsgFormatTime(msgTime))
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
-                val msg = mData.get(position)
-                val isSend = msg.direction == Message.MessageDirection.SEND
+        val msg = mData.get(position)
+        val isSend = msg.direction == Message.MessageDirection.SEND
 
-                if (msg is TextMessage) {
-                    return  if (isSend)  SEND_TEXT else RECEIVE_TEXT
-                }
-                if (msg is ImageMessage) {
-                    return  if (isSend) SEND_IMAGE else RECEIVE_IMAGE
-                }
-                if (msg is LocationMessage) {
-                    return if (isSend) SEND_LOCATION else RECEIVE_LOCATION
-                }
-                if (msg is VoiceMessage) {
-                    return if (isSend) SEND_VOICE else RECEIVE_VOICE
-                }
+        if (msg is TextMessage) {
+            return if (isSend) SEND_TEXT else RECEIVE_TEXT
+        }
+        if (msg is ImageMessage) {
+            return if (isSend) SEND_IMAGE else RECEIVE_IMAGE
+        }
+        if (msg is LocationMessage) {
+            return if (isSend) SEND_LOCATION else RECEIVE_LOCATION
+        }
+        if (msg is VoiceMessage) {
+            return if (isSend) SEND_VOICE else RECEIVE_VOICE
+        }
 
 
         return UNDEFINE_MSG

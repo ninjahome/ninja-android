@@ -1,6 +1,5 @@
 package com.ninjahome.ninja.event
 
-import com.ninjahome.ninja.model.bean.TextMessage
 import com.ninjahome.ninja.model.bean.VoiceMessage
 
 

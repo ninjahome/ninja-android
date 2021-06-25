@@ -152,7 +152,7 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
 
     fun sendLocation(locationMessage: LocationMessage) {
         rxLifeScope.launch {
-            model.sendLocationMessage(uid,locationMessage.lng,locationMessage.lat,locationMessage.poi)
+            model.sendLocationMessage(uid, locationMessage.lng, locationMessage.lat, locationMessage.poi)
             EventBus.getDefault().postSticky(EventSendLocationMessage(uid, NinjaApp.instance.account.address, locationMessage))
         }
 

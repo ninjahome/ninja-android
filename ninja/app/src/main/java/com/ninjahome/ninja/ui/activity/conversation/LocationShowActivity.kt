@@ -28,7 +28,7 @@ import pub.devrel.easypermissions.EasyPermissions
  *Time:
  *Description:
  */
-class LocationShowActivity:BaseActivity<LocationShowViewModel,ActivityLocationShowBinding>(R.layout.activity_location_show), TencentLocationListener , EasyPermissions.PermissionCallbacks{
+class LocationShowActivity : BaseActivity<LocationShowViewModel, ActivityLocationShowBinding>(R.layout.activity_location_show), TencentLocationListener, EasyPermissions.PermissionCallbacks {
     private lateinit var mLocationManager: TencentLocationManager
     private lateinit var mLocationRequest: TencentLocationRequest
     private lateinit var mTencentMap: TencentMap
@@ -58,7 +58,8 @@ class LocationShowActivity:BaseActivity<LocationShowViewModel,ActivityLocationSh
     private fun requestLocationUpdate() {
         //开启定位
         when (mLocationManager.requestLocationUpdates(mLocationRequest, this@LocationShowActivity)) {
-            0 -> {Logger.d("成功注册监听器")
+            0 -> {
+                Logger.d("成功注册监听器")
                 val lat = intent.getFloatExtra(IntentKey.LOCATION_LAT, 0.0f)
                 val lng = intent.getFloatExtra(IntentKey.LOCATION_LNG, 0.0f)
                 val locationAddress = intent.getStringExtra(IntentKey.LOCATION_ADDRESS)
@@ -100,9 +101,9 @@ class LocationShowActivity:BaseActivity<LocationShowViewModel,ActivityLocationSh
 
 
     private fun requestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !== PackageManager.PERMISSION_GRANTED ){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !== PackageManager.PERMISSION_GRANTED) {
             EasyPermissions.requestPermissions(this, getString(R.string.import_apply_location_permission), Constants.CODE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
-        }else{
+        } else {
             requestLocationUpdate()
         }
     }

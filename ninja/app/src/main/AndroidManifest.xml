@@ -89,9 +89,6 @@
         <activity
             android:name="com.ninjahome.ninja.ui.activity.scan.ScanActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ninjahome.ninja.ui.activity.chat.ChatActivity"
-            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.activity.unlock.UnLockActivity"
@@ -122,7 +119,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.conversation.ShowBigImageActivity"
-          android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.conversation.LocationSearchActivity"
             android:screenOrientation="portrait" />

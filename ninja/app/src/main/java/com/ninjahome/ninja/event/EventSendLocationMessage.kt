@@ -8,4 +8,4 @@ import com.ninjahome.ninja.model.bean.LocationMessage
  *Time:
  *Description:
  */
-class EventSendLocationMessage(var fromAddress: String, var toAddress: String, var message:LocationMessage)
+class EventSendLocationMessage(var fromAddress: String, var toAddress: String, var message: LocationMessage)

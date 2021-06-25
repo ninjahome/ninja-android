@@ -39,7 +39,7 @@ object FileUtils {
     /**
      * 获取缓存目录
      */
-    val cacheDir: String?
+    val cacheDir: String
         get() = getDir(CACHE_DIR)
 
     /**
@@ -482,26 +482,26 @@ object FileUtils {
     }
 
 
-     suspend fun saveImageToPath(root: String, payload:ByteArray):String {
-        val  path = root+System.currentTimeMillis()+"temp.png"
-        return  withContext(Dispatchers.IO){
-            val isSaved= writeFile(payload,path,false)
-            if(isSaved){
+    suspend fun saveImageToPath(root: String, payload: ByteArray): String {
+        val path = root + System.currentTimeMillis() + "temp.png"
+        return withContext(Dispatchers.IO) {
+            val isSaved = writeFile(payload, path, false)
+            if (isSaved) {
                 path
-            }else{
+            } else {
                 ""
             }
         }
 
     }
 
-     suspend fun saveVoiceToPath(root: String, payload:ByteArray):String {
-        val  path = root+System.currentTimeMillis()+"temp.wav"
-        return  withContext(Dispatchers.IO){
-            val isSaved= writeFile(payload,path,false)
-            if(isSaved){
+    suspend fun saveVoiceToPath(root: String, payload: ByteArray): String {
+        val path = root + System.currentTimeMillis() + "temp.wav"
+        return withContext(Dispatchers.IO) {
+            val isSaved = writeFile(payload, path, false)
+            if (isSaved) {
                 path
-            }else{
+            } else {
                 ""
             }
         }

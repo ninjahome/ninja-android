@@ -21,7 +21,7 @@ import org.android.agoo.xiaomi.MiPushRegistar
  */
 object PushHelper {
     private val TAG = PushHelper::class.java.simpleName
-    var token =""
+    var token = ""
 
     /**
      * 预初始化，已添加子进程中初始化sdk。

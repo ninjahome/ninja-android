@@ -7,12 +7,14 @@ import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityAddContactBinding
 import com.ninjahome.ninja.viewmodel.AddContactViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.component.KoinApiExtension
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
+@KoinApiExtension
 class AddContactActivity : BaseActivity<AddContactViewModel, ActivityAddContactBinding>(R.layout.activity_add_contact) {
     override val mViewModel: AddContactViewModel by viewModel()
 

@@ -8,4 +8,4 @@ import com.ninjahome.ninja.model.bean.ImageMessage
  *Time:
  *Description:
  */
-class EventSendImageMessage(var fromAddress: String, var toAddress: String,var message:ImageMessage)
+class EventSendImageMessage(var fromAddress: String, var toAddress: String, var message: ImageMessage)

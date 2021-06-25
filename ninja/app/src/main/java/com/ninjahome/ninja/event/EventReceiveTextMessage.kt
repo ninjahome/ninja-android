@@ -8,4 +8,4 @@ import com.ninjahome.ninja.model.bean.TextMessage
  *Time:
  *Description:
  */
-class EventReceiveTextMessage(var fromAddress: String, var toAddress: String,var textMessage: TextMessage)
+class EventReceiveTextMessage(var fromAddress: String, var toAddress: String, var textMessage: TextMessage)

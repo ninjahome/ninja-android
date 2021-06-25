@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.ninjahome.ninja.viewmodel.ShowBigImageViewModel" />
@@ -11,6 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <com.github.chrisbanes.photoview.PhotoView
             android:id="@+id/pv"
             android:layout_width="0dp"
@@ -20,8 +22,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_centerInParent="true"
-            android:transitionName="share"
-            />
+            android:transitionName="share" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

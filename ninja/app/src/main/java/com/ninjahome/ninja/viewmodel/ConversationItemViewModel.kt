@@ -7,7 +7,6 @@ import com.ninja.android.lib.command.BindingCommand
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.event.EventUpdateConversationNickName
 import com.ninjahome.ninja.model.bean.Conversation
-import com.ninjahome.ninja.ui.activity.chat.ChatActivity
 import com.ninjahome.ninja.ui.activity.conversation.ConversationActivity
 import org.greenrobot.eventbus.EventBus
 import org.koin.core.component.KoinApiExtension

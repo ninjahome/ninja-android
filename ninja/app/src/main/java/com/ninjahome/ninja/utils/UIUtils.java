@@ -2,12 +2,9 @@ package com.ninjahome.ninja.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Handler;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.widget.Toast;
-
 
 import com.ninjahome.ninja.NinjaApp;
 
@@ -30,7 +27,6 @@ public class UIUtils {
     public static int navbarheight;
 
 
-
     /**
      * 得到上下文
      */
@@ -40,7 +36,6 @@ public class UIUtils {
 
     /**
      * 得到resources对象
-     *
      */
     public static Resources getResource() {
         return getContext().getResources();
@@ -48,7 +43,6 @@ public class UIUtils {
 
     /**
      * 得到string.xml中的字符串
-     *
      */
     public static String getString(int resId) {
         return getResource().getString(resId);
@@ -56,7 +50,6 @@ public class UIUtils {
 
     /**
      * 得到string.xml中的字符串，带点位符
-     *
      */
     public static String getString(int id, Object... formatArgs) {
         return getResource().getString(id, formatArgs);
@@ -64,7 +57,6 @@ public class UIUtils {
 
     /**
      * 得到string.xml中和字符串数组
-     *
      */
     public static String[] getStringArr(int resId) {
         return getResource().getStringArray(resId);
@@ -72,7 +64,6 @@ public class UIUtils {
 
     /**
      * 得到colors.xml中的颜色
-     *
      */
     public static int getColor(int colorId) {
         return getResource().getColor(colorId);
@@ -80,13 +71,12 @@ public class UIUtils {
 
     /**
      * 得到应用程序的包名
-     *
      */
     public static String getPackageName() {
         return getContext().getPackageName();
     }
 
- 
+
     /**
      * dip-->px
      */

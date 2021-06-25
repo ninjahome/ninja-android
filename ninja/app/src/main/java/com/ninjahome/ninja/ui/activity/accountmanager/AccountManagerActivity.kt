@@ -8,10 +8,10 @@ import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityAccountManagerBinding
 import com.ninjahome.ninja.utils.PermissionUtils
 import com.ninjahome.ninja.viewmodel.AccountManagerViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinApiExtension
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  *Author:Mr'x

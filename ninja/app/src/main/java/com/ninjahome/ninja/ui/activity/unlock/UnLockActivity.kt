@@ -6,7 +6,6 @@ import com.ninja.android.lib.base.BaseActivity
 import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.Constants
-import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityUnlockBinding
 import com.ninjahome.ninja.utils.CryptographyManager

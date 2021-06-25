@@ -9,12 +9,14 @@ import com.ninjahome.ninja.databinding.ActivityEditUserInfoBinding
 import com.ninjahome.ninja.viewmodel.EditUserInfoViewModel
 import kotlinx.android.synthetic.main.activity_edit_user_info.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.component.KoinApiExtension
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
+@KoinApiExtension
 class EditUserInfoActivity : BaseActivity<EditUserInfoViewModel, ActivityEditUserInfoBinding>(R.layout.activity_edit_user_info) {
     override val mViewModel: EditUserInfoViewModel by viewModel()
 

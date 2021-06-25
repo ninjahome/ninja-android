@@ -43,8 +43,6 @@ import com.tencent.tencentmap.mapsdk.map.TencentMap
 import kotlinx.android.synthetic.main.activity_location.*
 import kotlinx.android.synthetic.main.activity_location.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import pub.devrel.easypermissions.AfterPermissionGranted
-import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import java.util.*
 import kotlin.math.abs
@@ -54,8 +52,8 @@ import kotlin.math.abs
  *Time:
  *Description:
  */
-class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding>(R.layout.activity_location), TencentLocationListener , EasyPermissions.PermissionCallbacks{
-    val CODE_REQUEST =200
+class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding>(R.layout.activity_location), TencentLocationListener, EasyPermissions.PermissionCallbacks {
+    val CODE_REQUEST = 200
     var maxHeight: Int = 300.dp.toInt()
     var minHeight: Int = 150.dp.toInt()
     private lateinit var mSensorManager: SensorManager
@@ -64,8 +62,8 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
     private lateinit var mLocationRequest: TencentLocationRequest
     private lateinit var mTencentMap: TencentMap
     private var myLocation: Marker? = null
-    var currentLat =0.0
-    var currentLng =0.0
+    var currentLat = 0.0
+    var currentLng = 0.0
     private var accuracy: Circle? = null
     private var mTencentSearch: TencentSearch? = null
     private val mData: MutableList<Geo2AddressResultObject.ReverseAddressResult.Poi> = mutableListOf()
@@ -119,14 +117,12 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
     }
 
 
-
-
     override fun initObserve() {
         mViewModel.sendEvent.observe(this) {
             if (mData.size > mSelectedPosi) {
                 val poi: Geo2AddressResultObject.ReverseAddressResult.Poi = mData[mSelectedPosi]
                 val data = Intent()
-                val locationData = LocationData(poi.location.lat, poi.location.lng,"${ poi.title}(${poi.address})", getMapUrl(poi.location.lat, poi.location.lng))
+                val locationData = LocationData(poi.location.lat, poi.location.lng, "${poi.title}(${poi.address})", getMapUrl(poi.location.lat, poi.location.lng))
                 data.putExtra("location", locationData)
                 setResult(RESULT_OK, data)
                 finish()
@@ -148,10 +144,10 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
             }
         }
 
-        mViewModel.startLocationSearchEvent.observe(this){
+        mViewModel.startLocationSearchEvent.observe(this) {
             val intent = Intent(this, LocationSearchActivity::class.java)
-            intent.putExtra(IntentKey.LOCATION_LAT,currentLat)
-            intent.putExtra(IntentKey.LOCATION_LNG,currentLng)
+            intent.putExtra(IntentKey.LOCATION_LAT, currentLat)
+            intent.putExtra(IntentKey.LOCATION_LNG, currentLng)
             startActivityForResult(intent, CODE_REQUEST)
         }
     }
@@ -184,7 +180,7 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
                 myLocation = mTencentMap.addMarker(MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.arm)).anchor(0.5f, 0.8f))
                 currentLat = tencentLocation.latitude
                 currentLng = tencentLocation.longitude
-                
+
             }
             if (accuracy == null) {
                 accuracy = mTencentMap.addCircle(CircleOptions().center(latLng).radius(tencentLocation.accuracy.toDouble()).fillColor(0x440000ff).strokeWidth(0f))
@@ -254,11 +250,11 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode!= RESULT_OK)return
+        if (resultCode != RESULT_OK) return
 
-        if(requestCode == CODE_REQUEST){
+        if (requestCode == CODE_REQUEST) {
             data?.let {
-                val lat =  it.getFloatExtra(IntentKey.LOCATION_LAT, 0.0f)
+                val lat = it.getFloatExtra(IntentKey.LOCATION_LAT, 0.0f)
                 val lng = it.getFloatExtra(IntentKey.LOCATION_LNG, 0.0f)
                 val latLng = LatLng(lat.toDouble(), lng.toDouble())
                 mTencentMap.animateTo(latLng)
@@ -271,9 +267,9 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
 
 
     private fun requestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !== PackageManager.PERMISSION_GRANTED ){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !== PackageManager.PERMISSION_GRANTED) {
             EasyPermissions.requestPermissions(this, getString(R.string.import_apply_location_permission), Constants.CODE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
-        }else{
+        } else {
             requestLocationUpdate()
         }
     }
@@ -289,6 +285,6 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
     }
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
-       finish()
+        finish()
     }
 }

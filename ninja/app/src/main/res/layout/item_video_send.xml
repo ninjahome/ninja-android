@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <!-- 显示时间 -->
 
@@ -22,7 +22,7 @@
         android:paddingTop="2dp"
         android:text="下午 5点"
         android:textColor="#fff"
-        android:textSize="12sp"/>
+        android:textSize="12sp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -49,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="重试"/>
+                android:text="重试" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/ivError"
@@ -57,7 +57,7 @@
                 android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
-                android:src="@drawable/img_error"/>
+                android:src="@drawable/img_error" />
         </LinearLayout>
 
         <LinearLayout
@@ -73,7 +73,7 @@
                 android:layout_marginEnd="10dp"
                 android:textColor="#666666"
                 android:textSize="12sp"
-                android:visibility="visible"/>
+                android:visibility="visible" />
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -95,8 +95,7 @@
                     app:bubble_arrowTop="20dp"
                     app:bubble_arrowWidth="8dp"
                     app:bubble_showShadow="false"
-                    app:bubble_showText="false"
-                    />
+                    app:bubble_showText="false" />
 
                 <com.ninjahome.ninja.view.CircularProgressBar
                     android:id="@+id/cpbLoading"
@@ -104,8 +103,7 @@
                     android:layout_height="30dp"
                     android:layout_centerInParent="true"
                     android:layout_marginStart="41dp"
-                    android:visibility="gone"
-                    />
+                    android:visibility="gone" />
 
                 <ImageView
                     android:id="@+id/ivPlay"
@@ -127,7 +125,7 @@
             android:layout_height="40dp"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:src="@drawable/logo"/>
+            android:src="@drawable/logo" />
     </LinearLayout>
 
 </LinearLayout>

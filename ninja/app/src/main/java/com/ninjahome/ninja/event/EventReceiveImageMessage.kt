@@ -1,7 +1,6 @@
 package com.ninjahome.ninja.event
 
 import com.ninjahome.ninja.model.bean.ImageMessage
-import com.ninjahome.ninja.model.bean.TextMessage
 
 
 /**

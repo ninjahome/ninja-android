@@ -88,7 +88,6 @@ class NinjaApp : BaseApplication() {
             viewModel { ApplyListViewModel() }
             viewModel { SearchContactViewModel() }
             viewModel { ScanViewModel() }
-            viewModel { ChatViewModel() }
             viewModel { ShowIDQRCodeViewModel() }
             viewModel { UnLockViewModel() }
             viewModel { AddContactViewModel() }
@@ -125,7 +124,7 @@ class NinjaApp : BaseApplication() {
             }
 
             override fun locationMessage(from: String, to: String, lng: Float, lat: Float, name: String, time: Long) {
-               val locationMessage = LocationMessage(Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED,time*1000,lat,lng,name)
+                val locationMessage = LocationMessage(Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, lat, lng, name)
                 EventBus.getDefault().postSticky(EventReceiveLocationMessage(from, to, locationMessage))
             }
 

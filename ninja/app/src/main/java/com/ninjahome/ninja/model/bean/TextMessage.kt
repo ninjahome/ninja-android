@@ -5,4 +5,4 @@ package com.ninjahome.ninja.model.bean
  *Time:
  *Description:
  */
-class TextMessage(direction: MessageDirection, status:SentStatus, time: Long, data:String):Message(direction,status,time,Type.TEXT,data.toByteArray(),data)
+class TextMessage(direction: MessageDirection, status: SentStatus, time: Long, data: String) : Message(direction, status, time, Type.TEXT, data.toByteArray(), data)

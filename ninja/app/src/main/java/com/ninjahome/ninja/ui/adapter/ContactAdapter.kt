@@ -59,11 +59,9 @@ class ContactAdapter(private val mContext: Context) : RecyclerView.Adapter<MyRec
                 it.clickItem(position, contact)
             }
         }
-        if (contact != null) {
-            holder.tv_name.text = contact.nickName
-            val drawable = mDrawableBuilder.build(contact.nickName[0].toString(), mColorGenerator.getColor(contact.nickName))
-            holder.iv_img.setImageDrawable(drawable)
-        }
+        holder.tv_name.text = contact.nickName
+        val drawable = mDrawableBuilder.build(contact.nickName[0].toString(), mColorGenerator.getColor(contact.nickName))
+        holder.iv_img.setImageDrawable(drawable)
     }
 
     override fun getItemCount(): Int {

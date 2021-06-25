@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.ninjahome.ninja.viewmodel.LocationSearchViewModel" />
@@ -12,6 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <EditText
             android:id="@+id/contactIdEt"
             android:layout_width="0dp"

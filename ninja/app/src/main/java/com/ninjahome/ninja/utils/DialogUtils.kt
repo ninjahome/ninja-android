@@ -3,7 +3,6 @@ package com.ninjahome.ninja.utils
 import androidx.appcompat.app.AppCompatActivity
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
-import com.lxj.xpopup.enums.PopupPosition
 import com.lxj.xpopup.enums.PopupType
 import com.lxj.xpopup.interfaces.OnCancelListener
 import com.lxj.xpopup.interfaces.OnConfirmListener
@@ -29,7 +28,7 @@ object DialogUtils {
         }
 
         override fun onShow(popupView: BasePopupView) {
-            Logger.d( "onShow")
+            Logger.d("onShow")
         }
 
         override fun onDismiss(popupView: BasePopupView) {
@@ -37,7 +36,7 @@ object DialogUtils {
         }
 
         override fun beforeDismiss(popupView: BasePopupView) {
-            Logger.d( "准备消失的时候执行")
+            Logger.d("准备消失的时候执行")
         }
 
         //如果你自己想拦截返回按键事件，则重写这个方法，返回true即可

@@ -7,4 +7,4 @@ import com.ninja.android.lib.base.BaseViewModel
  *Time:
  *Description:
  */
-class ShowBigImageViewModel:BaseViewModel() {}
+class ShowBigImageViewModel : BaseViewModel() {}

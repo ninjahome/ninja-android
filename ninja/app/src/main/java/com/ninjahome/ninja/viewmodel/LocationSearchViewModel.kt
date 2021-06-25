@@ -6,13 +6,11 @@ import com.ninja.android.lib.base.BaseViewModel
 import com.ninja.android.lib.command.BindingAction
 import com.ninja.android.lib.command.BindingCommand
 import com.ninja.android.lib.command.BindingConsumer
-import com.ninja.android.lib.command.BindingFunction
 import com.ninja.android.lib.event.SingleLiveEvent
 import com.ninja.android.lib.provider.context
 import com.orhanobut.logger.Logger
 import com.tencent.lbssearch.TencentSearch
 import com.tencent.lbssearch.`object`.param.SuggestionParam
-import com.tencent.lbssearch.`object`.result.SearchResultObject
 import com.tencent.lbssearch.`object`.result.SuggestionResultObject
 import com.tencent.lbssearch.httpresponse.BaseObject
 import com.tencent.lbssearch.httpresponse.HttpResponseListener
@@ -38,14 +36,15 @@ class LocationSearchViewModel : BaseViewModel() {
     val changeAddress = BindingCommand(bindConsumer = object : BindingConsumer<String> {
 
         override fun call(t: String) {
-            if(!TextUtils.isEmpty(t) && t.length>1){
+            if (!TextUtils.isEmpty(t) && t.length > 1) {
                 searchAddress()
-            }else{
+            } else {
                 suggestionDatas.clear()
                 searchSuccessEvent.call()
             }
         }
     })
+
     fun searchAddress() {
         val tencentSearch = TencentSearch(context())
         val suggestionParam = SuggestionParam()
@@ -66,7 +65,6 @@ class LocationSearchViewModel : BaseViewModel() {
             }
         })
     }
-
 
 
 }
