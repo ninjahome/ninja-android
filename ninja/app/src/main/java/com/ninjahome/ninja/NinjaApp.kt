@@ -99,6 +99,7 @@ class NinjaApp : BaseApplication() {
             viewModel { LocationViewModel() }
             viewModel { ShowBigImageViewModel() }
             viewModel { LocationSearchViewModel() }
+            viewModel { LocationShowViewModel() }
 
             single { UnlockModel() }
             single { CreateAccountModel() }
@@ -121,12 +122,10 @@ class NinjaApp : BaseApplication() {
                     imageMessage.localUri = FileUtils.saveImageToPath(Constants.PHOTO_SAVE_DIR, payload)
                     EventBus.getDefault().postSticky(EventReceiveImageMessage(from, to, imageMessage))
                 }
-
-
             }
 
             override fun locationMessage(from: String, to: String, lng: Float, lat: Float, name: String, time: Long) {
-               val locationMessage = LocationMessage(Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED,time,lng,lat,name)
+               val locationMessage = LocationMessage(Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED,time*1000,lat,lng,name)
                 EventBus.getDefault().postSticky(EventReceiveLocationMessage(from, to, locationMessage))
             }
 

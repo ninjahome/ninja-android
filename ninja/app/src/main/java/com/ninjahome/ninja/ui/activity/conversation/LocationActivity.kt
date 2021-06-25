@@ -126,7 +126,7 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
             if (mData.size > mSelectedPosi) {
                 val poi: Geo2AddressResultObject.ReverseAddressResult.Poi = mData[mSelectedPosi]
                 val data = Intent()
-                val locationData = LocationData(poi.location.lat, poi.location.lng, poi.address+poi.title, getMapUrl(poi.location.lat, poi.location.lng))
+                val locationData = LocationData(poi.location.lat, poi.location.lng,"${ poi.title}(${poi.address})", getMapUrl(poi.location.lat, poi.location.lng))
                 data.putExtra("location", locationData)
                 setResult(RESULT_OK, data)
                 finish()
@@ -193,7 +193,7 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
             accuracy!!.center = latLng
             accuracy!!.radius = tencentLocation.accuracy.toDouble()
             mTencentMap.animateTo(latLng)
-            mTencentMap.setZoom(16)
+            mTencentMap.setZoom(17)
             //取消定位
             mLocationManager.removeUpdates(this@LocationActivity)
         } else {

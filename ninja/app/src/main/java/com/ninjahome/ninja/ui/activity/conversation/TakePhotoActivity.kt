@@ -15,6 +15,7 @@ import com.cjt2325.cameralibrary.listener.JCameraListener
 import com.ninja.android.lib.base.BaseActivity
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.Constants
+import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityTakePhotoBinding
 import com.ninjahome.ninja.viewmodel.TakePhotoViewModel
@@ -38,8 +39,9 @@ class TakePhotoActivity:BaseActivity<TakePhotoViewModel, ActivityTakePhotoBindin
     override val mViewModel: TakePhotoViewModel by viewModel()
 
     override fun initView() {
+        val name = intent.getStringExtra(IntentKey.NAME)
+        mViewModel.sendUserName.value = mViewModel.sendUserName.value+name
         initPermission()
-        //(0.0.7+)设置视频保存路径（如果不设置默认为Environment.getExternalStorageDirectory().getPath()）
         cameraview.setSaveVideoPath(Environment.getExternalStorageDirectory().path)
         cameraview.setFeatures(JCameraView.BUTTON_STATE_ONLY_CAPTURE)
         //设置小视频保存路径

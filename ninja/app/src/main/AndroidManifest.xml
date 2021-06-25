@@ -126,6 +126,9 @@
         <activity
             android:name=".ui.activity.conversation.LocationSearchActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.conversation.LocationShowActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="android.max_aspect"

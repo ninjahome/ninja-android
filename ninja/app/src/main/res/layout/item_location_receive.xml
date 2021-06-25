@@ -89,7 +89,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="90dp"
                         android:maxWidth="240dp"
-                        android:scaleType="fitXY"
+                        android:scaleType="centerCrop"
                         tools:ignore="ContentDescription" />
                 </LinearLayout>
 

@@ -146,7 +146,11 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                     }
                 })
             }else if (message is LocationMessage) {
-
+                val intent = Intent(this@ConversationActivity, LocationShowActivity::class.java)
+                intent.putExtra(IntentKey.LOCATION_LAT,message.lat)
+                intent.putExtra(IntentKey.LOCATION_LNG,message.lng)
+                intent.putExtra(IntentKey.LOCATION_ADDRESS,message.poi)
+                startActivity(intent)
             }
         }
         initAudioRecordManager()
@@ -270,6 +274,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     private fun startTakePhotoActivity() {
         val intent = Intent(this, TakePhotoActivity::class.java)
+        intent.putExtra(IntentKey.NAME,mViewModel.title.get())
         startActivityForResult(intent, REQUEST_TAKE_PHOTO)
     }
 

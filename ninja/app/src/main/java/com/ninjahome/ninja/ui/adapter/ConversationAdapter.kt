@@ -42,7 +42,7 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
         } else if (item is LocationMessage) {
             helper.setText(R.id.tvTitle, item.poi)
             val ivLocation = helper.getView<ImageView>(R.id.ivLocation)
-            Glide.with(mContext).load("http://st.map.qq.com/api?size=708*270&center=${item.lng},${item.lat}&zoom=17&referer=weixin").placeholder(R.drawable.default_location).centerCrop().into(ivLocation)
+            Glide.with(mContext).load("http://st.map.qq.com/api?size=708*270&center=${item.lng},${item.lat}&zoom=17&referer=weixin").centerCrop().into(ivLocation)
         } else if (item is VoiceMessage) {
             val increment = (UIUtils.getDisplayWidth() / 2 / Constants.DEFAULT_MAX_AUDIO_RECORD_TIME_SECOND * item.duration)
             val rlAudio = helper.setText(R.id.tvDuration, item.duration.toString() + "''").getView<RelativeLayout>(R.id.rlAudio)
@@ -50,51 +50,9 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
             params.width = (65.dp + UIUtils.dip2Px(increment.toInt())).toInt()
             rlAudio.layoutParams = params
         }
-        //        else if (item instanceof FileMessage) {
-        //            FileMessage fileMessage = (FileMessage) msgContent
-        //            if (MediaFileUtils.isImageFileType(fileMessage.getName())) {
-        //                ImageView ivPic = helper.getView(R.id.ivSticker)
-        //                Glide.with(mContext).load(fileMessage.getLocalPath() == null ? fileMessage.getMediaUrl() :
-        //                        fileMessage.getLocalPath()).placeholder(R.drawable.logo).error(R.mipmap.default_img_failed).centerCrop().into(ivPic)
-        //            } else if (MediaFileUtils.isVideoFileType(fileMessage.getName())) {
-        //                BubbleImageView bivPic = helper.getView(R.id.bivPic)
-        //                if (fileMessage.getLocalPath() != null && new File(fileMessage.getLocalPath().getPath()).exists()) {
-        //                    VideoThumbLoader.getInstance().showThumb(fileMessage.getLocalPath().getPath(), bivPic, 200, 200)
-        //                } else {
-        //                    bivPic.setImageResource(R.mipmap.img_video_default)
-        //                }
-        //            }
-        //        }
     }
 
     private fun setOnClick(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
-        //        helper.getView(R.id.llError).setOnClickListener(
-        //                v ->
-        //TODO 重新发送
-        //                RongIMClient.getInstance().deleteMessages(new int[]{item.getMessageId()}, new RongIMClient.ResultCallback<Boolean>() {
-        //                    @Override
-        //                    public void onSuccess(Boolean aBoolean) {
-        //                        mData.remove(position)
-        //                        mPresenter.setAdapter()
-        //                        MessageContent content = item.getContent()
-        //                        if (content instanceof TextMessage) {
-        //                            mPresenter.sendTextMsg(((TextMessage) content).getContent())
-        //                        } else if (content instanceof ImageMessage) {
-        //                            mPresenter.sendImgMsg(((ImageMessage) content).getThumUri(), ((ImageMessage) content).getLocalUri())
-        //                        } else if (content instanceof FileMessage) {
-        //                            mPresenter.sendFileMsg(new File(((FileMessage) content).getLocalPath().getPath()))
-        //                        } else if (content instanceof VoiceMessage) {
-        //                            VoiceMessage voiceMessage = (VoiceMessage) content
-        //                            mPresenter.sendAudioFile(voiceMessage.getUri(), voiceMessage.getDuration())
-        //                        }
-        //                    }
-        //
-        //                    @Override
-        //                    public void onError(RongIMClient.ErrorCode errorCode) {
-        //
-        //                    }
-        //                })
-        //        )
         helper.getView<View>(R.id.ivAvatar).setOnClickListener { v: View? -> }
     }
 
@@ -135,84 +93,12 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
                 helper.setViewVisibility(R.id.llError, View.GONE)
             }
         }
-        //        else if (msgContent instanceof FileMessage) {
-        //            BubbleImageView bivPic = helper.getView(R.id.bivPic)
-        //            FileMessage fileMessage = (FileMessage) msgContent
-        //            boolean isSend = item.getMessageDirection() == Message.MessageDirection.SEND ? true : false
-        //
-        //            if (MediaFileUtils.isImageFileType(fileMessage.getName())) {
-        //                if (isSend) {
-        //                    Message.SentStatus sentStatus = item.getSentStatus()
-        //                    if (sentStatus == Message.SentStatus.SENDING) {
-        //                    } else if (sentStatus == Message.SentStatus.FAILED) {
-        //                        helper.setViewVisibility(R.id.llError, View.VISIBLE)
-        //                    } else if (sentStatus == Message.SentStatus.SENT) {
-        //                        helper.setViewVisibility(R.id.llError, View.GONE)
-        //                    }
-        //                } else {
-        //                    if (bivPic != null) {
-        //                        bivPic.setProgressVisible(false)
-        //                        bivPic.showShadow(false)
-        //                    }
-        //                    helper.setViewVisibility(R.id.llError, View.GONE)
-        //                }
-        //            } else if (MediaFileUtils.isVideoFileType(fileMessage.getName())) {
-        //                CircularProgressBar cpbLoading = helper.getView(R.id.cpbLoading)
-        //                if (isSend) {
-        //                    Message.SentStatus sentStatus = item.getSentStatus()
-        //                    if (sentStatus == Message.SentStatus.SENDING || fileMessage.getLocalPath() == null || (fileMessage.getLocalPath() != null && !new File(fileMessage.getLocalPath().getPath()).exists())) {
-        //                        if (!TextUtils.isEmpty(item.getExtra())) {
-        //                            cpbLoading.setMax(100)
-        //                            cpbLoading.setProgress(Integer.valueOf(item.getExtra()))
-        //                        } else {
-        //                            cpbLoading.setMax(100)
-        //                            cpbLoading.setProgress(0)
-        //                        }
-        //                        helper.setViewVisibility(R.id.llError, View.GONE).setViewVisibility(R.id.cpbLoading, View.VISIBLE)
-        //                        bivPic.showShadow(true)
-        //                    } else if (sentStatus == Message.SentStatus.FAILED) {
-        //                        helper.setViewVisibility(R.id.llError, View.VISIBLE).setViewVisibility(R.id.cpbLoading, View.GONE)
-        //                        bivPic.showShadow(false)
-        //                    } else if (sentStatus == Message.SentStatus.SENT) {
-        //                        helper.setViewVisibility(R.id.llError, View.GONE).setViewVisibility(R.id.cpbLoading, View.GONE)
-        //                        bivPic.showShadow(false)
-        //                    }
-        //                } else {
-        //                    Message.ReceivedStatus receivedStatus = item.getReceivedStatus()
-        //                    if (receivedStatus.isDownload() || fileMessage.getLocalPath() != null) {
-        //                        helper.setViewVisibility(R.id.llError, View.GONE).setViewVisibility(R.id.cpbLoading, View.GONE)
-        //                        bivPic.showShadow(false)
-        //                    } else {
-        //                        if (!TextUtils.isEmpty(item.getExtra())) {
-        //                            cpbLoading.setMax(100)
-        //                            cpbLoading.setProgress(Integer.valueOf(item.getExtra()))
-        //                        } else {
-        //                            cpbLoading.setMax(100)
-        //                            cpbLoading.setProgress(0)
-        //                        }
-        //                        helper.setViewVisibility(R.id.llError, View.GONE).setViewVisibility(R.id.cpbLoading, View.VISIBLE)
-        //                        bivPic.showShadow(true)
-        //                    }
-        //                }
-        //            }
-        //        }
     }
 
     private fun setAvatar(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
-//                ImageView ivAvatar = helper.getView(R.id.ivAvatar)
-//                UserInfo userInfo = DBManager.getInstance().getUserInfo(item.getSenderUserId())
-//                if (userInfo != null) {
-//                    Glide.with(mContext).load(userInfo.getPortraitUri()).centerCrop().into(ivAvatar)
-//                }
     }
 
     private fun setName(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
-//                if (item.getConversationType() == Conversation.ConversationType.PRIVATE) {
-//                    helper.setViewVisibility(R.id.tvName, View.GONE)
-//                } else {
-//                    helper.setViewVisibility(R.id.tvName, View.GONE)
-//                            .setText(R.id.tvName, item.getContent().getUserInfo().getName())
-//                }
     }
 
     private fun setTime(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
@@ -240,14 +126,6 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
                 if (msg is ImageMessage) {
                     return  if (isSend) SEND_IMAGE else RECEIVE_IMAGE
                 }
-//                if (msg is FileMessage) {
-//                    FileMessage fileMessage = (FileMessage) msgContent
-//                    if (MediaFileUtils.isImageFileType(fileMessage.getName())) {
-//                        return isSend ? SEND_STICKER : RECEIVE_STICKER
-//                    } else if (MediaFileUtils.isVideoFileType(fileMessage.getName())) {
-//                        return isSend ? SEND_VIDEO : RECEIVE_VIDEO
-//                    }
-//                }
                 if (msg is LocationMessage) {
                     return if (isSend) SEND_LOCATION else RECEIVE_LOCATION
                 }

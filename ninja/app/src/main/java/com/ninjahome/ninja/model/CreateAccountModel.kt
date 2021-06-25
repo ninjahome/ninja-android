@@ -1,6 +1,7 @@
 package com.ninjahome.ninja.model
 
 import androidlib.Androidlib
+import com.ninjahome.ninja.push.PushHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -19,7 +20,7 @@ class CreateAccountModel {
 
     suspend fun activeAccount(accountJson: String, password: String) {
         return withContext(Dispatchers.IO) {
-            return@withContext Androidlib.activeWallet(accountJson, password)
+            return@withContext Androidlib.activeWallet(accountJson, password, PushHelper.token)
         }
     }
 

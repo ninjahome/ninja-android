@@ -21,6 +21,7 @@ import org.android.agoo.xiaomi.MiPushRegistar
  */
 object PushHelper {
     private val TAG = PushHelper::class.java.simpleName
+    var token =""
 
     /**
      * 预初始化，已添加子进程中初始化sdk。
@@ -71,6 +72,8 @@ object PushHelper {
             override fun onSuccess(deviceToken: String) {
                 //注册成功会返回deviceToken deviceToken是推送消息的唯一标志
                 Logger.i("deviceToken --> $deviceToken")
+                token = deviceToken
+
             }
 
             override fun onFailure(errCode: String, errDesc: String) {

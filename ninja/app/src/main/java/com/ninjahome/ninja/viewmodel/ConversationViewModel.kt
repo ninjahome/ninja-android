@@ -133,7 +133,6 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
             Logger.e("send error ${it.message}")
         })
 
-
     }
 
     fun sendAudio(audioPath: Uri, duration: Int) {
@@ -153,7 +152,7 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
 
     fun sendLocation(locationMessage: LocationMessage) {
         rxLifeScope.launch {
-            model.sendLocationMessage(uid,locationMessage.lat,locationMessage.lng,locationMessage.poi)
+            model.sendLocationMessage(uid,locationMessage.lng,locationMessage.lat,locationMessage.poi)
             EventBus.getDefault().postSticky(EventSendLocationMessage(uid, NinjaApp.instance.account.address, locationMessage))
         }
 
