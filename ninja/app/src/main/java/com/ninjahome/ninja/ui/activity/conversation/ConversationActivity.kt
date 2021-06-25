@@ -145,6 +145,8 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                         }
                     }
                 })
+            }else if (message is LocationMessage) {
+
             }
         }
         initAudioRecordManager()

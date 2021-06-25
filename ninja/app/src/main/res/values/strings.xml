@@ -26,6 +26,7 @@
     <string name="guide_import_album">相册</string>
     <string name="guide_import_camera">扫描二维码</string>
     <string name="import_apply_album_permission">申请读取相册权限</string>
+    <string name="import_apply_location_permission">申请定位权限</string>
     <string name="import_qr_error">忍者二维码不正确</string>
     <string name="send">发送</string>
     <string name="input_send_message">请输入发送内容</string>

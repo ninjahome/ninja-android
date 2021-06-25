@@ -1,6 +1,8 @@
 package com.ninjahome.ninja.ui.activity.conversation
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Handler
@@ -9,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.lqr.adapter.LQRAdapterForRecyclerView
 import com.lqr.adapter.LQRViewHolder
@@ -17,6 +20,7 @@ import com.lqr.adapter.OnItemClickListener
 import com.ninja.android.lib.base.BaseActivity
 import com.ninja.android.lib.utils.dp
 import com.ninjahome.ninja.BR
+import com.ninjahome.ninja.Constants
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityLocationBinding
@@ -39,6 +43,9 @@ import com.tencent.tencentmap.mapsdk.map.TencentMap
 import kotlinx.android.synthetic.main.activity_location.*
 import kotlinx.android.synthetic.main.activity_location.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import pub.devrel.easypermissions.AfterPermissionGranted
+import pub.devrel.easypermissions.AppSettingsDialog
+import pub.devrel.easypermissions.EasyPermissions
 import java.util.*
 import kotlin.math.abs
 
@@ -47,7 +54,7 @@ import kotlin.math.abs
  *Time:
  *Description:
  */
-class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding>(R.layout.activity_location), TencentLocationListener {
+class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding>(R.layout.activity_location), TencentLocationListener , EasyPermissions.PermissionCallbacks{
     val CODE_REQUEST =200
     var maxHeight: Int = 300.dp.toInt()
     var minHeight: Int = 150.dp.toInt()
@@ -93,10 +100,11 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
                 search(mTencentMap.mapCenter)
             }
         })
+        requestLocationPermission()
     }
 
     override fun initData() {
-        requestLocationUpdate()
+
         mAdapter = object : LQRAdapterForRecyclerView<Geo2AddressResultObject.ReverseAddressResult.Poi>(this, mData, R.layout.item_location_poi) {
             override fun convert(helper: LQRViewHolderForRecyclerView, item: Geo2AddressResultObject.ReverseAddressResult.Poi, position: Int) {
                 helper.setText(R.id.tvTitle, item.title).setText(R.id.tvDesc, "${UnitConversionUtils.m2Km(item._distance)} | ${item.address}").setViewVisibility(R.id.ivSelected, if (mSelectedPosi == position) View.VISIBLE else View.GONE)
@@ -111,12 +119,14 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
     }
 
 
+
+
     override fun initObserve() {
         mViewModel.sendEvent.observe(this) {
             if (mData.size > mSelectedPosi) {
                 val poi: Geo2AddressResultObject.ReverseAddressResult.Poi = mData[mSelectedPosi]
                 val data = Intent()
-                val locationData = LocationData(poi.location.lat, poi.location.lng, poi.title, getMapUrl(poi.location.lat, poi.location.lng))
+                val locationData = LocationData(poi.location.lat, poi.location.lng, poi.address+poi.title, getMapUrl(poi.location.lat, poi.location.lng))
                 data.putExtra("location", locationData)
                 setResult(RESULT_OK, data)
                 finish()
@@ -184,11 +194,10 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
             accuracy!!.radius = tencentLocation.accuracy.toDouble()
             mTencentMap.animateTo(latLng)
             mTencentMap.setZoom(16)
-            search(latLng)
             //取消定位
             mLocationManager.removeUpdates(this@LocationActivity)
         } else {
-            Logger.e("location failed:$i")
+            Logger.e("location failed:$s")
         }
     }
 
@@ -243,14 +252,14 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
     }
 
 
-    override fun onActivityReenter(resultCode: Int, data: Intent?) {
-        super.onActivityReenter(resultCode, data)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if(resultCode!= RESULT_OK)return
 
-        if(resultCode == CODE_REQUEST){
+        if(requestCode == CODE_REQUEST){
             data?.let {
                 val lat =  it.getFloatExtra(IntentKey.LOCATION_LAT, 0.0f)
-                val lng = it.getFloatExtra(IntentKey.LOCATION_LAT, 0.0f)
+                val lng = it.getFloatExtra(IntentKey.LOCATION_LNG, 0.0f)
                 val latLng = LatLng(lat.toDouble(), lng.toDouble())
                 mTencentMap.animateTo(latLng)
                 search(latLng)
@@ -258,5 +267,28 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
 
 
         }
+    }
+
+
+    private fun requestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !== PackageManager.PERMISSION_GRANTED ){
+            EasyPermissions.requestPermissions(this, getString(R.string.import_apply_location_permission), Constants.CODE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
+        }else{
+            requestLocationUpdate()
+        }
+    }
+
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
+        requestLocationUpdate()
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
+       finish()
     }
 }

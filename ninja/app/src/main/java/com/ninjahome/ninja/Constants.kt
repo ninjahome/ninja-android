@@ -18,6 +18,7 @@ object Constants {
 
     const val CODE_OPEN_ALBUM = 100
     const val CODE_OPEN_CAMERA = 101
+    const val CODE_LOCATION = 102
 
     const val RC_LOCAL_MEMORY_PERM = 123
 

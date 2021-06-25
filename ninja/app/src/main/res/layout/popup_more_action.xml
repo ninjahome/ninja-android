@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toStartOf="@+id/takePhotoTv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/shot"
+        android:text="@string/album"
         app:drawableTopCompat="@drawable/ic_func_pic" />
 
     <TextView
@@ -22,7 +22,8 @@
         style="@style/MoreActionTextViewStyle"
         app:drawableTopCompat="@drawable/ic_func_shot"
         app:layout_constraintEnd_toStartOf="@+id/locationTv"
-        android:text="@string/album"
+
+        android:text="@string/shot"
         app:layout_constraintStart_toEndOf="@+id/albumTv"
         app:layout_constraintTop_toTopOf="@+id/albumTv"
         />
