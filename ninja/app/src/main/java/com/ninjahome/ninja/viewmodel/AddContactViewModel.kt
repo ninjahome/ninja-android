@@ -7,12 +7,12 @@ import com.ninja.android.lib.base.BaseViewModel
 import com.ninja.android.lib.command.BindingAction
 import com.ninja.android.lib.command.BindingCommand
 import com.ninja.android.lib.provider.context
-import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.event.EventRefreshContact
 import com.ninjahome.ninja.event.EventUpdateConversationNickName
 import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.room.ContactDBManager
+import com.ninjahome.ninja.room.ConversationDBManager
 import com.ninjahome.ninja.utils.AccountUtils
 import com.orhanobut.logger.Logger
 import org.greenrobot.eventbus.EventBus
@@ -48,7 +48,12 @@ class AddContactViewModel : BaseViewModel() {
                     contact!!.uid = address.value!!
                     ContactDBManager.updateAccounts(contact!!)
                 }
-                NinjaApp.instance.conversations.get(contact!!.uid)?.let { it.nickName = contact!!.nickName }
+                val conversation = ConversationDBManager.queryByFrom(contact!!.uid)
+                conversation?.let {
+                    it.nickName = contact!!.nickName
+                    ConversationDBManager.updateConversations(it)
+                }
+
                 EventBus.getDefault().post(EventRefreshContact())
                 EventBus.getDefault().post(EventUpdateConversationNickName(contact!!.uid))
                 showToast(R.string.search_contact_save_success)

@@ -10,7 +10,7 @@ import kotlinx.coroutines.*
  *Description:
  */
 object ContactDBManager {
-    private val contactDao: ContactDao by lazy { ContactDB.getInstance(context()).contactDao() }
+    private val contactDao: ContactDao by lazy { NinjaDB.getInstance(context()).contactDao() }
 
     suspend fun all(): List<Contact>? {
         return withContext(Dispatchers.IO) {
@@ -48,6 +48,12 @@ object ContactDBManager {
     suspend fun delete(vararg contact: Contact) {
         withContext(Dispatchers.IO) {
             contactDao.delete(*contact)
+        }
+    }
+
+    suspend fun deleteAll() {
+        withContext(Dispatchers.IO) {
+            contactDao.deleteAll()
         }
     }
 }

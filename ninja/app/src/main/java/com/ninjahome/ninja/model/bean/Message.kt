@@ -1,11 +1,18 @@
 package com.ninjahome.ninja.model.bean
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.ninjahome.ninja.room.Converters
+
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
-open class Message(var direction: MessageDirection, var sentStatus: SentStatus, val time: Long, var type: Type, var data: ByteArray?, var des: String) {
+@Entity
+@TypeConverters(Converters::class)
+open class Message(@PrimaryKey(autoGenerate = true) var id: Int = 0,var conversationId:Long , var direction: MessageDirection, var sentStatus: SentStatus, val time: Long,var type: Type, var data: ByteArray = ByteArray(0), var msg: String = "", var unRead: Boolean = true, var uri: String = "", val lat: Float = 0.0f, var lng: Float = 0.0f, var locationAddress: String = "",var duration:Int=0) {
 
     enum class MessageDirection(val value: Int) {
         SEND(1), RECEIVE(2)

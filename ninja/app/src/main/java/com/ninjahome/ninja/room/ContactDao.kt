@@ -24,4 +24,7 @@ interface ContactDao {
     @Delete
     fun delete(vararg account: Contact)
 
+    @Query("DELETE FROM contact")
+    fun deleteAll()
+
 }

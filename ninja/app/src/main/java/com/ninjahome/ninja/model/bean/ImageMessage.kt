@@ -5,4 +5,4 @@ package com.ninjahome.ninja.model.bean
  *Time:
  *Description:
  */
-class ImageMessage(direction: MessageDirection, status: SentStatus, time: Long, var localUri: String) : Message(direction, status, time, Type.IMAGE, null, "[图片]")
+class ImageMessage(conversationId:Long,direction: MessageDirection, status: SentStatus, time: Long, var localUri: String) : Message(0,conversationId,direction, status, time, Type.IMAGE,  msg = "[图片]")

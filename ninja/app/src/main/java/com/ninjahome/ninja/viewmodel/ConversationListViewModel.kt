@@ -34,8 +34,6 @@ class ConversationListViewModel : BaseViewModel() {
 
     init {
         title.set(context().getString(R.string.message))
-        //        rightIv.set(R.drawable.add)
-        //        showRightIv.set(true)
         showBackImage.set(false)
     }
 
@@ -47,9 +45,7 @@ class ConversationListViewModel : BaseViewModel() {
                         Androidlib.wsOnline()
                     }
                 }
-
             }
-
             finishRefreshingEvent.call()
         }
     })
@@ -61,9 +57,9 @@ class ConversationListViewModel : BaseViewModel() {
     }
 
     fun updateConversation() {
-        items.clear()
-        NinjaApp.instance.conversations.values.forEach {
-            items.add(ConversationItemViewModel(this, it))
-        }
+//        items.clear()
+//        NinjaApp.instance.conversations.values.forEach {
+//            items.add(ConversationItemViewModel(this, it))
+//        }
     }
 }

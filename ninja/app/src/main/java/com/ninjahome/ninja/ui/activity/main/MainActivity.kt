@@ -10,9 +10,13 @@ import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityMainBinding
+import com.ninjahome.ninja.room.ConversationDBManager
+import com.ninjahome.ninja.room.MessageDBManager
 import com.ninjahome.ninja.ui.adapter.MainFragmentPagerAdapter
 import com.ninjahome.ninja.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinApiExtension
 
@@ -79,7 +83,11 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
     override fun onDestroy() {
         super.onDestroy()
         Androidlib.wsOffline()
-        NinjaApp.instance.conversations.clear()
+        MainScope().launch {
+            MessageDBManager.deleteAllReadMessage()
+            ConversationDBManager.deleteReadConversation()
+        }
+
         mViewModel.clearCache()
     }
 

@@ -15,6 +15,9 @@ import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.event.EventChangeAccount
 import com.ninjahome.ninja.model.CreateAccountModel
+import com.ninjahome.ninja.room.ContactDBManager
+import com.ninjahome.ninja.room.ConversationDBManager
+import com.ninjahome.ninja.room.MessageDBManager
 import com.ninjahome.ninja.ui.activity.edituserinfo.EditUserInfoActivity
 import com.ninjahome.ninja.utils.AccountUtils
 import com.ninjahome.ninja.utils.fromJson
@@ -101,7 +104,12 @@ class CreateAccountViewModel : BaseViewModel(), KoinComponent {
         dismissDialog()
         openFingerPrint = false
         userName = ""
-        NinjaApp.instance.conversations.clear()
+        rxLifeScope.launch {
+            ConversationDBManager.deleteAll()
+            ContactDBManager.deleteAll()
+            MessageDBManager.deleteAll()
+        }
+
         EventBus.getDefault().post(EventChangeAccount())
         startActivityAndFinish(EditUserInfoActivity::class.java)
 

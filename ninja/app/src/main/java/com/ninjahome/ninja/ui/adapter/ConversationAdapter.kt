@@ -34,16 +34,16 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
     private fun setView(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
         //根据消息类型设置消息显示内容
         //        MessageContent msgContent = item.getContent()
-        if (item is TextMessage) {
-            MoonUtils.identifyFaceExpression(mContext, helper.getView(R.id.tvText), item.data?.let { String(it) }, ImageSpan.ALIGN_BOTTOM)
-        } else if (item is ImageMessage) {
+        if (item.type == Message.Type.TEXT) {
+            MoonUtils.identifyFaceExpression(mContext, helper.getView(R.id.tvText), item.msg, ImageSpan.ALIGN_BOTTOM)
+        } else if (item.type == Message.Type.IMAGE) {
             val bivPic = helper.getView<BubbleImageView>(R.id.bivPic)
-            Glide.with(mContext).load(item.localUri ?: item.localUri).error(R.drawable.default_img_failed).override(80.dp.toInt(), 150.dp.toInt()).centerCrop().into(bivPic)
-        } else if (item is LocationMessage) {
-            helper.setText(R.id.tvTitle, item.poi)
+            Glide.with(mContext).load(item.uri).error(R.drawable.default_img_failed).override(80.dp.toInt(), 150.dp.toInt()).centerCrop().into(bivPic)
+        } else if (item.type == Message.Type.LOCATION) {
+            helper.setText(R.id.tvTitle, item.locationAddress)
             val ivLocation = helper.getView<ImageView>(R.id.ivLocation)
             Glide.with(mContext).load("http://st.map.qq.com/api?size=708*270&center=${item.lng},${item.lat}&zoom=17&referer=weixin").centerCrop().into(ivLocation)
-        } else if (item is VoiceMessage) {
+        } else if (item.type ==Message.Type.VOICE) {
             val increment = (UIUtils.getDisplayWidth() / 2 / Constants.DEFAULT_MAX_AUDIO_RECORD_TIME_SECOND * item.duration)
             val rlAudio = helper.setText(R.id.tvDuration, item.duration.toString() + "''").getView<RelativeLayout>(R.id.rlAudio)
             val params = rlAudio.layoutParams
@@ -120,16 +120,16 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
         val msg = mData.get(position)
         val isSend = msg.direction == Message.MessageDirection.SEND
 
-        if (msg is TextMessage) {
+        if (msg.type == Message.Type.TEXT) {
             return if (isSend) SEND_TEXT else RECEIVE_TEXT
         }
-        if (msg is ImageMessage) {
+        if (msg.type == Message.Type.IMAGE) {
             return if (isSend) SEND_IMAGE else RECEIVE_IMAGE
         }
-        if (msg is LocationMessage) {
+        if (msg.type == Message.Type.LOCATION) {
             return if (isSend) SEND_LOCATION else RECEIVE_LOCATION
         }
-        if (msg is VoiceMessage) {
+        if (msg.type == Message.Type.VOICE) {
             return if (isSend) SEND_VOICE else RECEIVE_VOICE
         }
 
