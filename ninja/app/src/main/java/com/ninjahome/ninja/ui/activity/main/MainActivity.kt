@@ -72,6 +72,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
         } else {
             val doubleClickDifference = 2000
             if (now - last < doubleClickDifference) {
+                deleteReadMessage()
                 finish()
             } else {
                 last = now
@@ -80,13 +81,16 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Androidlib.wsOffline()
+    private fun deleteReadMessage() {
         MainScope().launch {
             MessageDBManager.deleteAllReadMessage()
             ConversationDBManager.deleteReadConversation()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Androidlib.wsOffline()
 
         mViewModel.clearCache()
     }

@@ -12,12 +12,7 @@ import com.ninja.android.lib.command.BindingConsumer
 import com.ninja.android.lib.command.ResponseCommand
 import com.ninja.android.lib.event.SingleLiveEvent
 import com.ninja.android.lib.provider.context
-import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
-import com.ninjahome.ninja.event.EventSendImageMessage
-import com.ninjahome.ninja.event.EventSendLocationMessage
-import com.ninjahome.ninja.event.EventSendTextMessage
-import com.ninjahome.ninja.event.EventSendVoiceMessage
 import com.ninjahome.ninja.model.ConversationModel
 import com.ninjahome.ninja.model.bean.*
 import com.ninjahome.ninja.room.ContactDBManager
@@ -27,7 +22,6 @@ import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.functions.Function
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.greenrobot.eventbus.EventBus
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -121,8 +115,6 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
             val message = Message(0,conversationId,Message.MessageDirection.SEND, Message.SentStatus.SENT,System.currentTimeMillis(),Message.Type.TEXT,unRead = false,msg=data)
             MessageDBManager.insert(message)
             model.sendTextMessage(uid, data)
-            val textMessage = TextMessage(0,Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, System.currentTimeMillis(), data)
-            EventBus.getDefault().postSticky(EventSendTextMessage(uid, NinjaApp.instance.account.address, textMessage))
         }, {
             showToast(R.string.send_error)
             Logger.e("send error ${it.message}")
@@ -134,11 +126,9 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
     fun sendImage(path: String) {
         rxLifeScope.launch({
             val conversationId = getConversationId(context().getString(R.string.message_type_image))
-            val message = Message(0,conversationId,Message.MessageDirection.SEND, Message.SentStatus.SENT,System.currentTimeMillis(),Message.Type.IMAGE,unRead = false,uri = path)
+            val message = Message(0,conversationId,Message.MessageDirection.SEND, Message.SentStatus.SENT,System.currentTimeMillis(),Message.Type.IMAGE,unRead = false,uri = path,msg=context().getString(R.string.message_type_image))
             MessageDBManager.insert(message)
             model.sendImageMessage(uid, path)
-//            val imageMessage = ImageMessage(0,Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, System.currentTimeMillis(), path)
-//            EventBus.getDefault().postSticky(EventSendImageMessage(uid, NinjaApp.instance.account.address, imageMessage))
         }, {
             showToast(R.string.send_error)
             Logger.e("send error ${it.message}")
@@ -150,11 +140,9 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
         rxLifeScope.launch({
             audioPath.path?.let {
                 val conversationId = getConversationId(context().getString(R.string.message_type_voice))
-                val message = Message(0,conversationId,Message.MessageDirection.SEND, Message.SentStatus.SENT,System.currentTimeMillis(),Message.Type.VOICE,unRead = false,uri = audioPath.path.toString(),duration=duration)
+                val message = Message(0,conversationId,Message.MessageDirection.SEND, Message.SentStatus.SENT,System.currentTimeMillis(),Message.Type.VOICE,unRead = false,uri = audioPath.path.toString(),duration=duration,msg=context().getString(R.string.message_type_voice))
                 MessageDBManager.insert(message)
                 model.sendAudioMessage(uid, it, duration)
-//                val voiceMessage = VoiceMessage(0,Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, System.currentTimeMillis(), audioPath.path!!, duration.toLong())
-//                EventBus.getDefault().postSticky(EventSendVoiceMessage(uid, NinjaApp.instance.account.address, voiceMessage))
             }
         }, {
             showToast(R.string.send_error)
@@ -164,13 +152,12 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
 
     }
 
-    fun sendLocation(locationMessage: LocationMessage) {
+    fun sendLocation(lng: Float, lat: Float, poi: String) {
         rxLifeScope.launch ({
             val conversationId = getConversationId(context().getString(R.string.message_type_location))
-            val message = Message(0,conversationId,Message.MessageDirection.SEND, Message.SentStatus.SENT,System.currentTimeMillis(),Message.Type.LOCATION,unRead = false,lat = locationMessage.lat,lng = locationMessage.lng,locationAddress = locationMessage.poi)
+            val message = Message(0,conversationId,Message.MessageDirection.SEND, Message.SentStatus.SENT,System.currentTimeMillis(),Message.Type.LOCATION,unRead = false,lat = lat,lng = lng,locationAddress = poi,msg=context().getString(R.string.message_type_location))
             MessageDBManager.insert(message)
-            model.sendLocationMessage(uid, locationMessage.lng, locationMessage.lat, locationMessage.poi)
-//            EventBus.getDefault().postSticky(EventSendLocationMessage(uid, NinjaApp.instance.account.address, locationMessage))
+            model.sendLocationMessage(uid, lng, lat, poi)
         }, {
             showToast(R.string.send_error)
             Logger.e("send error ${it.message}")

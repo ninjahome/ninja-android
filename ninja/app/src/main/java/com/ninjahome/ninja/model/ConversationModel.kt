@@ -41,12 +41,12 @@ class ConversationModel {
         }
     }
 
-    suspend fun sendLocationMessage(uid: String, lat: Float, lng: Float, poi: String) {
+    suspend fun sendLocationMessage(uid: String, lng: Float, lat: Float, poi: String) {
         withContext(Dispatchers.IO) {
             if (!Androidlib.wsIsOnline()) {
                 Androidlib.wsOnline()
             }
-            Androidlib.writeLocationMessage(uid, lat, lng, poi)
+            Androidlib.writeLocationMessage(uid, lng, lat, poi)
         }
     }
 

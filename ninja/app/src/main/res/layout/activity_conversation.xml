@@ -134,6 +134,7 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_margin="5dp"
+                    android:visibility="gone"
                     android:src="@drawable/ic_cheat_emo"
                     tools:ignore="ContentDescription" />
 

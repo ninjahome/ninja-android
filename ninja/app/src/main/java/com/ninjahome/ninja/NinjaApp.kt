@@ -123,6 +123,9 @@ class NinjaApp : BaseApplication() {
                     val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_image), time)
                     val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.IMAGE, msg = "[图片]")
                     message.uri = FileUtils.saveImageToPath(Constants.PHOTO_SAVE_DIR, payload)
+
+                    println("---------------------${conversation.id}")
+                    println("---------------------${message.uri}")
                     insert(message,conversation)
 
                 }

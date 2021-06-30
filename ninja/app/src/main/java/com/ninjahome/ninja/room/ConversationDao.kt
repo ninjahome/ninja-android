@@ -28,7 +28,7 @@ interface ConversationDao {
     @Query("DELETE FROM conversation")
     fun deleteAll()
 
-    @Query("DELETE FROM conversation where unreadCount =0")
+    @Query("DELETE FROM conversation where unreadCount = 0")
     fun deleteReadConversation()
 
 }

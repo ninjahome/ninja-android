@@ -48,9 +48,6 @@ import kotlinx.android.synthetic.main.activity_conversation.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import me.xfans.lib.voicewaveview.VoiceWaveView
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinApiExtension
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -77,6 +74,8 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     private lateinit var mEmotionKeyboard: EmotionKeyboard
     private val handler: Handler by lazy { Handler(Looper.getMainLooper()) }
     private val mData: List<Message> = ArrayList()
+
+    var  conversation : Conversation? = null
     override val mViewModel: ConversationViewModel by viewModel()
 
     private val moreActionDialog: BasePopupView by lazy {
@@ -149,7 +148,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
         }
         mViewModel.clickSendEvent.observe(this) {
-            conversationAdapter.addLastItem(TextMessage(0,Message.MessageDirection.SEND, Message.SentStatus.SENT, System.currentTimeMillis(), etContent.text.toString().trim()))
             mViewModel.sendText(etContent.text.toString().trim())
             moveToBottom()
             mViewModel.textData.value = ""
@@ -199,11 +197,14 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     fun observeConversation(){
         MainScope().launch {
-            val conversation = mViewModel.queryConversation()
+             conversation = mViewModel.queryConversation()
+            println("---------------------${conversation?.id}")
             if(conversation!=null){
+                MessageDBManager.queryByConversationId(conversation!!.id).observe(this@ConversationActivity){ it ->
+                    it?.forEach {
+                        println("---------------------${it.uri}")
+                    }
 
-                MessageDBManager.queryByConversationId(conversation.id).observe(this@ConversationActivity){ it ->
-                    clearUnreadNumber(conversation)
                     conversationAdapter.clearData()
                     conversationAdapter.addMoreData(it)
                     notifyAdapter()
@@ -217,6 +218,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         MainScope().launch {
             MessageDBManager.updateMessage2Read(conversation.id)
             conversation.unreadCount=0
+            conversation.msg = conversationAdapter.lastItem.msg
             ConversationDBManager.updateConversations(conversation)
         }
 
@@ -394,7 +396,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                         val images = data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS) as ArrayList<ImageItem>?
                         for (imageItem in images!!) {
                             mViewModel.sendImage(imageItem.path)
-                            conversationAdapter.addLastItem(ImageMessage(0,Message.MessageDirection.SEND, Message.SentStatus.SENT, System.currentTimeMillis(), imageItem.path))
                         }
                     }
                 }
@@ -404,7 +405,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                         //照片
                         //                                                val imgMsg: ImageMessage = ImageMessage.obtain(imageFileThumbUri, imageFileSourceUri)
                         //                        mPresenter.sendImgMsg(ImageUtils.genThumbImgFile(path), File(path))
-                        conversationAdapter.addLastItem(ImageMessage(0,Message.MessageDirection.SEND, Message.SentStatus.SENT, System.currentTimeMillis(), path.toString()))
                         path?.let { mViewModel.sendImage(it) }
                     } else {
                         //小视频
@@ -416,7 +416,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             REQUEST_TAKE_PHOTO -> if (resultCode == RESULT_OK) {
                 val path = data!!.getStringExtra("path")
                 if (data.getBooleanExtra("take_photo", true)) {
-                    conversationAdapter.addLastItem(ImageMessage(0,Message.MessageDirection.SEND, Message.SentStatus.SENT, System.currentTimeMillis(), path.toString()))
                     path?.let { mViewModel.sendImage(it) }
                 } else {
                     //                    mPresenter.sendFileMsg(File(path))
@@ -425,9 +424,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             }
             REQUEST_LOCATION -> if (resultCode == RESULT_OK) {
                 val locationData: LocationData = data!!.getSerializableExtra("location") as LocationData
-                val locationMessage = LocationMessage(0,Message.MessageDirection.SEND, Message.SentStatus.SENT, System.currentTimeMillis(),  locationData.poi)
-                conversationAdapter.addLastItem(locationMessage)
-                mViewModel.sendLocation(locationMessage)
+                mViewModel.sendLocation(locationData.lng,locationData.lat,locationData.poi)
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -527,7 +524,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                 //发送文件
                 val file = File(audioPath.path)
                 if (file.exists()) {
-                    conversationAdapter.addLastItem(VoiceMessage(0,Message.MessageDirection.SEND, Message.SentStatus.SENT, System.currentTimeMillis(), audioPath.path!!, duration.toLong()))
                     mViewModel.sendAudio(audioPath, duration)
                     moveToBottom()
                 }
@@ -547,41 +543,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             super.onBackPressed()
         }
     }
-
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    fun receiveTextMessage(eventReceiveTextMessage: EventReceiveTextMessage) {
-//        if (eventReceiveTextMessage.fromAddress == mViewModel.uid) {
-//            conversationAdapter.addLastItem(eventReceiveTextMessage.textMessage)
-//            notifyAdapter()
-//        }
-//
-//    }
-
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    fun receiveImageMessage(eventReceiveImageMessage: EventReceiveImageMessage) {
-//        if (eventReceiveImageMessage.fromAddress == mViewModel.uid) {
-//            conversationAdapter.addLastItem(eventReceiveImageMessage.imageMessage)
-//            notifyAdapter()
-//        }
-//    }
-//
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    fun receiveVoiceMessage(eventReceivevoiceMessage: EventReceiveVoiceMessage) {
-//        if (eventReceivevoiceMessage.fromAddress == mViewModel.uid) {
-//            conversationAdapter.addLastItem(eventReceivevoiceMessage.voiceMessage)
-//            notifyAdapter()
-//        }
-//    }
-//
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    fun receiveLocationMessage(eventReceiveLocationMessage: EventReceiveLocationMessage) {
-//        if (eventReceiveLocationMessage.fromAddress == mViewModel.uid) {
-//            conversationAdapter.addLastItem(eventReceiveLocationMessage.locationMessage)
-//            notifyAdapter()
-//        }
-//    }
 
 
     private fun notifyAdapter() {
@@ -608,19 +569,23 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     override fun onDestroy() {
         super.onDestroy()
+        conversation?.let {
+            clearUnreadNumber(it)
+        }
+
     }
 
     override fun onItemClick(helper: LQRViewHolder, parent: ViewGroup?, itemView: View?, position: Int) {
         val message = mData[position]
-        if (message is ImageMessage) {
+        if (message.type == Message.Type.IMAGE) {
             val intent = Intent(this, ShowBigImageActivity::class.java)
             //                val bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(this, itemView, "share").toBundle()
-            intent.putExtra(IntentKey.URL, message.localUri)
+            intent.putExtra(IntentKey.URL, message.uri)
             startActivity(intent)
-        } else if (message is VoiceMessage) {
+        } else if (message.type == Message.Type.VOICE) {
             val ivAudio: ImageView = helper.getView(R.id.ivAudioL)
 
-            AudioPlayManager.getInstance().startPlay(this@ConversationActivity, Uri.parse(message.localUrl), object : IAudioPlayListener {
+            AudioPlayManager.getInstance().startPlay(this@ConversationActivity, Uri.parse(message.uri), object : IAudioPlayListener {
                 override fun onStart(var1: Uri) {
                     if (ivAudio.background is AnimationDrawable) {
                         val animation = ivAudio.background as AnimationDrawable
@@ -644,12 +609,13 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                     }
                 }
             })
-        } else if (message is LocationMessage) {
+        } else if (message.type == Message.Type.LOCATION) {
             val intent = Intent(this@ConversationActivity, LocationShowActivity::class.java)
             intent.putExtra(IntentKey.LOCATION_LAT, message.lat)
             intent.putExtra(IntentKey.LOCATION_LNG, message.lng)
-            intent.putExtra(IntentKey.LOCATION_ADDRESS, message.poi)
+            intent.putExtra(IntentKey.LOCATION_ADDRESS, message.locationAddress)
             startActivity(intent)
         }
     }
+
 }

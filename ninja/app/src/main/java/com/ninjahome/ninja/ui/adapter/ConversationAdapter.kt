@@ -57,7 +57,7 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
     }
 
     private fun setStatus(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
-        if (item is TextMessage || item is LocationMessage || item is VoiceMessage) {
+        if (item.type ==Message.Type.TEXT || item.type ==Message.Type.LOCATION || item.type ==Message.Type.VOICE) {
             //只需要设置自己发送的状态
             val sentStatus = item.sentStatus
             if (sentStatus === SentStatus.SENDING) {
@@ -67,7 +67,7 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
             } else if (sentStatus === SentStatus.SENT) {
                 helper.setViewVisibility(R.id.pbSending, View.GONE).setViewVisibility(R.id.llError, View.GONE)
             }
-        } else if (item is ImageMessage) {
+        } else if (item.type ==Message.Type.IMAGE) {
             val bivPic = helper.getView<BubbleImageView>(R.id.bivPic)
             val isSend = if (item.direction === Message.MessageDirection.SEND) true else false
             if (isSend) {

@@ -51,7 +51,6 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
         }
 
         ConversationDBManager.all().observe(this) {
-            println("------------------------------${it?.size}")
             mViewModel.items.clear()
             it?.forEach {
                 mViewModel.items.add(ConversationItemViewModel(mViewModel, it))
@@ -77,95 +76,10 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
 
     }
 
-
-    //    @Subscribe(threadMode = ThreadMode.MAIN)
-    //    fun receiveTextMessage(eventReceiveTextMessage: EventReceiveTextMessage) {
-    //        addAdapterData(eventReceiveTextMessage.fromAddress, eventReceiveTextMessage.textMessage, false)
-    //    }
-    //
-    //
-    //    @Subscribe(threadMode = ThreadMode.MAIN)
-    //    fun receiveImageMessage(eventReceiveImageMessage: EventReceiveImageMessage) {
-    //        addAdapterData(eventReceiveImageMessage.fromAddress, eventReceiveImageMessage.imageMessage, false)
-    //    }
-    //
-    //
-    //    @Subscribe(threadMode = ThreadMode.MAIN)
-    //    fun receiveVoiceMessage(eventReceiveVoiceMessage: EventReceiveVoiceMessage) {
-    //        addAdapterData(eventReceiveVoiceMessage.fromAddress, eventReceiveVoiceMessage.voiceMessage, false)
-    //    }
-
-
-    //    @Subscribe(threadMode = ThreadMode.MAIN)
-    //    fun receiveLocationMessage(eventReceiveLocationMessage: EventReceiveLocationMessage) {
-    //        addAdapterData(eventReceiveLocationMessage.fromAddress, eventReceiveLocationMessage.locationMessage, false)
-    //    }
-    //
-    //
-    //    @Subscribe(threadMode = ThreadMode.MAIN)
-    //    fun sendTextMessage(eventSendTextMessage: EventSendTextMessage) {
-    //        addAdapterData(eventSendTextMessage.fromAddress, eventSendTextMessage.message, true)
-    //    }
-    //
-    //    @Subscribe(threadMode = ThreadMode.MAIN)
-    //    fun sendImageMessage(eventSendImageMessage: EventSendImageMessage) {
-    //        addAdapterData(eventSendImageMessage.fromAddress, eventSendImageMessage.message, true)
-    //    }
-    //
-    //    @Subscribe(threadMode = ThreadMode.MAIN)
-    //    fun sendVoiceMessage(eventSendVoiceMessage: EventSendVoiceMessage) {
-    //        addAdapterData(eventSendVoiceMessage.fromAddress, eventSendVoiceMessage.message, true)
-    //    }
-    //
-    //    @Subscribe(threadMode = ThreadMode.MAIN)
-    //    fun sendLocationMessage(eventSendLocationMessage: EventSendLocationMessage) {
-    //        addAdapterData(eventSendLocationMessage.fromAddress, eventSendLocationMessage.message, true)
-    //    }
-
-
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun offline(eventOffline: EventOffline) {
         setLineState()
     }
-
-
-    //    private fun addAdapterData(fromAddress: String, message: Message, isSend: Boolean) {
-    //        message.direction = if (isSend) Message.MessageDirection.SEND else Message.MessageDirection.RECEIVE
-    //
-    //        if (NinjaApp.instance.conversations.contains(fromAddress)) {
-    //
-    //            NinjaApp.instance.conversations[fromAddress]!!.messages.add(message)
-    //            NinjaApp.instance.conversations[fromAddress]!!.lastMessage = message
-    //
-    //            if (isSend) {
-    //                NinjaApp.instance.conversations[fromAddress]!!.unreadNo = 0
-    //                NinjaApp.instance.conversations[fromAddress]!!.unreadNoStr = "0"
-    //            } else {
-    //                NinjaApp.instance.conversations[fromAddress]!!.unreadNo = NinjaApp.instance.conversations[fromAddress]!!.unreadNo + 1
-    //                NinjaApp.instance.conversations[fromAddress]!!.unreadNoStr = (NinjaApp.instance.conversations[fromAddress]!!.unreadNo).toString()
-    //            }
-    //            mViewModel.updateConversation()
-    //        } else {
-    //            val chatMessages = mutableListOf<Message>()
-    //            chatMessages.add(message)
-    //            var unreadNo = 1
-    //            if (isSend) {
-    //                unreadNo = 0
-    //            }
-    //            val conversation = Conversation2(fromAddress, chatMessages, message, unreadNo, unreadNo.toString(), System.currentTimeMillis(), fromAddress, "https://img0.baidu.com/it/u=1950977217,4151841346&fm=26&fmt=auto&gp=0.jpg")
-    //            NinjaApp.instance.conversations[fromAddress] = conversation
-    //            rxLifeScope.launch {
-    //                var nickName = ContactDBManager.queryNickNameByUID(fromAddress)
-    //                if (TextUtils.isEmpty(nickName)) {
-    //                    nickName = fromAddress
-    //                }
-    //                conversation.nickName = nickName!!
-    //                mViewModel.updateConversation()
-    //            }
-    //
-    //        }
-    //    }
 
 
     override fun onDestroy() {

@@ -453,4 +453,53 @@ object ImageUtils {
         }
         return inSampleSize
     }
+
+    /**
+     * 根据文件流判断图片类型
+     *
+     * @param is
+     * @return jpg/png/gif/bmp
+     */
+    fun getPicType(b: ByteArray): String {
+        val type = byteArrayToHexString(b).toUpperCase()
+        //读取文件的前几个字节来判断图片格式
+        return if (type.contains("FFD8FF")) {
+            "jpg"
+        } else if (type.contains("89504E47")) {
+            "png"
+        } else if (type.contains("47494638")) {
+            "gif"
+        } else if (type.contains("424D")) {
+            "bmp"
+        } else {
+            "unknown"
+        }
+    }
+
+    /**
+     * 转换字节数组为十六进制字符串
+     *
+     * @return 十六进制字符串
+     */
+    private fun byteArrayToHexString(b: ByteArray): String {
+        val resultSb = StringBuffer()
+        for (i in b.indices) {
+            resultSb.append(byteToHexString(b[i]))
+        }
+        return resultSb.toString()
+    }
+
+    // 十六进制下数字到字符的映射数组
+    private val hexDigits = arrayOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f")
+
+    /**
+     * 将一个字节转化成十六进制形式的字符串
+     */
+    private fun byteToHexString(b: Byte): String {
+        var n = b.toInt()
+        if (n < 0) n = 256 + n
+        val d1 = n / 16
+        val d2 = n % 16
+        return hexDigits[d1] + hexDigits[d2]
+    }
 }
