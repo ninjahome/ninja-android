@@ -28,9 +28,9 @@ class ShowBigImageActivity : BaseActivity<ShowBigImageViewModel, ActivityShowBig
             finish()
         }
         if (mUrl!!.startsWith("http")) {
-            Glide.with(this).load(Uri.parse(mUrl)).placeholder(R.mipmap.default_image).into(pv)
+            Glide.with(this).load(Uri.parse(mUrl)).into(pv)
         } else {
-            Glide.with(this).load(File(mUrl)).placeholder(R.mipmap.default_image).into(pv)
+            Glide.with(this).load(File(mUrl)).into(pv)
         }
 
         pv.setOnClickListener {

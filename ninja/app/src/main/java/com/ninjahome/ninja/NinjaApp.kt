@@ -1,16 +1,10 @@
 package com.ninjahome.ninja
 
-import android.app.Activity
-import android.net.Uri
 import android.text.TextUtils
-import android.widget.ImageView
 import androidlib.Androidlib
 import androidlib.AppCallBack
 import coil.load
 import com.lqr.emoji.LQREmotionKit
-import com.lqr.imagepicker.ImagePicker
-import com.lqr.imagepicker.loader.ImageLoader
-import com.lqr.imagepicker.view.CropImageView
 import com.ninja.android.lib.base.BaseApplication
 import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.event.*
@@ -28,6 +22,8 @@ import com.orhanobut.logger.*
 import com.umeng.commonsdk.UMConfigure
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.greenrobot.eventbus.EventBus
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -44,6 +40,7 @@ import org.koin.dsl.module
  */
 @KoinApiExtension
 class NinjaApp : BaseApplication() {
+    val mutex = Mutex()
     lateinit var account: Account
     companion object {
         lateinit var instance: NinjaApp
@@ -123,10 +120,7 @@ class NinjaApp : BaseApplication() {
                     val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_image), time)
                     val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.IMAGE, msg = "[图片]")
                     message.uri = FileUtils.saveImageToPath(Constants.PHOTO_SAVE_DIR, payload)
-
-                    println("---------------------${conversation.id}")
-                    println("---------------------${message.uri}")
-                    insert(message,conversation)
+                    insertMessage(message, conversation)
 
                 }
             }
@@ -135,7 +129,7 @@ class NinjaApp : BaseApplication() {
                 MainScope().launch {
                     val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_location), time)
                     val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.LOCATION, lat = lat, lng = lng, locationAddress = locationAddress, msg = "[定位]")
-                    insert(message,conversation)
+                    insertMessage(message, conversation)
                 }
 
             }
@@ -144,7 +138,7 @@ class NinjaApp : BaseApplication() {
                 MainScope().launch {
                     val conversation = insertOrUpdateConversation(from, data, time)
                     val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.TEXT, msg = data)
-                    insert(message,conversation)
+                    insertMessage(message, conversation)
                 }
 
             }
@@ -154,7 +148,7 @@ class NinjaApp : BaseApplication() {
                     val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_voice), time)
                     val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.TEXT, msg = "[语音]")
                     message.uri = FileUtils.saveVoiceToPath(Constants.AUDIO_SAVE_DIR, payload)
-                    insert(message,conversation)
+                    insertMessage(message, conversation)
                 }
             }
 
@@ -167,39 +161,25 @@ class NinjaApp : BaseApplication() {
         })
     }
 
-    private suspend fun insert(message: Message, conversation: Conversation) {
+    private suspend fun insertMessage(message: Message, conversation: Conversation) {
         MessageDBManager.insert(message)
         updateConversationUnreadCount(conversation)
     }
 
 
     private fun initImagePicker() {
-        val imagePicker = ImagePicker.getInstance()
-        imagePicker.imageLoader = object : ImageLoader {
-            override fun displayImage(activity: Activity, path: String, imageView: ImageView, width: Int, height: Int) {
-                imageView.load(Uri.parse("file://$path").toString())
-            }
 
-            override fun clearMemoryCache() {}
-        } //设置图片加载器
-        imagePicker.isShowCamera = true //显示拍照按钮
-        imagePicker.isCrop = true //允许裁剪（单选才有效）
-        imagePicker.isSaveRectangle = true //是否按矩形区域保存
-        imagePicker.selectLimit = 9 //选中数量限制
-        imagePicker.style = CropImageView.Style.RECTANGLE //裁剪框的形状
-        imagePicker.focusWidth = 800 //裁剪框的宽度。单位像素（圆形自动取宽高最小值）
-        imagePicker.focusHeight = 800 //裁剪框的高度。单位像素（圆形自动取宽高最小值）
-        imagePicker.outPutX = 1000 //保存文件的宽度。单位像素
-        imagePicker.outPutY = 1000 //保存文件的高度。单位像素
+
     }
 
     private suspend fun insertOrUpdateConversation(from: String, msg: String, time: Long): Conversation {
-        var conversation = ConversationDBManager.queryByFrom(from)
+        mutex.withLock{
+            var conversation = ConversationDBManager.queryByFrom(from)
             if (conversation == null) {
                 conversation = Conversation(0, from, msg, time, 1)
                 val nickName = ContactDBManager.queryNickNameByUID(from)
                 conversation.nickName = if (TextUtils.isEmpty(nickName)) from else nickName!!
-                ConversationDBManager.insert(conversation)
+                conversation.id= ConversationDBManager.insert(conversation)
             } else {
                 conversation.msg = msg
                 conversation.time = time
@@ -207,12 +187,15 @@ class NinjaApp : BaseApplication() {
                 conversation.nickName = if (TextUtils.isEmpty(nickName)) from else nickName!!
                 ConversationDBManager.updateConversations(conversation)
             }
+            return conversation
+        }
 
-        return conversation
+
 
     }
 
-    suspend fun updateConversationUnreadCount(conversation:Conversation){
+
+    suspend fun updateConversationUnreadCount(conversation: Conversation){
         val unreadCount =  MessageDBManager.queryUnReadCount(conversation.id)
         conversation.unreadCount = unreadCount
         ConversationDBManager.updateConversations(conversation)

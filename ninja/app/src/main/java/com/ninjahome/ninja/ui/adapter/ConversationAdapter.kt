@@ -24,14 +24,14 @@ import com.ninjahome.ninja.view.BubbleImageView
 class ConversationAdapter(private val mContext: Context, private val mData: List<Message>) : LQRAdapterForRecyclerView<Message>(mContext, mData) {
     override fun convert(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
         setTime(helper, item, position)
-        setView(helper, item, position)
+        setView(helper, item)
         setAvatar(helper, item, position)
         setName(helper, item, position)
         setStatus(helper, item, position)
         setOnClick(helper, item, position)
     }
 
-    private fun setView(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
+    private fun setView(helper: LQRViewHolderForRecyclerView, item: Message) {
         //根据消息类型设置消息显示内容
         //        MessageContent msgContent = item.getContent()
         if (item.type == Message.Type.TEXT) {
@@ -47,7 +47,7 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
             val increment = (UIUtils.getDisplayWidth() / 2 / Constants.DEFAULT_MAX_AUDIO_RECORD_TIME_SECOND * item.duration)
             val rlAudio = helper.setText(R.id.tvDuration, item.duration.toString() + "''").getView<RelativeLayout>(R.id.rlAudio)
             val params = rlAudio.layoutParams
-            params.width = (65.dp + UIUtils.dip2Px(increment.toInt())).toInt()
+            params.width = (65.dp + UIUtils.dip2Px(increment)).toInt()
             rlAudio.layoutParams = params
         }
     }

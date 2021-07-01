@@ -1,6 +1,7 @@
 package com.ninjahome.ninja.model
 
 import androidlib.Androidlib
+import com.ninjahome.ninja.utils.ImageUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -21,13 +22,17 @@ class ConversationModel {
         }
     }
 
-    suspend fun sendImageMessage(uid: String, path: String) {
+    suspend fun sendImageMessage(uid: String, path: String,compress:Boolean) {
         withContext(Dispatchers.IO) {
             if (!Androidlib.wsIsOnline()) {
                 Androidlib.wsOnline()
             }
-
-            Androidlib.writeImageMessage(uid, File(path).readBytes())
+            var imageFileSource:File? = null
+            if(compress){
+                imageFileSource = ImageUtils.compressImage(path)
+            }
+            imageFileSource = imageFileSource ?: File(path)
+            Androidlib.writeImageMessage(uid, File(imageFileSource!!.path).readBytes())
         }
     }
 

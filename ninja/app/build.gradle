@@ -108,15 +108,18 @@ dependencies {
 
     implementation 'com.lqr.adapter:library:1.0.2'
     implementation 'com.lqr.recyclerview:library:1.0.2'
-    implementation 'com.lqr.imagepicker:library:1.0.0'
+//    implementation 'com.lqr.imagepicker:library:1.0.0'
     implementation 'com.lqr.ninegridimageview:library:1.0.0'
     implementation 'com.lqr.optionitemview:library:1.0.7'
     implementation 'com.lqr.emoji:library:1.0.2'
-    implementation 'com.lqr.imagepicker:library:1.0.0'
+    implementation "com.github.qingmei2:rximagepicker:2.5.6"
+    implementation "com.github.qingmei2:rximagepicker_support:2.5.6"
+    implementation "com.github.qingmei2:rximagepicker_support_wechat:2.5.6"
     implementation files('libs/joda-time-2.5.jar')
     implementation files('libs/TencentMapSDK_Raster_v_1.3.4.1.jar')
     implementation files('libs/TencentMapSearch_v1.1.7.1.3e04ee1.jar')
-    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    kapt "com.github.bumptech.glide:compiler:4.11.0"
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation 'com.github.xfans:VoiceWaveView:1.0.2'
     implementation 'com.tencent.map.geolocation:TencentLocationSdk-openplatform:7.3.0'

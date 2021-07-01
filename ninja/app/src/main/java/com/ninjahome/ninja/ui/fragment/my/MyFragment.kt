@@ -16,6 +16,7 @@ import com.ninjahome.ninja.Constants
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.FragmentMyBinding
+import com.ninjahome.ninja.ui.activity.conversation.LocationActivity
 import com.ninjahome.ninja.ui.activity.showidqrcode.ShowIDQRCodeActivity
 import com.ninjahome.ninja.utils.CryptographyManager
 import com.ninjahome.ninja.utils.DialogUtils

@@ -27,15 +27,14 @@ import com.lqr.emoji.EmotionKeyboard
 import com.lqr.emoji.IEmotionSelectedListener
 import com.lqr.emoji.LQREmotionKit
 import com.lqr.emoji.MoonUtils
-import com.lqr.imagepicker.ImagePicker
-import com.lqr.imagepicker.bean.ImageItem
-import com.lqr.imagepicker.ui.ImageGridActivity
 import com.lxj.xpopup.core.BasePopupView
 import com.ninja.android.lib.base.BaseActivity
 import com.ninja.android.lib.utils.dp
 import com.ninjahome.ninja.*
 import com.ninjahome.ninja.databinding.ActivityConversationBinding
 import com.ninjahome.ninja.event.*
+import com.ninjahome.ninja.imagepicker.PhotoFromPhotoAlbum
+import com.ninjahome.ninja.imagepicker.WechatImagePicker
 import com.ninjahome.ninja.model.bean.*
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.room.ConversationDBManager
@@ -44,6 +43,12 @@ import com.ninjahome.ninja.ui.adapter.ConversationAdapter
 import com.ninjahome.ninja.utils.DialogUtils
 import com.ninjahome.ninja.view.ConversationMoreActionPop
 import com.ninjahome.ninja.viewmodel.ConversationViewModel
+import com.qingmei2.rximagepicker.core.RxImagePicker.create
+import com.qingmei2.rximagepicker.entity.Result
+import com.qingmei2.rximagepicker_extension.MimeType
+import com.qingmei2.rximagepicker_extension_wechat.WechatConfigrationBuilder
+import com.qingmei2.rximagepicker_extension_wechat.ui.WechatImagePickerFragment
+import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.activity_conversation.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -67,6 +72,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     private val REQUEST_IMAGE_PICKER = 1000
     private val REQUEST_TAKE_PHOTO = 1001
     private val REQUEST_LOCATION = 1002
+    lateinit var imagePicker:WechatImagePicker
 
     private lateinit var conversationAdapter: ConversationAdapter
 
@@ -75,7 +81,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     private val handler: Handler by lazy { Handler(Looper.getMainLooper()) }
     private val mData: List<Message> = ArrayList()
 
-    var  conversation : Conversation? = null
+    var conversation: Conversation? = null
     override val mViewModel: ConversationViewModel by viewModel()
 
     private val moreActionDialog: BasePopupView by lazy {
@@ -93,6 +99,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     }
 
     override fun initView() {
+         imagePicker = create(WechatImagePicker::class.java)
         ImmersionBar.with(this).statusBarColor(com.ninja.android.lib.R.color.white).barEnable(true).keyboardEnable(true).statusBarDarkFont(true).fitsSystemWindows(true).init()
         initEmotionKeyboard()
     }
@@ -170,7 +177,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         }
 
         mViewModel.observableConversationEvent.observe(this) {
-           observeConversation()
+            observeConversation()
         }
 
         mViewModel.touchAudioEvent.observe(this) {
@@ -195,15 +202,11 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     }
 
 
-    fun observeConversation(){
+    fun observeConversation() {
         MainScope().launch {
-             conversation = mViewModel.queryConversation()
-            println("---------------------${conversation?.id}")
-            if(conversation!=null){
-                MessageDBManager.queryByConversationId(conversation!!.id).observe(this@ConversationActivity){ it ->
-                    it?.forEach {
-                        println("---------------------${it.uri}")
-                    }
+            conversation = mViewModel.queryConversation()
+            if (conversation != null) {
+                MessageDBManager.queryByConversationId(conversation!!.id).observe(this@ConversationActivity) { it ->
 
                     conversationAdapter.clearData()
                     conversationAdapter.addMoreData(it)
@@ -217,8 +220,10 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     private fun clearUnreadNumber(conversation: Conversation) {
         MainScope().launch {
             MessageDBManager.updateMessage2Read(conversation.id)
-            conversation.unreadCount=0
-            conversation.msg = conversationAdapter.lastItem.msg
+            conversation.unreadCount = 0
+            if(conversationAdapter.lastItem!=null ){
+                conversation.msg = conversationAdapter.lastItem.msg
+            }
             ConversationDBManager.updateConversations(conversation)
         }
 
@@ -250,8 +255,17 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     }
 
     private fun startAlbumActivity() {
-        val intent = Intent(this, ImageGridActivity::class.java)
-        startActivityForResult(intent, REQUEST_IMAGE_PICKER)
+        val build = WechatConfigrationBuilder(MimeType.INSTANCE.ofImage(), false).maxSelectable(9).countable(true).spanCount(4).countable(false).build()
+        imagePicker.openGallery(this,build)
+                .subscribe {
+                    val original = it.getBooleanExtra(WechatImagePickerFragment.EXTRA_ORIGINAL_IMAGE, false)
+                    var path = PhotoFromPhotoAlbum.getRealPathFromUri(this@ConversationActivity,it.uri)
+                            if(path ==null){
+                                path=it.uri.toString()
+                            }
+                    mViewModel.sendImage(path, !original)
+                    moveToBottom()
+                }
     }
 
     private fun startTakePhotoActivity() {
@@ -388,43 +402,17 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            REQUEST_IMAGE_PICKER -> {
-                if (resultCode == ImagePicker.RESULT_CODE_ITEMS) { //返回多张照片
-                    if (data != null) {
-                        //                        //是否发送原图
-                        //                        val isOrig = data.getBooleanExtra(ImagePreviewActivity.ISORIGIN, false)
-                        val images = data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS) as ArrayList<ImageItem>?
-                        for (imageItem in images!!) {
-                            mViewModel.sendImage(imageItem.path)
-                        }
-                    }
-                }
-                if (resultCode == RESULT_OK) {
-                    val path = data!!.getStringExtra("path")
-                    if (data.getBooleanExtra("take_photo", true)) {
-                        //照片
-                        //                                                val imgMsg: ImageMessage = ImageMessage.obtain(imageFileThumbUri, imageFileSourceUri)
-                        //                        mPresenter.sendImgMsg(ImageUtils.genThumbImgFile(path), File(path))
-                        path?.let { mViewModel.sendImage(it) }
-                    } else {
-                        //小视频
-                        //                        mPresenter.sendFileMsg(File(path))
-                    }
-                }
-                moveToBottom()
-            }
+
             REQUEST_TAKE_PHOTO -> if (resultCode == RESULT_OK) {
                 val path = data!!.getStringExtra("path")
                 if (data.getBooleanExtra("take_photo", true)) {
-                    path?.let { mViewModel.sendImage(it) }
-                } else {
-                    //                    mPresenter.sendFileMsg(File(path))
+                    path?.let { mViewModel.sendImage(it, true) }
                 }
                 moveToBottom()
             }
             REQUEST_LOCATION -> if (resultCode == RESULT_OK) {
                 val locationData: LocationData = data!!.getSerializableExtra("location") as LocationData
-                mViewModel.sendLocation(locationData.lng,locationData.lat,locationData.poi)
+                mViewModel.sendLocation(locationData.lng, locationData.lat, locationData.poi)
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -516,7 +504,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
             override fun onStartRecord() {
                 startRecordTime = System.currentTimeMillis()
-                println("--------------开始录音")
                 checkPermissions()
             }
 

@@ -123,15 +123,15 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
 
     }
 
-    fun sendImage(path: String) {
+    fun sendImage(path: String,compress:Boolean) {
         rxLifeScope.launch({
             val conversationId = getConversationId(context().getString(R.string.message_type_image))
             val message = Message(0,conversationId,Message.MessageDirection.SEND, Message.SentStatus.SENT,System.currentTimeMillis(),Message.Type.IMAGE,unRead = false,uri = path,msg=context().getString(R.string.message_type_image))
             MessageDBManager.insert(message)
-            model.sendImageMessage(uid, path)
+            model.sendImageMessage(uid, path,compress)
         }, {
             showToast(R.string.send_error)
-            Logger.e("send error ${it.message}")
+            it.printStackTrace()
         })
 
     }
