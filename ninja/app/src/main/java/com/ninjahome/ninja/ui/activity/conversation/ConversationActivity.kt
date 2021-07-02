@@ -79,7 +79,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     private var mIsFirst = false
     private lateinit var mEmotionKeyboard: EmotionKeyboard
     private val handler: Handler by lazy { Handler(Looper.getMainLooper()) }
-    private val mData: List<Message> = ArrayList()
+    private val mData:MutableList<Message> = mutableListOf()
 
     var conversation: Conversation? = null
     override val mViewModel: ConversationViewModel by viewModel()
@@ -102,13 +102,14 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
          imagePicker = create(WechatImagePicker::class.java)
         ImmersionBar.with(this).statusBarColor(com.ninja.android.lib.R.color.white).barEnable(true).keyboardEnable(true).statusBarDarkFont(true).fitsSystemWindows(true).init()
         initEmotionKeyboard()
+        rvMsg.itemAnimator = null
     }
 
 
     override fun initData() {
         mViewModel.uid = intent.getStringExtra(IntentKey.UID)!!
         setTitle()
-        conversationAdapter = ConversationAdapter(this, mData)
+        conversationAdapter = ConversationAdapter(this, mData,mViewModel)
         rvMsg.adapter = conversationAdapter
         conversationAdapter.onItemClickListener = this
         initAudioRecordManager()
@@ -207,10 +208,12 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             conversation = mViewModel.queryConversation()
             if (conversation != null) {
                 MessageDBManager.queryByConversationId(conversation!!.id).observe(this@ConversationActivity) { it ->
-
-                    conversationAdapter.clearData()
-                    conversationAdapter.addMoreData(it)
-                    notifyAdapter()
+                    mData.clear()
+                    if(it!=null){
+                        mData.addAll(it)
+                    }
+                    conversationAdapter.notifyDataSetChanged()
+                    rvMsg.smoothMoveToPosition((rvMsg.adapter?.itemCount ?: 1) - 1)
                 }
             }
         }
@@ -529,13 +532,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         } else {
             super.onBackPressed()
         }
-    }
-
-
-    private fun notifyAdapter() {
-        conversationAdapter.data.sortBy { message -> message.time }
-        conversationAdapter.notifyDataSetChanged()
-        rvMsg.smoothMoveToPosition((rvMsg.adapter?.itemCount ?: 1) - 1)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

@@ -36,7 +36,7 @@ class ConversationModel {
         }
     }
 
-    suspend fun sendAudioMessage(uid: String, audioPath: String, duration: Int) {
+    suspend fun sendVoiceMessage(uid: String, audioPath: String, duration: Int) {
         withContext(Dispatchers.IO) {
             if (!Androidlib.wsIsOnline()) {
                 Androidlib.wsOnline()

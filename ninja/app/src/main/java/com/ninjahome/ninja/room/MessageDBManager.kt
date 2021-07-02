@@ -18,9 +18,9 @@ object MessageDBManager {
         return msgDao.all()
     }
 
-    suspend fun insert(msg: Message) {
-        withContext(Dispatchers.IO) {
-            msgDao.insert(msg)
+    suspend fun insert(msg: Message):Long {
+       return withContext(Dispatchers.IO) {
+           return@withContext msgDao.insert(msg)
         }
     }
 

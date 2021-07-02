@@ -14,7 +14,8 @@ import com.ninja.android.lib.event.SingleLiveEvent
 import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.ConversationModel
-import com.ninjahome.ninja.model.bean.*
+import com.ninjahome.ninja.model.bean.Conversation
+import com.ninjahome.ninja.model.bean.Message
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.room.ConversationDBManager
 import com.ninjahome.ninja.room.MessageDBManager
@@ -110,42 +111,55 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
     })
 
     fun sendText(data: String) {
+        val message = Message(0, 0, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.TEXT, unRead = false, msg = data)
         rxLifeScope.launch({
             val conversationId = getConversationId(data)
-            val message = Message(0,conversationId,Message.MessageDirection.SEND, Message.SentStatus.SENT,System.currentTimeMillis(),Message.Type.TEXT,unRead = false,msg=data)
-            MessageDBManager.insert(message)
+            message.conversationId = conversationId
+            message.id = MessageDBManager.insert(message)
             model.sendTextMessage(uid, data)
+            message.sentStatus = Message.SentStatus.SENT
+            MessageDBManager.updateMessage(message)
         }, {
             showToast(R.string.send_error)
+            updateFailedStatus(message)
             Logger.e("send error ${it.message}")
         })
 
 
     }
 
-    fun sendImage(path: String,compress:Boolean) {
+    fun sendImage(path: String, compress: Boolean) {
+        val message = Message(0, 0, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.IMAGE, unRead = false, uri = path, msg = context().getString(R.string.message_type_image))
         rxLifeScope.launch({
             val conversationId = getConversationId(context().getString(R.string.message_type_image))
-            val message = Message(0,conversationId,Message.MessageDirection.SEND, Message.SentStatus.SENT,System.currentTimeMillis(),Message.Type.IMAGE,unRead = false,uri = path,msg=context().getString(R.string.message_type_image))
-            MessageDBManager.insert(message)
-            model.sendImageMessage(uid, path,compress)
+            message.conversationId = conversationId
+            message.id = MessageDBManager.insert(message)
+            model.sendImageMessage(uid, path, compress)
+            message.sentStatus = Message.SentStatus.SENT
+            MessageDBManager.updateMessage(message)
         }, {
             showToast(R.string.send_error)
+            updateFailedStatus(message)
             it.printStackTrace()
         })
 
     }
 
+
     fun sendAudio(audioPath: Uri, duration: Int) {
+        val message = Message(0, 0, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.VOICE, unRead = false, uri = audioPath.path.toString(), duration = duration, msg = context().getString(R.string.message_type_voice))
         rxLifeScope.launch({
             audioPath.path?.let {
                 val conversationId = getConversationId(context().getString(R.string.message_type_voice))
-                val message = Message(0,conversationId,Message.MessageDirection.SEND, Message.SentStatus.SENT,System.currentTimeMillis(),Message.Type.VOICE,unRead = false,uri = audioPath.path.toString(),duration=duration,msg=context().getString(R.string.message_type_voice))
-                MessageDBManager.insert(message)
-                model.sendAudioMessage(uid, it, duration)
+                message.conversationId = conversationId
+                message.id = MessageDBManager.insert(message)
+                model.sendVoiceMessage(uid, it, duration)
+                message.sentStatus = Message.SentStatus.SENT
+                MessageDBManager.updateMessage(message)
             }
         }, {
             showToast(R.string.send_error)
+            updateFailedStatus(message)
             Logger.e("send error ${it.message}")
         })
 
@@ -153,41 +167,83 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
     }
 
     fun sendLocation(lng: Float, lat: Float, poi: String) {
-        rxLifeScope.launch ({
+        val message = Message(0, 0, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.LOCATION, unRead = false, lat = lat, lng = lng, locationAddress = poi, msg = context().getString(R.string.message_type_location))
+        rxLifeScope.launch({
             val conversationId = getConversationId(context().getString(R.string.message_type_location))
-            val message = Message(0,conversationId,Message.MessageDirection.SEND, Message.SentStatus.SENT,System.currentTimeMillis(),Message.Type.LOCATION,unRead = false,lat = lat,lng = lng,locationAddress = poi,msg=context().getString(R.string.message_type_location))
-            MessageDBManager.insert(message)
+            message.conversationId = conversationId
+            message.id = MessageDBManager.insert(message)
             model.sendLocationMessage(uid, lng, lat, poi)
+            message.sentStatus = Message.SentStatus.SENT
+            MessageDBManager.updateMessage(message)
         }, {
             showToast(R.string.send_error)
+            updateFailedStatus(message)
             Logger.e("send error ${it.message}")
         })
 
     }
 
-    private suspend fun getConversationId(msg:String):Long {
-        var id:Long=0
+    private suspend fun getConversationId(msg: String): Long {
+        var id: Long = 0
         var conversation = queryConversation()
-        if(conversation == null){
+        if (conversation == null) {
             var nickName = ContactDBManager.queryNickNameByUID(uid)
-            if(nickName ==null ){
+            if (nickName == null) {
                 nickName = uid
             }
-            conversation = Conversation(0,uid, msg,System.currentTimeMillis(),0,nickName)
-            id= ConversationDBManager.insert(conversation)
+            conversation = Conversation(0, uid, msg, System.currentTimeMillis(), 0, nickName)
+            id = ConversationDBManager.insert(conversation)
             observableConversationEvent.call()
-        }else{
+        } else {
             conversation.msg = msg
             conversation.time = System.currentTimeMillis()
             ConversationDBManager.updateConversations(conversation)
-            id= conversation.id
+            id = conversation.id
         }
 
         return id
     }
 
     suspend fun queryConversation(): Conversation? {
-       return ConversationDBManager.queryByFrom(uid)
+        return ConversationDBManager.queryByFrom(uid)
+    }
+
+    fun updateMessage(message: Message) {
+        rxLifeScope.launch({
+            message.sentStatus = Message.SentStatus.SENDING
+            message.time = System.currentTimeMillis()
+            MessageDBManager.updateMessage(message)
+            when (message.type) {
+                Message.Type.TEXT -> {
+                    model.sendTextMessage(uid, message.msg)
+                }
+                Message.Type.IMAGE -> {
+                    model.sendImageMessage(uid, message.uri, true)
+                }
+                Message.Type.VOICE -> {
+                    model.sendVoiceMessage(uid, message.uri, message.duration)
+                }
+                Message.Type.LOCATION -> {
+                    model.sendLocationMessage(uid, message.lng, message.lat, message.locationAddress)
+                }
+            }
+            message.sentStatus = Message.SentStatus.SENT
+            message.time = System.currentTimeMillis()
+            MessageDBManager.updateMessage(message)
+        }, {
+            updateFailedStatus(message)
+        })
+
+    }
+
+    private fun updateFailedStatus(message: Message) {
+        rxLifeScope.launch({
+            message.sentStatus = Message.SentStatus.FAILED
+            message.time = System.currentTimeMillis()
+            MessageDBManager.updateMessage(message)
+        }, {
+            it.printStackTrace()
+        })
     }
 
 }

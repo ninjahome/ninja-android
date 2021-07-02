@@ -17,11 +17,13 @@ import com.ninjahome.ninja.model.bean.Message.SentStatus
 import com.ninjahome.ninja.utils.TimeUtils
 import com.ninjahome.ninja.utils.UIUtils
 import com.ninjahome.ninja.view.BubbleImageView
+import com.ninjahome.ninja.viewmodel.ConversationViewModel
+import java.io.File
 
 /**
  * @描述 会话界面的消息列表适配器
  */
-class ConversationAdapter(private val mContext: Context, private val mData: List<Message>) : LQRAdapterForRecyclerView<Message>(mContext, mData) {
+class ConversationAdapter(private val mContext: Context, private val mData: List<Message>,val conversationViewModel: ConversationViewModel) : LQRAdapterForRecyclerView<Message>(mContext, mData) {
     override fun convert(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
         setTime(helper, item, position)
         setView(helper, item)
@@ -33,7 +35,6 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
 
     private fun setView(helper: LQRViewHolderForRecyclerView, item: Message) {
         //根据消息类型设置消息显示内容
-        //        MessageContent msgContent = item.getContent()
         if (item.type == Message.Type.TEXT) {
             MoonUtils.identifyFaceExpression(mContext, helper.getView(R.id.tvText), item.msg, ImageSpan.ALIGN_BOTTOM)
         } else if (item.type == Message.Type.IMAGE) {
@@ -53,6 +54,9 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
     }
 
     private fun setOnClick(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
+        helper.getView<View>(R.id.llError).setOnClickListener { v: View? ->
+            conversationViewModel.updateMessage(item)
+        }
         helper.getView<View>(R.id.ivAvatar).setOnClickListener { v: View? -> }
     }
 
@@ -74,8 +78,6 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
                 val sentStatus = item.sentStatus
                 if (sentStatus === SentStatus.SENDING) {
                     bivPic.setProgressVisible(true)
-                    //                    if (!TextUtils.isEmpty(item.getExtra()))
-                    //                        bivPic.setPercent(Integer.valueOf(item.getExtra()))
                     bivPic.showShadow(true)
                     helper.setViewVisibility(R.id.llError, View.GONE)
                 } else if (sentStatus === SentStatus.FAILED) {

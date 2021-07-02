@@ -20,7 +20,7 @@ interface MessageDao {
     fun updateMessage2Read(conversationId:Long)
 
     @Insert
-    fun insert(msg: Message)
+    fun insert(msg: Message):Long
 
     @Update
     fun updateMessage(vararg msg: Message)
