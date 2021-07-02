@@ -106,6 +106,7 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
         mAdapter = object : LQRAdapterForRecyclerView<Geo2AddressResultObject.ReverseAddressResult.Poi>(this, mData, R.layout.item_location_poi) {
             override fun convert(helper: LQRViewHolderForRecyclerView, item: Geo2AddressResultObject.ReverseAddressResult.Poi, position: Int) {
                 helper.setText(R.id.tvTitle, item.title).setText(R.id.tvDesc, "${UnitConversionUtils.m2Km(item._distance)} | ${item.address}").setViewVisibility(R.id.ivSelected, if (mSelectedPosi == position) View.VISIBLE else View.GONE)
+//                helper.setText(R.id.tvTitle, item.title).setText(R.id.tvDesc, "${item.address}").setViewVisibility(R.id.ivSelected, if (mSelectedPosi == position) View.VISIBLE else View.GONE)
             }
         }
         rvPOI.adapter = mAdapter
@@ -134,12 +135,14 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
         }
 
         mViewModel.scrolledEvent.observe(this) {
-
+            println("------------------------6--------------------------------")
             if (it.scrollY > 0 && abs(it.scrollY) > 10 && (rvPOI.layoutManager as GridLayoutManager).findFirstCompletelyVisibleItemPosition() <= 1 && rlMap.height == maxHeight) {
                 setRlMapHeight(minHeight)
+                println("------------------------7--------------------------------")
                 handler.postDelayed({ rvPOI.moveToPosition(0) }, 0)
             } else if (it.scrollY < 0 && abs(it.scrollY) > 10 && (rvPOI.layoutManager as GridLayoutManager).findFirstCompletelyVisibleItemPosition() == 1 && rlMap.height == minHeight) {
                 setRlMapHeight(maxHeight)
+                println("------------------------8--------------------------------")
                 handler.postDelayed({ rvPOI.moveToPosition(0) }, 0)
             }
         }
@@ -174,6 +177,7 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
     }
 
     override fun onLocationChanged(tencentLocation: TencentLocation, i: Int, s: String) {
+        println("------------------------4--------------------------------")
         if (i == TencentLocation.ERROR_OK) {
             val latLng = LatLng(tencentLocation.latitude, tencentLocation.longitude)
             if (myLocation == null) {
@@ -207,6 +211,8 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
         mTencentSearch!!.geo2address(geo2AddressParam, object : HttpResponseListener {
 
             override fun onFailure(arg0: Int, arg1: String, arg2: Throwable?) {
+                println("------------------------2--------------------------------")
+
                 pb.visibility = View.GONE
                 rvPOI.visibility = View.VISIBLE
                 arg2?.message?.let { Logger.e(it) }
@@ -219,7 +225,7 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
                 if (arg1 == null) {
                     return
                 }
-
+                println("------------------------1--------------------------------")
 
                 mData.clear()
                 mData.addAll((arg1 as Geo2AddressResultObject).result.pois)
@@ -229,6 +235,7 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
     }
 
     override fun onStatusUpdate(s: String?, i: Int, s1: String?) {
+        println("------------------------3--------------------------------")
         var desc = ""
         when (i) {
             TencentLocationListener.STATUS_DENIED -> desc = "权限被禁止"

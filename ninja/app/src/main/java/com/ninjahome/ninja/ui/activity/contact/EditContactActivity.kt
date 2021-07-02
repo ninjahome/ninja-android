@@ -4,8 +4,8 @@ import com.ninja.android.lib.base.BaseActivity
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
-import com.ninjahome.ninja.databinding.ActivityAddContactBinding
-import com.ninjahome.ninja.viewmodel.AddContactViewModel
+import com.ninjahome.ninja.databinding.ActivityEditContactBinding
+import com.ninjahome.ninja.viewmodel.EditContactViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinApiExtension
 
@@ -15,8 +15,8 @@ import org.koin.core.component.KoinApiExtension
  *Description:
  */
 @KoinApiExtension
-class AddContactActivity : BaseActivity<AddContactViewModel, ActivityAddContactBinding>(R.layout.activity_add_contact) {
-    override val mViewModel: AddContactViewModel by viewModel()
+class EditContactActivity : BaseActivity<EditContactViewModel, ActivityEditContactBinding>(R.layout.activity_edit_contact) {
+    override val mViewModel: EditContactViewModel by viewModel()
 
     override fun initView() {
         mViewModel.title.set(getString(R.string.search_contact_add_title))
@@ -25,11 +25,11 @@ class AddContactActivity : BaseActivity<AddContactViewModel, ActivityAddContactB
     override fun initData() {
         mViewModel.contact = intent.getParcelableExtra(IntentKey.CONTACT)
         mViewModel.address.value = intent.getStringExtra(IntentKey.UID)
-
-
-        mViewModel.contact?.let {
-            mViewModel.nickName.value = it.nickName
-            mViewModel.remark.value = it.remark
+        if( mViewModel.contact!=null){
+            mViewModel.nickName.value = mViewModel.contact!!.nickName
+            mViewModel.remark.value = mViewModel.contact!!.remark
+        }else{
+            mViewModel.queryContract()
         }
     }
 

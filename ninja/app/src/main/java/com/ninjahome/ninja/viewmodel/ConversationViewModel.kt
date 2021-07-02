@@ -1,6 +1,7 @@
 package com.ninjahome.ninja.viewmodel
 
 import android.net.Uri
+import android.os.Bundle
 import android.view.MotionEvent
 import androidlib.Androidlib
 import androidx.lifecycle.MutableLiveData
@@ -12,6 +13,7 @@ import com.ninja.android.lib.command.BindingConsumer
 import com.ninja.android.lib.command.ResponseCommand
 import com.ninja.android.lib.event.SingleLiveEvent
 import com.ninja.android.lib.provider.context
+import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.ConversationModel
 import com.ninjahome.ninja.model.bean.Conversation
@@ -19,6 +21,7 @@ import com.ninjahome.ninja.model.bean.Message
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.room.ConversationDBManager
 import com.ninjahome.ninja.room.MessageDBManager
+import com.ninjahome.ninja.ui.activity.contact.ContactDetailActivity
 import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.functions.Function
 import kotlinx.coroutines.Dispatchers
@@ -62,6 +65,15 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
             finishRefreshingEvent.call()
         }
     })
+
+    override fun clickRightIv() {
+        super.clickRightIv()
+        val bundle = Bundle()
+        bundle.putString(IntentKey.UID, uid)
+        startActivity(ContactDetailActivity::class.java, bundle)
+
+    }
+
     val clickAudio = BindingCommand<Any>(object : BindingAction {
         override fun call() {
             clickAudioEvent.call()

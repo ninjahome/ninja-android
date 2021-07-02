@@ -1,5 +1,6 @@
 package com.ninjahome.ninja.room
 
+import androidx.lifecycle.LiveData
 import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.model.bean.Contact
 import kotlinx.coroutines.*
@@ -12,10 +13,8 @@ import kotlinx.coroutines.*
 object ContactDBManager {
     private val contactDao: ContactDao by lazy { NinjaDB.getInstance(context()).contactDao() }
 
-    suspend fun all(): List<Contact>? {
-        return withContext(Dispatchers.IO) {
-            return@withContext contactDao.all
-        }
+     fun all(): LiveData<List<Contact>?> {
+            return contactDao.all()
     }
 
     suspend fun queryByID(uid: String): Contact? {
@@ -30,6 +29,10 @@ object ContactDBManager {
             return@withContext contactDao.queryNickNameByUID(uid)
         }
 
+    }
+
+    fun observeNickNameByUID(uid: String):LiveData<String?>{
+        return  contactDao.observeNickNameByUID(uid)
     }
 
     suspend fun insert(contact: Contact) {

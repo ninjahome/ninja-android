@@ -9,7 +9,7 @@ import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivitySearchContactBinding
-import com.ninjahome.ninja.ui.activity.contact.AddContactActivity
+import com.ninjahome.ninja.ui.activity.contact.EditContactActivity
 import com.ninjahome.ninja.ui.activity.scan.ScanActivity
 import com.ninjahome.ninja.viewmodel.SearchContactViewModel
 import kotlinx.android.synthetic.main.activity_search_contact.*
@@ -28,7 +28,7 @@ class SearchContactActivity : BaseActivity<SearchContactViewModel, ActivitySearc
             if (!Androidlib.isValidNinjaAddr(mViewModel.inputID.value)) {
                 toast(getString(R.string.search_contact_address_error))
             } else {
-                val intent = Intent(this, AddContactActivity::class.java)
+                val intent = Intent(this, EditContactActivity::class.java)
                 intent.putExtra(IntentKey.UID, mViewModel.inputID.value)
                 startActivity(intent)
             }
@@ -56,7 +56,7 @@ class SearchContactActivity : BaseActivity<SearchContactViewModel, ActivitySearc
             return
         }
         mViewModel.inputID.value = result.contents
-        val intent = Intent(this, AddContactActivity::class.java)
+        val intent = Intent(this, EditContactActivity::class.java)
         intent.putExtra(IntentKey.UID, result.contents)
         startActivity(intent)
 

@@ -90,7 +90,7 @@ class NinjaApp : BaseApplication() {
             viewModel { ScanViewModel() }
             viewModel { ShowIDQRCodeViewModel() }
             viewModel { UnLockViewModel() }
-            viewModel { AddContactViewModel() }
+            viewModel { EditContactViewModel() }
             viewModel { ContactDetailViewModel() }
             viewModel { AccountManagerViewModel() }
             viewModel { ConversationViewModel() }

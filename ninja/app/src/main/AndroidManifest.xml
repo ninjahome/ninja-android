@@ -95,7 +95,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.ninjahome.ninja.ui.activity.contact.AddContactActivity"
+            android:name="com.ninjahome.ninja.ui.activity.contact.EditContactActivity"
             android:screenOrientation="portrait" />
 
         <activity
@@ -110,6 +110,7 @@
         <activity
             android:name=".ui.activity.conversation.ConversationActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.activity.conversation.TakePhotoActivity"

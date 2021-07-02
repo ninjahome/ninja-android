@@ -8,14 +8,11 @@ import com.ninja.android.lib.command.BindingAction
 import com.ninja.android.lib.command.BindingCommand
 import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.R
-import com.ninjahome.ninja.event.EventRefreshContact
-import com.ninjahome.ninja.event.EventUpdateConversationNickName
 import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.room.ConversationDBManager
 import com.ninjahome.ninja.utils.AccountUtils
 import com.orhanobut.logger.Logger
-import org.greenrobot.eventbus.EventBus
 import org.koin.core.component.KoinApiExtension
 
 /**
@@ -24,7 +21,7 @@ import org.koin.core.component.KoinApiExtension
  *Description:
  */
 @KoinApiExtension
-class AddContactViewModel : BaseViewModel() {
+class EditContactViewModel : BaseViewModel() {
 
     val address = MutableLiveData("")
     val nickName = MutableLiveData("")
@@ -37,6 +34,7 @@ class AddContactViewModel : BaseViewModel() {
                 showToast(R.string.create_account_input_alias)
                 return
             }
+
             rxLifeScope.launch({
                 val owner = AccountUtils.getAddress(context())
                 if (contact == null) {
@@ -54,8 +52,6 @@ class AddContactViewModel : BaseViewModel() {
                     ConversationDBManager.updateConversations(it)
                 }
 
-                EventBus.getDefault().post(EventRefreshContact())
-                EventBus.getDefault().post(EventUpdateConversationNickName(contact!!.uid))
                 showToast(R.string.search_contact_save_success)
                 finish()
 
@@ -67,4 +63,16 @@ class AddContactViewModel : BaseViewModel() {
 
         }
     })
+
+    fun queryContract(){
+        rxLifeScope.launch {
+            contact= address.value?.let { ContactDBManager.queryByID(it) }
+            contact?.let {
+                nickName.value= it.nickName
+                remark.value = it.remark
+            }
+
+        }
+
+    }
 }

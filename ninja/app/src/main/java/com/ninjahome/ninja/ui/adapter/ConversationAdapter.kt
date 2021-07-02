@@ -43,7 +43,7 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
         } else if (item.type == Message.Type.LOCATION) {
             helper.setText(R.id.tvTitle, item.locationAddress)
             val ivLocation = helper.getView<ImageView>(R.id.ivLocation)
-            Glide.with(mContext).load("http://st.map.qq.com/api?size=708*270&center=${item.lng},${item.lat}&zoom=17&referer=weixin").centerCrop().into(ivLocation)
+            Glide.with(mContext).load("http://st.map.qq.com/api?size=708*270&center=${item.lng},${item.lat}&zoom=16&referer=weixin").into(ivLocation)
         } else if (item.type ==Message.Type.VOICE) {
             val increment = (UIUtils.getDisplayWidth() / 2 / Constants.DEFAULT_MAX_AUDIO_RECORD_TIME_SECOND * item.duration)
             val rlAudio = helper.setText(R.id.tvDuration, item.duration.toString() + "''").getView<RelativeLayout>(R.id.rlAudio)

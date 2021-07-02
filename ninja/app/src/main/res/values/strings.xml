@@ -88,6 +88,8 @@
     <string name="detail_send">发消息</string>
     <string name="detail_add_contact">添加好友</string>
     <string name="detail_edit_contact">编辑资料</string>
+    <string name="delete_contact">删除当前好友？</string>
+    <string name="delete_success">删除成功</string>
 
     <!--    search contact-->
     <string name="search_contact_scan_qr_code">扫描二维码</string>

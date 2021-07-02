@@ -8,6 +8,7 @@ import com.lxj.xpopup.interfaces.OnCancelListener
 import com.lxj.xpopup.interfaces.OnConfirmListener
 import com.lxj.xpopup.interfaces.OnSelectListener
 import com.lxj.xpopup.interfaces.SimpleCallback
+import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.view.ConversationMoreActionPop
 import com.ninjahome.ninja.view.PasswordPop
@@ -66,8 +67,11 @@ object DialogUtils {
     }
 
     fun showMoreActionDialog(activity: AppCompatActivity, listener: ConversationMoreActionPop.ConversationMoreActionListener, xpopListener: SimpleCallback = NinjaXPopupListener()): BasePopupView {
-        return XPopup.Builder(activity).popupType(PopupType.Bottom).dismissOnTouchOutside(false).dismissOnBackPressed(true).setPopupCallback(xpopListener).asCustom(ConversationMoreActionPop(activity, listener)).show()
+        return XPopup.Builder(activity).popupType(PopupType.Bottom).dismissOnTouchOutside(false).dismissOnBackPressed(true).setPopupCallback(xpopListener).asCustom(ConversationMoreActionPop(activity, listener))
+    }
 
+    fun showDeleteContactDialog(activity: AppCompatActivity,confirmListerer: OnConfirmListener): BasePopupView {
+        return XPopup.Builder(activity).dismissOnBackPressed(true).asConfirm(context().getString(R.string.delete_contact),"",confirmListerer).show()
     }
 
 }

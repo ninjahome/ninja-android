@@ -44,11 +44,9 @@ import com.ninjahome.ninja.utils.DialogUtils
 import com.ninjahome.ninja.view.ConversationMoreActionPop
 import com.ninjahome.ninja.viewmodel.ConversationViewModel
 import com.qingmei2.rximagepicker.core.RxImagePicker.create
-import com.qingmei2.rximagepicker.entity.Result
 import com.qingmei2.rximagepicker_extension.MimeType
 import com.qingmei2.rximagepicker_extension_wechat.WechatConfigrationBuilder
 import com.qingmei2.rximagepicker_extension_wechat.ui.WechatImagePickerFragment
-import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.activity_conversation.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -72,20 +70,26 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     private val REQUEST_IMAGE_PICKER = 1000
     private val REQUEST_TAKE_PHOTO = 1001
     private val REQUEST_LOCATION = 1002
-    lateinit var imagePicker:WechatImagePicker
+    lateinit var imagePicker: WechatImagePicker
 
     private lateinit var conversationAdapter: ConversationAdapter
 
     private var mIsFirst = false
     private lateinit var mEmotionKeyboard: EmotionKeyboard
     private val handler: Handler by lazy { Handler(Looper.getMainLooper()) }
-    private val mData:MutableList<Message> = mutableListOf()
+    private val mData: MutableList<Message> = mutableListOf()
 
     var conversation: Conversation? = null
     override val mViewModel: ConversationViewModel by viewModel()
 
-    private val moreActionDialog: BasePopupView by lazy {
-        DialogUtils.showMoreActionDialog(this, object : ConversationMoreActionPop.ConversationMoreActionListener {
+    private lateinit var moreActionDialog: BasePopupView
+
+    override fun initView() {
+        imagePicker = create(WechatImagePicker::class.java)
+        ImmersionBar.with(this).statusBarColor(com.ninja.android.lib.R.color.white).barEnable(true).keyboardEnable(true).statusBarDarkFont(true).fitsSystemWindows(true).init()
+        initEmotionKeyboard()
+        rvMsg.itemAnimator = null
+        moreActionDialog = DialogUtils.showMoreActionDialog(this, object : ConversationMoreActionPop.ConversationMoreActionListener {
             override fun action(index: Int) {
                 when (index) {
                     ConversationMoreActionPop.ALBUM -> startAlbumActivity()
@@ -98,18 +102,11 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         })
     }
 
-    override fun initView() {
-         imagePicker = create(WechatImagePicker::class.java)
-        ImmersionBar.with(this).statusBarColor(com.ninja.android.lib.R.color.white).barEnable(true).keyboardEnable(true).statusBarDarkFont(true).fitsSystemWindows(true).init()
-        initEmotionKeyboard()
-        rvMsg.itemAnimator = null
-    }
-
 
     override fun initData() {
         mViewModel.uid = intent.getStringExtra(IntentKey.UID)!!
         setTitle()
-        conversationAdapter = ConversationAdapter(this, mData,mViewModel)
+        conversationAdapter = ConversationAdapter(this, mData, mViewModel)
         rvMsg.adapter = conversationAdapter
         conversationAdapter.onItemClickListener = this
         initAudioRecordManager()
@@ -117,13 +114,18 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     private fun setTitle() {
         rxLifeScope.launch {
-            val title = ContactDBManager.queryNickNameByUID(mViewModel.uid)
-            if (TextUtils.isEmpty(title)) {
-                mViewModel.title.set(mViewModel.uid)
-            } else {
-                mViewModel.title.set(title)
+            ContactDBManager.observeNickNameByUID(mViewModel.uid).observe(this@ConversationActivity) {
+                if (TextUtils.isEmpty(it)) {
+                    mViewModel.title.set(mViewModel.uid)
+                } else {
+                    mViewModel.title.set(it)
+                }
             }
         }
+
+
+        mViewModel.rightIv.set(R.drawable.contact_more)
+        mViewModel.showRightIv.set(true)
     }
 
     override fun initObserve() {
@@ -203,13 +205,13 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     }
 
 
-    fun observeConversation() {
+    private fun observeConversation() {
         MainScope().launch {
             conversation = mViewModel.queryConversation()
             if (conversation != null) {
                 MessageDBManager.queryByConversationId(conversation!!.id).observe(this@ConversationActivity) { it ->
                     mData.clear()
-                    if(it!=null){
+                    if (it != null) {
                         mData.addAll(it)
                     }
                     conversationAdapter.notifyDataSetChanged()
@@ -220,14 +222,18 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     }
 
-    private fun clearUnreadNumber(conversation: Conversation) {
+    private fun clearUnreadNumber() {
         MainScope().launch {
-            MessageDBManager.updateMessage2Read(conversation.id)
-            conversation.unreadCount = 0
-            if(conversationAdapter.lastItem!=null ){
-                conversation.msg = conversationAdapter.lastItem.msg
+            val conversation = mViewModel.queryConversation()
+            conversation?.let {
+                MessageDBManager.updateMessage2Read(it.id)
+                it.unreadCount = 0
+                if (conversationAdapter.lastItem != null) {
+                    it.msg = conversationAdapter.lastItem.msg
+                }
+                ConversationDBManager.updateConversations(it)
             }
-            ConversationDBManager.updateConversations(conversation)
+
         }
 
     }
@@ -259,13 +265,12 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     private fun startAlbumActivity() {
         val build = WechatConfigrationBuilder(MimeType.INSTANCE.ofImage(), false).maxSelectable(9).countable(true).spanCount(4).countable(false).build()
-        imagePicker.openGallery(this,build)
-                .subscribe {
+        imagePicker.openGallery(this, build).subscribe {
                     val original = it.getBooleanExtra(WechatImagePickerFragment.EXTRA_ORIGINAL_IMAGE, false)
-                    var path = PhotoFromPhotoAlbum.getRealPathFromUri(this@ConversationActivity,it.uri)
-                            if(path ==null){
-                                path=it.uri.toString()
-                            }
+                    var path = PhotoFromPhotoAlbum.getRealPathFromUri(this@ConversationActivity, it.uri)
+                    if (path == null) {
+                        path = it.uri.toString()
+                    }
                     mViewModel.sendImage(path, !original)
                     moveToBottom()
                 }
@@ -552,10 +557,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     override fun onDestroy() {
         super.onDestroy()
-        conversation?.let {
-            clearUnreadNumber(it)
-        }
-
+        clearUnreadNumber()
     }
 
     override fun onItemClick(helper: LQRViewHolder, parent: ViewGroup?, itemView: View?, position: Int) {

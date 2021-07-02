@@ -11,8 +11,8 @@ import com.ninja.android.lib.command.BindingCommand
 import com.ninja.android.lib.event.SingleLiveEvent
 import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.BR
-import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
+import com.ninjahome.ninja.room.ConversationDBManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.tatarka.bindingcollectionadapter2.ItemBinding
@@ -56,10 +56,9 @@ class ConversationListViewModel : BaseViewModel() {
         //        startActivity(ChatActivity::class.java)
     }
 
-    fun updateConversation() {
-//        items.clear()
-//        NinjaApp.instance.conversations.values.forEach {
-//            items.add(ConversationItemViewModel(this, it))
-//        }
+    fun updateConversation(uid: String) {
+        rxLifeScope.launch {
+            ConversationDBManager.queryByFrom(uid)
+        }
     }
 }

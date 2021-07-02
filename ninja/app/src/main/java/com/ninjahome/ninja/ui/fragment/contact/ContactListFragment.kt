@@ -2,14 +2,12 @@ package com.ninjahome.ninja.ui.fragment.contact
 
 import android.content.Intent
 import android.text.TextUtils
-import androidx.lifecycle.rxLifeScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ninja.android.lib.base.BaseFragment
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.FragmentContactListBinding
-import com.ninjahome.ninja.event.EventRefreshContact
 import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.ui.activity.contact.ContactDetailActivity
@@ -21,8 +19,6 @@ import com.ninjahome.ninja.view.contacts.itemanimator.SlideInOutLeftItemAnimator
 import com.ninjahome.ninja.viewmodel.ContactListViewModel
 import kotlinx.android.synthetic.main.fragment_contact_list.*
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -39,7 +35,6 @@ class ContactListFragment : BaseFragment<ContactListViewModel, FragmentContactLi
     override val mViewModel: ContactListViewModel by viewModel()
 
     override fun initView() {
-        EventBus.getDefault().register(this)
         contactAdapter = ContactAdapter(mActivity)
         layoutManager = LinearLayoutManager(mActivity)
         contactsRecyclerView.layoutManager = layoutManager
@@ -73,39 +68,30 @@ class ContactListFragment : BaseFragment<ContactListViewModel, FragmentContactLi
         }
     }
 
+    override fun initVariableId(): Int = BR.viewModel
 
-    override fun initData() {
+    override fun initObserve() {
+        ContactDBManager.all().observe(this) {
+            nameList.clear()
+            it?.let { it1 ->
+                nameList.addAll(it1)
+                ContactsUtils.sortData(nameList)
+                //返回一个包含所有Tag字母在内的字符串并赋值给tagsStr
+                val tagsStr: String = ContactsUtils.getTags(nameList)
+                sideBar.setIndexStr(tagsStr)
+                decoration!!.setDatas(nameList, tagsStr)
+                contactAdapter.addAll(nameList)
+            }
 
-        nameList.clear()
-        rxLifeScope.launch {
-            val names = ContactDBManager.all()
-            names?.let { nameList.addAll(it) }
-
-            //对数据源进行排序
-            ContactsUtils.sortData(nameList)
-            //返回一个包含所有Tag字母在内的字符串并赋值给tagsStr
-            val tagsStr: String = ContactsUtils.getTags(nameList)
-            sideBar.setIndexStr(tagsStr)
-            decoration!!.setDatas(nameList, tagsStr)
-            contactAdapter.addAll(nameList)
         }
 
 
     }
 
-    override fun initVariableId(): Int = BR.viewModel
-
-    override fun initObserve() {
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun reloadIDcard(event: EventRefreshContact) {
-        initData()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
-        EventBus.getDefault().unregister(this)
     }
+
+    override fun initData() {}
 
 }

@@ -104,6 +104,7 @@
 -keep class com.tencent.tencentmap.**{*;}
 -keep class com.tencent.map.**{*;}
 -keep class com.tencent.beacontmap.**{*;}
+-keep class com.tencent.lbssearch.object.**{*;}
 -keep class navsns.**{*;}
 -dontwarn com.qq.**
 -dontwarn com.tencent.**
@@ -121,9 +122,6 @@
 -keepclasseswithmembernames class * {
     native <methods>;
 }
-
--dontwarn  org.eclipse.jdt.annotation.**
--dontwarn  c.t.**
 
 -dontwarn  org.eclipse.jdt.annotation.**
 -dontwarn  c.t.**
