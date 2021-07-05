@@ -71,6 +71,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     private val REQUEST_TAKE_PHOTO = 1001
     private val REQUEST_LOCATION = 1002
     lateinit var imagePicker: WechatImagePicker
+    private var isFirstObserable = true
 
     private lateinit var conversationAdapter: ConversationAdapter
 
@@ -89,6 +90,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         ImmersionBar.with(this).statusBarColor(com.ninja.android.lib.R.color.white).barEnable(true).keyboardEnable(true).statusBarDarkFont(true).fitsSystemWindows(true).init()
         initEmotionKeyboard()
         rvMsg.itemAnimator = null
+        rvMsg.animation = null
         moreActionDialog = DialogUtils.showMoreActionDialog(this, object : ConversationMoreActionPop.ConversationMoreActionListener {
             override fun action(index: Int) {
                 when (index) {
@@ -215,7 +217,12 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                         mData.addAll(it)
                     }
                     conversationAdapter.notifyDataSetChanged()
-                    rvMsg.smoothMoveToPosition((rvMsg.adapter?.itemCount ?: 1) - 1)
+                    if(isFirstObserable){
+                        isFirstObserable = false
+                        rvMsg.scrollToPosition((rvMsg.adapter?.itemCount ?: 1) - 1)
+                    }else{
+                        rvMsg.smoothScrollToPosition((rvMsg.adapter?.itemCount ?: 1) - 1)
+                    }
                 }
             }
         }

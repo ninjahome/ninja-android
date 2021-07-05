@@ -1,6 +1,8 @@
 package com.ninjahome.ninja.utils;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -148,5 +150,17 @@ public class UIUtils {
             return resources.getDimensionPixelSize(resourceId);
         }
         return 0;
+    }
+
+    public static String getVersion(Context context) {
+        try {
+            PackageManager manager = context.getPackageManager();
+            PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
+            String version = info.versionName;
+            return version;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "无法获取到版本号";
+        }
     }
 }

@@ -33,6 +33,7 @@
     <string name="main_click_exit_application">再次点击退出应用</string>
     <string name="send_error">发送失败</string>
     <string name="no_support_msg_type">不支持的消息类型</string>
+    <string name="version">version:%s</string>
 
     <!--  conversation  -->
     <string name="conversation_unline_tip">离线状态，下拉更新状态</string>

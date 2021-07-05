@@ -126,6 +126,15 @@
             app:onCheckedChangeCommand="@{viewModel.onCheckedFingerprint}"
             tools:ignore="MissingConstraints" />
 
-
+        <TextView
+            android:id="@+id/versionTv"
+            android:layout_width="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="40dp"
+            android:textSize="16sp"
+            android:textColor="@color/color_0c123d"
+            android:layout_height="wrap_content"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

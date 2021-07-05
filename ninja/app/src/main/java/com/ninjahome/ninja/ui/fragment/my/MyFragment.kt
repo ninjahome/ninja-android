@@ -18,10 +18,7 @@ import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.FragmentMyBinding
 import com.ninjahome.ninja.ui.activity.conversation.LocationActivity
 import com.ninjahome.ninja.ui.activity.showidqrcode.ShowIDQRCodeActivity
-import com.ninjahome.ninja.utils.CryptographyManager
-import com.ninjahome.ninja.utils.DialogUtils
-import com.ninjahome.ninja.utils.EncryptedPreferencesUtils
-import com.ninjahome.ninja.utils.StringUtils
+import com.ninjahome.ninja.utils.*
 import com.ninjahome.ninja.view.PasswordPop
 import com.ninjahome.ninja.viewmodel.MyViewModel
 import com.orhanobut.logger.Logger
@@ -46,7 +43,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>(R.layout.fragmen
 
     override val mViewModel: MyViewModel by viewModel()
     override fun initView() {
-
+        versionTv.text = String.format(getString(R.string.version),UIUtils.getVersion(mActivity))
     }
 
     override fun initData() {
