@@ -3,6 +3,7 @@ package com.ninjahome.ninja
 import android.text.TextUtils
 import androidlib.Androidlib
 import androidlib.AppCallBack
+import androidx.lifecycle.rxLifeScope
 import coil.load
 import com.lqr.emoji.LQREmotionKit
 import com.ninja.android.lib.base.BaseApplication
@@ -20,10 +21,12 @@ import com.ninjahome.ninja.utils.FileUtils
 import com.ninjahome.ninja.viewmodel.*
 import com.orhanobut.logger.*
 import com.umeng.commonsdk.UMConfigure
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -116,6 +119,7 @@ class NinjaApp : BaseApplication() {
     fun configApp() {
         Androidlib.configApp("", object : AppCallBack {
             override fun imageMessage(from: String, to: String, payload: ByteArray, time: Long) {
+                println("-----------------------------图片------------------------------")
                 MainScope().launch {
                     val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_image), time)
                     val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.IMAGE, msg = "[图片]")
@@ -126,6 +130,7 @@ class NinjaApp : BaseApplication() {
             }
 
             override fun locationMessage(from: String, to: String, lng: Float, lat: Float, locationAddress: String, time: Long) {
+                println("-----------------------------位置------------------------------")
                 MainScope().launch {
                     val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_location), time)
                     val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.LOCATION, lat = lat, lng = lng, locationAddress = locationAddress, msg = "[定位]")
@@ -135,6 +140,7 @@ class NinjaApp : BaseApplication() {
             }
 
             override fun textMessage(from: String, to: String, data: String, time: Long) {
+                println("-----------------------------${data}------------------------------")
                 MainScope().launch {
                     val conversation = insertOrUpdateConversation(from, data, time)
                     val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.TEXT, msg = data)
@@ -144,9 +150,10 @@ class NinjaApp : BaseApplication() {
             }
 
             override fun voiceMessage(from: String, to: String, payload: ByteArray, length: Long, time: Long) {
+                println("-----------------------------语音${length}------------------------------")
                 MainScope().launch {
                     val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_voice), time)
-                    val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.TEXT, msg = "[语音]")
+                    val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.VOICE, msg = "[语音]",duration = length.toInt())
                     message.uri = FileUtils.saveVoiceToPath(Constants.AUDIO_SAVE_DIR, payload)
                     insertMessage(message, conversation)
                 }
@@ -157,7 +164,6 @@ class NinjaApp : BaseApplication() {
                 Logger.d("webSocketClosed")
                 EventBus.getDefault().post(EventOffline())
             }
-
         })
     }
 

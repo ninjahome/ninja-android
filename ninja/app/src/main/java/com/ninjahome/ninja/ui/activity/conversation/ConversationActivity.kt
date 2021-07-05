@@ -350,6 +350,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                     flEmotionView.visibility = View.GONE
                     hideEmotionLayout()
                     hideAudioButton()
+                    mEmotionKeyboard.hideSoftInput()
                     handler.postDelayed(({
                         showMoreLayout()
                     }), 50)
