@@ -33,7 +33,7 @@ class ContactDetailViewModel : BaseViewModel() {
         override fun call() {
             val bundle = Bundle()
             bundle.putString(IntentKey.UID, uid.value)
-            startActivity(ConversationActivity::class.java, bundle)
+            startActivity(ConversationActivity::class.java, bundle,true)
         }
     })
 
