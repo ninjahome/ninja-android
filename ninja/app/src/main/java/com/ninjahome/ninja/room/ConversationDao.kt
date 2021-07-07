@@ -7,7 +7,7 @@ import com.ninjahome.ninja.model.bean.Conversation
 @Dao
 interface ConversationDao {
     //查询user表中所有数据
-    @Query("SELECT * FROM conversation")
+    @Query("SELECT * FROM conversation order by time desc")
     fun all(): LiveData<List<Conversation>?>
 
     @Query("SELECT * FROM conversation where `from` = :from")

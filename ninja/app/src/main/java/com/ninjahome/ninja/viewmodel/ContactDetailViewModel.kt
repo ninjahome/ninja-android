@@ -22,12 +22,11 @@ import org.koin.core.component.KoinApiExtension
  */
 @KoinApiExtension
 class ContactDetailViewModel : BaseViewModel() {
-    val name = SingleLiveEvent<String>()
+    val name = MutableLiveData<String>()
     val showDeleteDialogEvent = SingleLiveEvent<Any>()
     val deleteSuccessEvent = SingleLiveEvent<Any>()
     val uid = MutableLiveData<String>()
-    val isContact = MutableLiveData(false)
-    var contact: Contact? = null
+    var contact =MutableLiveData<Contact>()
 
 
     val clickSend = BindingCommand<Any>(object : BindingAction {
@@ -43,10 +42,10 @@ class ContactDetailViewModel : BaseViewModel() {
         showDeleteDialogEvent.call()
     }
 
-    val clickAdd = BindingCommand<Any>(object : BindingAction {
+    val clickEdit = BindingCommand<Any>(object : BindingAction {
         override fun call() {
             val bundle = Bundle()
-            bundle.putParcelable(IntentKey.CONTACT, contact)
+            bundle.putParcelable(IntentKey.CONTACT, contact.value)
             bundle.putString(IntentKey.UID, uid.value)
             startActivity(EditContactActivity::class.java, bundle, true)
         }
@@ -54,10 +53,9 @@ class ContactDetailViewModel : BaseViewModel() {
 
     fun getContact(uid: String) {
         rxLifeScope.launch {
-            contact = ContactDBManager.queryByID(uid)
-            if (contact != null) {
-                isContact.value = true
-                name.value = contact!!.nickName
+            contact.value = ContactDBManager.queryByID(uid)
+            if (contact.value != null) {
+                name.value = contact.value!!.nickName
             }
             this@ContactDetailViewModel.uid.value = uid
         }
@@ -65,11 +63,11 @@ class ContactDetailViewModel : BaseViewModel() {
 
     fun deleteContact() {
         rxLifeScope.launch {
-            contact?.let {
+            contact.value?.let {
                 ContactDBManager.delete(it)
                 val conversation = ConversationDBManager.queryByFrom(it.uid)
                 conversation?.let {c->
-                    c.nickName = contact!!.uid
+                    c.nickName = contact.value!!.uid
                     ConversationDBManager.updateConversations(c)
                 }
             }

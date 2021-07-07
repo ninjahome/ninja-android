@@ -3,7 +3,6 @@ package com.ninjahome.ninja
 import android.text.TextUtils
 import androidlib.Androidlib
 import androidlib.AppCallBack
-import androidx.lifecycle.rxLifeScope
 import coil.load
 import com.lqr.emoji.LQREmotionKit
 import com.ninja.android.lib.base.BaseApplication
@@ -21,12 +20,10 @@ import com.ninjahome.ninja.utils.FileUtils
 import com.ninjahome.ninja.viewmodel.*
 import com.orhanobut.logger.*
 import com.umeng.commonsdk.UMConfigure
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -43,8 +40,9 @@ import org.koin.dsl.module
  */
 @KoinApiExtension
 class NinjaApp : BaseApplication() {
-    val mutex = Mutex()
+    private val mutex = Mutex()
     lateinit var account: Account
+
     companion object {
         lateinit var instance: NinjaApp
     }
@@ -58,7 +56,7 @@ class NinjaApp : BaseApplication() {
         initImagePicker()
         UMConfigure.setLogEnabled(true)
         UMConfigure.init(this, "609ce659c9aacd3bd4d3f092", "Umeng", UMConfigure.DEVICE_TYPE_PHONE, "")
-        LQREmotionKit.init(this) { context, path, imageView -> imageView.load(path) }
+        LQREmotionKit.init(this) { _, path, imageView -> imageView.load(path) }
     }
 
     private fun initPush() {
@@ -102,6 +100,7 @@ class NinjaApp : BaseApplication() {
             viewModel { ShowBigImageViewModel() }
             viewModel { LocationSearchViewModel() }
             viewModel { LocationShowViewModel() }
+            viewModel { ScanContactSuccessViewModel() }
 
             single { UnlockModel() }
             single { CreateAccountModel() }
@@ -153,7 +152,7 @@ class NinjaApp : BaseApplication() {
                 println("-----------------------------语音${length}------------------------------")
                 MainScope().launch {
                     val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_voice), time)
-                    val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.VOICE, msg = "[语音]",duration = length.toInt())
+                    val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.VOICE, msg = "[语音]", duration = length.toInt())
                     message.uri = FileUtils.saveVoiceToPath(Constants.AUDIO_SAVE_DIR, payload)
                     insertMessage(message, conversation)
                 }
@@ -179,13 +178,13 @@ class NinjaApp : BaseApplication() {
     }
 
     private suspend fun insertOrUpdateConversation(from: String, msg: String, time: Long): Conversation {
-        mutex.withLock{
+        mutex.withLock {
             var conversation = ConversationDBManager.queryByFrom(from)
             if (conversation == null) {
                 conversation = Conversation(0, from, msg, time, 1)
                 val nickName = ContactDBManager.queryNickNameByUID(from)
                 conversation.nickName = if (TextUtils.isEmpty(nickName)) from else nickName!!
-                conversation.id= ConversationDBManager.insert(conversation)
+                conversation.id = ConversationDBManager.insert(conversation)
             } else {
                 conversation.msg = msg
                 conversation.time = time
@@ -197,12 +196,10 @@ class NinjaApp : BaseApplication() {
         }
 
 
-
     }
 
-
-    suspend fun updateConversationUnreadCount(conversation: Conversation){
-        val unreadCount =  MessageDBManager.queryUnReadCount(conversation.id)
+    suspend fun updateConversationUnreadCount(conversation: Conversation) {
+        val unreadCount = MessageDBManager.queryUnReadCount(conversation.id)
         conversation.unreadCount = unreadCount
         ConversationDBManager.updateConversations(conversation)
     }

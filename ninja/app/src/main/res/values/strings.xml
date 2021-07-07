@@ -87,19 +87,21 @@
     <string name="apply_list_expired">已失效</string>
     <string name="apply_list_added">已添加</string>
     <string name="detail_send">发消息</string>
-    <string name="detail_add_contact">添加好友</string>
+    <string name="detail_add_contact">保存到通讯录</string>
     <string name="detail_edit_contact">编辑资料</string>
     <string name="delete_contact">删除当前好友？</string>
     <string name="delete_success">删除成功</string>
+    <string name="contact_remark">备注</string>
+    <string name="contact_des">描述</string>
 
     <!--    search contact-->
     <string name="search_contact_scan_qr_code">扫描二维码</string>
-    <string name="search_contact_input_nick_name">填写备注</string>
-    <string name="search_contact_remark">备注信息</string>
-    <string name="search_contact_add">保存到通讯录</string>
+    <string name="search_contact_input_nick_name">备注名称</string>
+    <string name="search_contact_remark">添加更多备注信息</string>
+    <string name="search_contact_add">完成</string>
     <string name="search_contact_save_success">保存成功</string>
     <string name="search_contact_save_error">保存失败</string>
-    <string name="search_contact_add_title">好友信息</string>
+    <string name="search_contact_add_title">设置备注信息</string>
     <string name="search_contact_address_error">地址有误</string>
     <string name="create_account_input_alias">请输入备注名称</string>
     <!--    my-->

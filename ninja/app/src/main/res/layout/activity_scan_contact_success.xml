@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.ninjahome.ninja.viewmodel.ContactDetailViewModel" />
+            type="com.ninjahome.ninja.viewmodel.ScanContactSuccessViewModel" />
 
     </data>
 
@@ -15,13 +15,11 @@
         android:layout_width="match_parent"
         android:background="@color/white"
         android:layout_height="match_parent">
-        <View
-            android:id="@+id/statusBar"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="0dp"
-            android:layout_height="0dp" />
+
+        <include
+            layout="@layout/title_layout"
+            app:viewModel="@{viewModel}" />
+
         <ImageView
             android:layout_width="0dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -30,11 +28,6 @@
             android:background="@drawable/my_top_bg"
             android:layout_height="wrap_content"
             tools:ignore="ContentDescription" />
-        <include
-            layout="@layout/title_layout"
-            app:layout_constraintTop_toBottomOf="@+id/statusBar"
-            app:viewModel="@{viewModel}" />
-
         <ImageView
             android:id="@+id/nameIv"
             android:layout_width="52dp"
@@ -44,30 +37,18 @@
             android:layout_marginTop="20dp"
             android:layout_height="52dp"
             tools:ignore="ContentDescription" />
-        <TextView
-            android:id="@+id/nameTv"
-            android:textColor="@color/color_0c123d"
-            app:layout_constraintTop_toTopOf="@+id/nameIv"
-            app:layout_constraintStart_toEndOf="@+id/nameIv"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:gravity="start"
-            android:textSize="22sp"
-            android:layout_marginStart="8dp"
-            android:text="@{viewModel.name}"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/idTv"
             android:textColor="@color/color_86868a"
-            app:layout_constraintTop_toBottomOf="@+id/nameTv"
+            app:layout_constraintTop_toTopOf="@+id/nameIv"
+            app:layout_constraintBottom_toBottomOf="@+id/nameIv"
             app:layout_constraintStart_toEndOf="@+id/nameIv"
+            app:layout_constraintEnd_toEndOf="parent"
             android:text="@{viewModel.uid}"
             android:textSize="14sp"
-            android:layout_marginStart="8dp"
-            android:singleLine="true"
-            android:ellipsize="middle"
-            android:layout_width="150dp"
+            android:layout_width="0dp"
+            android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:layout_height="wrap_content" />
 
@@ -82,42 +63,37 @@
             android:background="@color/color_e7e7e7c"
             android:layout_height="1dp"/>
 
-        <TextView
-            android:id="@+id/remarkTv"
-            android:layout_width="wrap_content"
-            android:text="@string/contact_remark"
-            app:layout_constraintTop_toBottomOf="@+id/line"
-            app:layout_constraintStart_toStartOf="parent"
-            android:textSize="16sp"
-            android:layout_marginTop="15dp"
-            android:textColor="@color/color_26253c"
-            android:layout_marginStart="15dp"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:textSize="16sp"
-            app:layout_constraintTop_toTopOf="@+id/remarkTv"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="@{viewModel.contact.remark}"
-            android:gravity="end|center_vertical"
-            onClickCommand="@{viewModel.clickEdit}"
-            app:layout_constraintBottom_toBottomOf="@+id/remarkTv"
-            style="@style/NextTextViewStyle"/>
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/sendBtn"
-            android:layout_width="158dp"
+            android:layout_width="0dp"
             android:layout_height="57dp"
             android:gravity="center"
             onClickCommand="@{viewModel.clickSend}"
-            android:textColor="@color/white"
+            android:textColor="@color/color_26253c"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginBottom="74dp"
             android:layout_marginEnd="20dp"
-            android:background="@drawable/button_bg"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/bg_send_msg"
+            app:layout_constraintEnd_toStartOf="@+id/addBtn"
             android:text="@string/detail_send"
             android:layout_marginStart="20dp" />
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/addBtn"
+            android:layout_width="0dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:background="@drawable/button_bg"
+            android:layout_height="57dp"
+            onClickCommand="@{viewModel.clickAdd}"
+            app:layout_constraintStart_toEndOf="@+id/sendBtn"
+            app:layout_constraintTop_toTopOf="@+id/sendBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/sendBtn"
+            android:text="@string/detail_add_contact"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            tools:ignore="MissingConstraints" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

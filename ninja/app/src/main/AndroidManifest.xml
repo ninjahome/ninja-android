@@ -71,23 +71,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ninjahome.ninja.ui.activity.main.MainActivity"
+            android:name=".ui.activity.main.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ninjahome.ninja.ui.activity.createaccount.CreateAccountActivity"
+            android:name=".ui.activity.createaccount.CreateAccountActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ninjahome.ninja.ui.activity.edituserinfo.EditUserInfoActivity"
+            android:name=".ui.activity.edituserinfo.EditUserInfoActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ninjahome.ninja.ui.activity.contact.ApplyListActivity"
+            android:name=".ui.activity.contact.ApplyListActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ninjahome.ninja.ui.activity.search.SearchContactActivity"
+            android:name=".ui.activity.search.SearchContactActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ninjahome.ninja.ui.activity.scan.ScanActivity"
+            android:name=".ui.activity.scan.ScanActivity"
             android:screenOrientation="portrait" />
 
         <activity
@@ -95,9 +95,11 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.ninjahome.ninja.ui.activity.contact.EditContactActivity"
+            android:name=".ui.activity.contact.EditContactActivity"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name=".ui.activity.contact.ScanContactSuccessActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.showidqrcode.ShowIDQRCodeActivity"
             android:screenOrientation="portrait" />
@@ -127,6 +129,7 @@
         <activity
             android:name=".ui.activity.conversation.LocationShowActivity"
             android:screenOrientation="portrait" />
+
 
         <meta-data
             android:name="android.max_aspect"

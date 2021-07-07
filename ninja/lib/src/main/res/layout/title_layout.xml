@@ -83,6 +83,7 @@
             android:id="@+id/title_bottom_line"
             android:layout_width="0dp"
             android:layout_height="1dp"
+            isVisible="@{viewModel.showBottomLine}"
             android:background="@drawable/split_line"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

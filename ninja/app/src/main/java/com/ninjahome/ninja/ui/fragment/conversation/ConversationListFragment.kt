@@ -47,7 +47,6 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
         mViewModel.finishRefreshingEvent.observe(this) {
             setLineState()
             swipeRefreshLayout.isRefreshing = false
-
         }
 
         ConversationDBManager.all().observe(this) {

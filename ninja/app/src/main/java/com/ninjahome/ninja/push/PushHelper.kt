@@ -9,6 +9,7 @@ import com.taobao.agoo.TaobaoRegister
 import com.umeng.commonsdk.UMConfigure
 import com.umeng.commonsdk.utils.UMUtils
 import com.umeng.message.IUmengRegisterCallback
+import com.umeng.message.MsgConstant
 import com.umeng.message.PushAgent
 import org.android.agoo.huawei.HuaWeiRegister
 import org.android.agoo.mezu.MeizuRegister
@@ -64,8 +65,7 @@ object PushHelper {
 
         //获取消息推送实例
         val pushAgent = PushAgent.getInstance(context)
-        //        pushAgent.setNotificationPlaySound(MsgConstant.NOTIFICATION_PLAY_SERVER); //服务端控制声音
-        //        pushAgent.setDisplayNotificationNumber(0);
+                pushAgent.setNotificationPlaySound(MsgConstant.NOTIFICATION_PLAY_SERVER); //服务端控制声音
         //        MessageSharedPrefs.getInstance(context).setDisplayNotificationNumber(100);
         //注册推送服务，每次调用register方法都会回调该接口
         pushAgent.register(object : IUmengRegisterCallback {

@@ -60,7 +60,7 @@ class TakePhotoActivity : BaseActivity<TakePhotoViewModel, ActivityTakePhotoBind
             }
 
             override fun takePhoto() {
-                visible(sendTv, userAvatarIv)
+                visible(sendBtn, userAvatarIv)
                 gone(userNameTv)
             }
 
@@ -94,7 +94,7 @@ class TakePhotoActivity : BaseActivity<TakePhotoViewModel, ActivityTakePhotoBind
     override fun initObserve() {
         mViewModel.backEvent.observe(this) {
             if (cameraview.isTaked) {
-                gone(sendTv, userAvatarIv)
+                gone(sendBtn, userAvatarIv)
                 visible(userNameTv)
                 cameraview.resetScreen()
             } else {

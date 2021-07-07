@@ -9,10 +9,15 @@ import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivitySearchContactBinding
+import com.ninjahome.ninja.room.ContactDBManager
+import com.ninjahome.ninja.ui.activity.contact.ContactDetailActivity
 import com.ninjahome.ninja.ui.activity.contact.EditContactActivity
+import com.ninjahome.ninja.ui.activity.contact.ScanContactSuccessActivity
 import com.ninjahome.ninja.ui.activity.scan.ScanActivity
 import com.ninjahome.ninja.viewmodel.SearchContactViewModel
 import kotlinx.android.synthetic.main.activity_search_contact.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -28,12 +33,36 @@ class SearchContactActivity : BaseActivity<SearchContactViewModel, ActivitySearc
             if (!Androidlib.isValidNinjaAddr(mViewModel.inputID.value)) {
                 toast(getString(R.string.search_contact_address_error))
             } else {
-                val intent = Intent(this, EditContactActivity::class.java)
+                nextStep()
+                val intent = Intent(this, ScanContactSuccessActivity::class.java)
                 intent.putExtra(IntentKey.UID, mViewModel.inputID.value)
                 startActivity(intent)
             }
             return@setOnEditorActionListener true
         }
+    }
+
+    private fun nextStep() {
+        MainScope().launch {
+            val contact = mViewModel.inputID.value?.let { ContactDBManager.queryByID(it) }
+            if(contact ==null){
+                startScanContactSuccessActivity()
+            }else{
+                startContactDetailActivity()
+            }
+        }
+    }
+
+    private fun startContactDetailActivity() {
+        val intent = Intent(this, ContactDetailActivity::class.java)
+        intent.putExtra(IntentKey.UID, mViewModel.inputID.value)
+        startActivity(intent)
+    }
+
+    private fun startScanContactSuccessActivity() {
+        val intent = Intent(this, ScanContactSuccessActivity::class.java)
+        intent.putExtra(IntentKey.UID, mViewModel.inputID.value)
+        startActivity(intent)
     }
 
     override fun initData() {
@@ -56,9 +85,7 @@ class SearchContactActivity : BaseActivity<SearchContactViewModel, ActivitySearc
             return
         }
         mViewModel.inputID.value = result.contents
-        val intent = Intent(this, EditContactActivity::class.java)
-        intent.putExtra(IntentKey.UID, result.contents)
-        startActivity(intent)
+        nextStep()
 
 
     }

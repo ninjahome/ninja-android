@@ -26,6 +26,7 @@ abstract class BaseViewModel : ViewModel(), IBaseViewModel {
     val showBackImage = ObservableField(true)
     val showRightText = ObservableField(false)
     val showRightIv = ObservableField(false)
+    val showBottomLine = ObservableField(true)
     val rightText = ObservableField("")
     val rightIv= ObservableField<Int>()
 
