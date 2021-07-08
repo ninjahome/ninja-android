@@ -50,15 +50,5 @@ class ConversationListViewModel : BaseViewModel() {
         }
     })
 
-    override fun clickRightIv() {
-        super.clickRightIv()
-        //        showToast("点击了+")
-        //        startActivity(ChatActivity::class.java)
-    }
 
-    fun updateConversation(uid: String) {
-        rxLifeScope.launch {
-            ConversationDBManager.queryByFrom(uid)
-        }
-    }
 }

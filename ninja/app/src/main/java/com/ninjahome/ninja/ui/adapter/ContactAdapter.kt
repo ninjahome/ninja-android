@@ -30,7 +30,7 @@ class ContactAdapter(private val mContext: Context) : RecyclerView.Adapter<MyRec
 
     // declare the color generator and drawable builder
     private val mColorGenerator = ColorGenerator.MATERIAL
-    private val mDrawableBuilder =  TextDrawable.builder().beginConfig().fontSize(40)
+    private val mDrawableBuilder =  TextDrawable.builder().beginConfig().fontSize(30)
     fun addAll(beans: List<Contact>?) {
         if (contactBeanList!!.size > 0) {
             contactBeanList.clear()

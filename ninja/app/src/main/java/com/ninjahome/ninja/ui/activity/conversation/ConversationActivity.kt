@@ -102,18 +102,22 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             }
 
         })
+
+
     }
 
 
     override fun initData() {
         mViewModel.uid = intent.getStringExtra(IntentKey.UID)!!
         setTitle()
-        conversationAdapter = ConversationAdapter(this, mData, mViewModel)
-        rvMsg.adapter = conversationAdapter
-        conversationAdapter.onItemClickListener = this
         initAudioRecordManager()
     }
 
+    fun initAdapter(name:String){
+        conversationAdapter = ConversationAdapter(this, mData, mViewModel,name)
+        rvMsg.adapter = conversationAdapter
+        conversationAdapter.onItemClickListener = this
+    }
     private fun setTitle() {
         rxLifeScope.launch {
             ContactDBManager.observeNickNameByUID(mViewModel.uid).observe(this@ConversationActivity) {
@@ -122,9 +126,10 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                 } else {
                     mViewModel.title.set(it)
                 }
+                val subName = if(mViewModel.title.get()!!.toString().length>=2) mViewModel.title.get()!!.substring(0,2) else  mViewModel.title.get()!!
+                initAdapter(subName)
             }
         }
-
 
         mViewModel.rightIv.set(R.drawable.contact_more)
         mViewModel.showRightIv.set(true)
@@ -146,7 +151,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                 hideEmotionLayout()
                 hideMoreLayout()
             }
-            moveToBottom()
+            ScrollToBottom()
         }
 
         mViewModel.textChangeEvent.observe(this) {
@@ -161,7 +166,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         }
         mViewModel.clickSendEvent.observe(this) {
             mViewModel.sendText(etContent.text.toString().trim())
-            moveToBottom()
+            ScrollToBottom()
             mViewModel.textData.value = ""
         }
 
@@ -245,9 +250,9 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     }
 
-    fun moveToBottom() {
+    fun ScrollToBottom() {
         handler.postDelayed({
-            rvMsg.smoothMoveToPosition((rvMsg.adapter?.itemCount ?: 1) - 1)
+            rvMsg.smoothMoveToPosition((rvMsg.adapter?.itemCount ?: 0) - 1)
         }, 50)
     }
 
@@ -279,7 +284,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                         path = it.uri.toString()
                     }
                     mViewModel.sendImage(path, !original)
-                    moveToBottom()
+                    ScrollToBottom()
                 }
     }
 
@@ -331,9 +336,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         mEmotionKeyboard.setOnEmotionButtonOnClickListener { view: View ->
             when (view.id) {
                 R.id.ivEmo -> {
-                    handler.postDelayed({
-                        rvMsg.smoothMoveToPosition((rvMsg.adapter?.itemCount ?: 0) - 1)
-                    }, 50)
+                    ScrollToBottom()
                     etContent.clearFocus()
                     if (!elEmotion.isShown) {
                         if (moreActionDialog.isShown) {
@@ -424,7 +427,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                 if (data.getBooleanExtra("take_photo", true)) {
                     path?.let { mViewModel.sendImage(it, true) }
                 }
-                moveToBottom()
+                ScrollToBottom()
             }
             REQUEST_LOCATION -> if (resultCode == RESULT_OK) {
                 val locationData: LocationData = data!!.getSerializableExtra("location") as LocationData
@@ -528,7 +531,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                 val file = File(audioPath.path)
                 if (file.exists()) {
                     mViewModel.sendAudio(audioPath, duration)
-                    moveToBottom()
+                    ScrollToBottom()
                 }
             }
 

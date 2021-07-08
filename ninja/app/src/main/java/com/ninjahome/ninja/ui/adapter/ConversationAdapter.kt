@@ -27,11 +27,11 @@ import com.ninjahome.ninja.viewmodel.ConversationViewModel
 /**
  * @描述 会话界面的消息列表适配器
  */
-class ConversationAdapter(private val mContext: Context, private val mData: List<Message>,val conversationViewModel: ConversationViewModel) : LQRAdapterForRecyclerView<Message>(mContext, mData) {
+class ConversationAdapter(private val mContext: Context, private val mData: List<Message>,val conversationViewModel: ConversationViewModel,val name:String) : LQRAdapterForRecyclerView<Message>(mContext, mData) {
 
     val receiverIconColor= ColorGenerator.MATERIAL.getColor(conversationViewModel.uid)
     private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(30)
-    val receiverIcon = mDrawableBuilder.textColor(mContext.getColor(R.color.white)).endConfig().buildRound(conversationViewModel.uid.substring(0,2),mContext.resources.getColor(receiverIconColor) )
+    val receiverIcon = mDrawableBuilder.textColor(mContext.getColor(R.color.white)).endConfig().buildRound(name,mContext.resources.getColor(receiverIconColor) )
     val userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "")
     val myIconColor= ColorGenerator.MATERIAL.getColor(NinjaApp.instance.account.address)
     val subName = if(userName.length>=2) userName.substring(0,2) else userName

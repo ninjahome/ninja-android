@@ -44,7 +44,7 @@ class MyViewModel : BaseViewModel(), KoinComponent {
     var openFingerPrint: Boolean by SharedPref(context(), Constants.KEY_OPEN_FINGERPRINT, false)
     var openFingerPrintObservable: ObservableBoolean = ObservableBoolean(openFingerPrint)
     val userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "")
-    private val subName: String = if (userName.length >= 2) userName.substring(0, 2) else userName
+
     private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(40)
 
     init {
@@ -56,6 +56,7 @@ class MyViewModel : BaseViewModel(), KoinComponent {
         rxLifeScope.launch({
             id.value = AccountUtils.getAddress(context())
             val iconColor = ColorGenerator.MATERIAL.getColor(id.value!!)
+             val subName: String = if (userName.length >= 2) userName.substring(0, 2) else userName
              iconDrawable.value = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(iconColor))
         }, {
             Logger.e(it.message!!)
