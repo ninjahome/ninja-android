@@ -15,16 +15,15 @@
         onClickCommand="@{item.clickItem}"
         android:layout_height="54dp">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             android:id="@+id/iconIv"
             android:layout_width="48dp"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="20dp"
-            android:src="@drawable/logo"
-            circle="true"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_height="48dp"
+            android:background="@{item.receiverIcon}"
             tools:ignore="ContentDescription" />
 
         <TextView

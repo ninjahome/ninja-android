@@ -34,9 +34,7 @@ class SearchContactActivity : BaseActivity<SearchContactViewModel, ActivitySearc
                 toast(getString(R.string.search_contact_address_error))
             } else {
                 nextStep()
-                val intent = Intent(this, ScanContactSuccessActivity::class.java)
-                intent.putExtra(IntentKey.UID, mViewModel.inputID.value)
-                startActivity(intent)
+
             }
             return@setOnEditorActionListener true
         }
@@ -86,7 +84,5 @@ class SearchContactActivity : BaseActivity<SearchContactViewModel, ActivitySearc
         }
         mViewModel.inputID.value = result.contents
         nextStep()
-
-
     }
 }

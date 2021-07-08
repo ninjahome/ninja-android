@@ -9,21 +9,33 @@ import com.bumptech.glide.Glide
 import com.lqr.adapter.LQRAdapterForRecyclerView
 import com.lqr.adapter.LQRViewHolderForRecyclerView
 import com.lqr.emoji.MoonUtils
+import com.ninja.android.lib.provider.context
+import com.ninja.android.lib.utils.SharedPref
 import com.ninja.android.lib.utils.dp
 import com.ninjahome.ninja.Constants
+import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.bean.*
 import com.ninjahome.ninja.model.bean.Message.SentStatus
 import com.ninjahome.ninja.utils.TimeUtils
 import com.ninjahome.ninja.utils.UIUtils
 import com.ninjahome.ninja.view.BubbleImageView
+import com.ninjahome.ninja.view.contacts.ColorGenerator
+import com.ninjahome.ninja.view.contacts.TextDrawable
 import com.ninjahome.ninja.viewmodel.ConversationViewModel
-import java.io.File
 
 /**
  * @描述 会话界面的消息列表适配器
  */
 class ConversationAdapter(private val mContext: Context, private val mData: List<Message>,val conversationViewModel: ConversationViewModel) : LQRAdapterForRecyclerView<Message>(mContext, mData) {
+
+    val receiverIconColor= ColorGenerator.MATERIAL.getColor(conversationViewModel.uid)
+    private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(30)
+    val receiverIcon = mDrawableBuilder.textColor(mContext.getColor(R.color.white)).endConfig().buildRound(conversationViewModel.uid.substring(0,2),mContext.resources.getColor(receiverIconColor) )
+    val userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "")
+    val myIconColor= ColorGenerator.MATERIAL.getColor(NinjaApp.instance.account.address)
+    val subName = if(userName.length>=2) userName.substring(0,2) else userName
+    val myIcon = mDrawableBuilder.textColor(mContext.getColor(R.color.white)).endConfig().buildRound(subName,mContext.resources.getColor(myIconColor) )
     override fun convert(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
         setTime(helper, item, position)
         setView(helper, item)
@@ -98,6 +110,11 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
     }
 
     private fun setAvatar(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
+        if(item.direction == Message.MessageDirection.SEND){
+            helper.itemView.findViewById<ImageView>(R.id.ivAvatar).setBackgroundDrawable(myIcon)
+        }else{
+            helper.itemView.findViewById<ImageView>(R.id.ivAvatar).setBackgroundDrawable(receiverIcon)
+        }
     }
 
     private fun setName(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {

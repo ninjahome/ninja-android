@@ -1,16 +1,19 @@
 package com.ninjahome.ninja.ui.adapter
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.ui.adapter.ContactAdapter.MyRecycleHolder
 import com.ninjahome.ninja.view.contacts.ColorGenerator
+import com.ninjahome.ninja.view.contacts.TextDrawable
 import com.ninjahome.ninja.view.contacts.TextDrawable.Companion.builder
 import java.util.*
 
@@ -27,7 +30,7 @@ class ContactAdapter(private val mContext: Context) : RecyclerView.Adapter<MyRec
 
     // declare the color generator and drawable builder
     private val mColorGenerator = ColorGenerator.MATERIAL
-    private val mDrawableBuilder = builder().round()
+    private val mDrawableBuilder =  TextDrawable.builder().beginConfig().fontSize(40)
     fun addAll(beans: List<Contact>?) {
         if (contactBeanList!!.size > 0) {
             contactBeanList.clear()
@@ -60,7 +63,12 @@ class ContactAdapter(private val mContext: Context) : RecyclerView.Adapter<MyRec
             }
         }
         holder.tv_name.text = contact.nickName
-        val drawable = mDrawableBuilder.build(contact.nickName[0].toString(), mColorGenerator.getColor(contact.nickName))
+        var subName:String = contact.nickName[0].toString()
+        if(contact.nickName.length>=2){
+            subName = contact.nickName.substring(0,2)
+        }
+       val iconColor = ColorGenerator.MATERIAL.getColor(contact.uid)
+        val drawable = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName,mContext.resources.getColor(iconColor))
         holder.iv_img.setImageDrawable(drawable)
     }
 

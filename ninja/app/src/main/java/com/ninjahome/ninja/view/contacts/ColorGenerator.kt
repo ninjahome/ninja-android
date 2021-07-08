@@ -1,5 +1,6 @@
 package com.ninjahome.ninja.view.contacts
 
+import com.ninjahome.ninja.R
 import java.util.*
 
 /**
@@ -15,8 +16,11 @@ class ColorGenerator private constructor(private val mColors: List<Int>) {
         }
 
         init {
-            DEFAULT = create(Arrays.asList(-0xe9c9c, -0xa7aa7, -0x65bc2, -0x1b39d2, -0x98408c, -0xa65d42, -0xdf6c33, -0x529d59, -0x7fa87f))
-            MATERIAL = create(Arrays.asList(-0x1a8c8d, -0xf9d6e, -0x459738, -0x6a8a33, -0x867935, -0x9b4a0a, -0xb03c09, -0xb22f1f, -0xb24954, -0x7e387c, -0x512a7f, -0x759b, -0x2b1ea9, -0x2ab1, -0x48b3, -0x5e7781, -0x6f5b52))
+            MATERIAL = create(Arrays.asList(R.color.color_eff2f1,R.color.color_F4CCE3,R.color.color_D6CCF4,
+                    R.color.color_BACEF0,R.color.color_ABDDEE,R.color.color_CBEEA8,R.color.color_BAF1E6,
+                    R.color.color_FAE5A6,R.color.color_F0B5B2,R.color.color_ACEFBA,R.color.color_BAD4EE,
+                    R.color.color_EBEFAE,R.color.color_F2C2B4,R.color.color_D8D8D8
+            ))
         }
     }
 
@@ -25,7 +29,9 @@ class ColorGenerator private constructor(private val mColors: List<Int>) {
         get() = mColors[mRandom.nextInt(mColors.size)]
 
     fun getColor(key: Any): Int {
-        return mColors[Math.abs(key.hashCode()) % mColors.size]
+        val index = Math.abs(key.hashCode()) % mColors.size
+        println("-------------------------------${index}")
+        return mColors[index]
     }
 
     init {

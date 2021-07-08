@@ -10,12 +10,14 @@ import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.ui.activity.contact.EditContactActivity
 import com.ninjahome.ninja.ui.activity.conversation.ConversationActivity
+import org.koin.core.component.KoinApiExtension
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
+@KoinApiExtension
 class ScanContactSuccessViewModel : BaseViewModel() {
     val name = SingleLiveEvent<String>()
     val uid = MutableLiveData<String>()

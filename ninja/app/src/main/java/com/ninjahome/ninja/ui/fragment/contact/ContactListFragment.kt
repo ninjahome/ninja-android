@@ -44,19 +44,6 @@ class ContactListFragment : BaseFragment<ContactListViewModel, FragmentContactLi
         contactsRecyclerView.itemAnimator = SlideInOutLeftItemAnimator(contactsRecyclerView)
         contactsRecyclerView.adapter = contactAdapter
 
-        sideBar.setIndexChangeListener(object : SideBar.indexChangeListener {
-
-            override fun indexChanged(tag: String?) {
-                if (TextUtils.isEmpty(tag) || nameList.size <= 0) return
-                for (i in nameList.indices) {
-                    if (tag == nameList[i].indexTag) {
-                        layoutManager!!.scrollToPositionWithOffset(i, 0)
-                        return
-                    }
-                }
-            }
-        })
-
         contactAdapter.clickItemListener = object : ContactAdapter.ClickItemListener {
             override fun clickItem(position: Int, contact: Contact) {
 
@@ -78,7 +65,6 @@ class ContactListFragment : BaseFragment<ContactListViewModel, FragmentContactLi
                 ContactsUtils.sortData(nameList)
                 //返回一个包含所有Tag字母在内的字符串并赋值给tagsStr
                 val tagsStr: String = ContactsUtils.getTags(nameList)
-                sideBar.setIndexStr(tagsStr)
                 decoration!!.setDatas(nameList, tagsStr)
                 contactAdapter.addAll(nameList)
             }

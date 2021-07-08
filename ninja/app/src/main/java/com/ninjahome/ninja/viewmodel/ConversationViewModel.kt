@@ -22,6 +22,7 @@ import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.room.ConversationDBManager
 import com.ninjahome.ninja.room.MessageDBManager
 import com.ninjahome.ninja.ui.activity.contact.ContactDetailActivity
+import com.ninjahome.ninja.ui.activity.contact.ScanContactSuccessActivity
 import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.functions.Function
 import kotlinx.coroutines.Dispatchers
@@ -68,9 +69,19 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
 
     override fun clickRightIv() {
         super.clickRightIv()
-        val bundle = Bundle()
-        bundle.putString(IntentKey.UID, uid)
-        startActivity(ContactDetailActivity::class.java, bundle)
+        rxLifeScope.launch {
+            val contact = ContactDBManager.queryByID(uid)
+            if(contact ==null){
+                val bundle = Bundle()
+                bundle.putString(IntentKey.UID, uid)
+                startActivity(ScanContactSuccessActivity::class.java, bundle)
+            }else{
+                val bundle = Bundle()
+                bundle.putString(IntentKey.UID, uid)
+                startActivity(ContactDetailActivity::class.java, bundle)
+            }
+        }
+
 
     }
 

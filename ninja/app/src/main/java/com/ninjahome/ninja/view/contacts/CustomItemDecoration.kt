@@ -69,14 +69,14 @@ class CustomItemDecoration(private val mContext: Context) : ItemDecoration() {
         parent.getDecoratedBoundsWithMargins(child, mBounds)
         val top = mBounds.top
         val bottom = mBounds.top + Math.round(ViewCompat.getTranslationY(child)) + dividerHeight
-        mPaint.color = Color.WHITE
+        mPaint.color = Color.parseColor("#f4f4f4")
         canvas.drawRect(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat(), mPaint)
-        //根据位置不断变换Paint的颜色
-        setPaintColor(mPaint, position)
-        mPaint.textSize = 40f
-        canvas.drawCircle(43.dp, (bottom - dividerHeight / 2).toFloat(), 35f, mPaint)
-        mPaint.color = Color.WHITE
-        canvas.drawText(bean.indexTag, 43.dp, (bottom - dividerHeight / 3).toFloat(), mPaint)
+//        //根据位置不断变换Paint的颜色
+//        setPaintColor(mPaint, position)
+//        mPaint.textSize = 40f
+//        canvas.drawCircle(43.dp, (bottom - dividerHeight / 2).toFloat(), 35f, mPaint)
+//        mPaint.color = Color.WHITE
+//        canvas.drawText(bean.indexTag, 43.dp, (bottom - dividerHeight / 3).toFloat(), mPaint)
     }
 
     override fun onDrawOver(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
@@ -86,13 +86,13 @@ class CustomItemDecoration(private val mContext: Context) : ItemDecoration() {
             return
         }
         val bottom = parent.paddingTop + dividerHeight
-        mPaint.color = Color.WHITE
+        mPaint.color =  Color.parseColor("#f4f4f4")
         canvas.drawRect(parent.left.toFloat(), parent.paddingTop.toFloat(), (parent.right - parent.paddingRight).toFloat(), (parent.paddingTop + dividerHeight).toFloat(), mPaint)
-        setPaintColor(mPaint, tagsStr!!.indexOf(mBeans!![position].indexTag))
-        mPaint.textSize = 40f
-        canvas.drawCircle(43.dp, (bottom - dividerHeight / 2).toFloat(), 35f, mPaint)
-        mPaint.color = Color.WHITE
-        canvas.drawText(mBeans!![position].indexTag, 43.dp, (bottom - dividerHeight / 3).toFloat(), mPaint)
+//        setPaintColor(mPaint, tagsStr!!.indexOf(mBeans!![position].indexTag))
+//        mPaint.textSize = 40f
+//        canvas.drawCircle(43.dp, (bottom - dividerHeight / 2).toFloat(), 35f, mPaint)
+//        mPaint.color = Color.WHITE
+//        canvas.drawText(mBeans!![position].indexTag, 43.dp, (bottom - dividerHeight / 3).toFloat(), mPaint)
     }
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
@@ -114,7 +114,7 @@ class CustomItemDecoration(private val mContext: Context) : ItemDecoration() {
     }
 
     companion object {
-        private const val dividerHeight = 80
+        private const val dividerHeight = 20
     }
 
     init {

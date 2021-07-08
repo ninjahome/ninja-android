@@ -1,5 +1,6 @@
 package com.ninjahome.ninja.viewmodel
 
+import android.graphics.Color
 import android.text.TextUtils
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.rxLifeScope
@@ -12,6 +13,7 @@ import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.room.ConversationDBManager
 import com.ninjahome.ninja.utils.AccountUtils
+import com.ninjahome.ninja.view.contacts.ColorGenerator
 import com.orhanobut.logger.Logger
 import org.koin.core.component.KoinApiExtension
 

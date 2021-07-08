@@ -11,6 +11,7 @@ import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityContactDetailBinding
 import com.ninjahome.ninja.utils.DialogUtils
+import com.ninjahome.ninja.view.contacts.ColorGenerator
 import com.ninjahome.ninja.view.contacts.TextDrawable
 import com.ninjahome.ninja.viewmodel.ContactDetailViewModel
 import kotlinx.android.synthetic.main.activity_contact_detail.*
@@ -34,6 +35,7 @@ class ContactDetailActivity : BaseActivity<ContactDetailViewModel, ActivityConta
 
     override fun initData() {
         val uid = intent.getStringExtra(IntentKey.UID)!!
+        mViewModel.uid.value =uid
         mViewModel.getContact(uid)
         mViewModel.showBottomLine.set(false)
         mViewModel.showRightIv.set(true)
@@ -42,12 +44,13 @@ class ContactDetailActivity : BaseActivity<ContactDetailViewModel, ActivityConta
 
     override fun initObserve() {
         mViewModel.name.observe(this){
-           val drawable :TextDrawable = if(it.length>2){
-               mDrawableBuilder.textColor(Color.parseColor("#ffffff")).endConfig().buildRound(it.substring(0,2), Color.parseColor("#F4CCE3"))
-            }else{
-               mDrawableBuilder.textColor(Color.parseColor("#ffffff")).endConfig().buildRound(it, Color.parseColor("#F4CCE3"))
+            var subName:String = it.toString()
+            if(it.length>=2){
+                subName = it.substring(0,2)
             }
-
+           val drawable= mViewModel.contact.value?.let { it1 ->
+               val iconColor = ColorGenerator.MATERIAL.getColor(mViewModel.uid.value!!)
+               mDrawableBuilder.textColor(resources.getColor(R.color.white)).endConfig().buildRound(subName, resources.getColor(iconColor) ) }
             nameIv.setImageDrawable(drawable)
         }
         mViewModel.showDeleteDialogEvent.observe(this){

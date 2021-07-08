@@ -57,7 +57,6 @@ class ContactDetailViewModel : BaseViewModel() {
             if (contact.value != null) {
                 name.value = contact.value!!.nickName
             }
-            this@ContactDetailViewModel.uid.value = uid
         }
     }
 

@@ -16,6 +16,7 @@ import org.koin.core.component.KoinApiExtension
  */
 @KoinApiExtension
 class EditContactActivity : BaseActivity<EditContactViewModel, ActivityEditContactBinding>(R.layout.activity_edit_contact) {
+
     override val mViewModel: EditContactViewModel by viewModel()
 
     override fun initView() {
