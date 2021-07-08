@@ -15,6 +15,8 @@ import com.ninjahome.ninja.model.UnlockModel
 import com.ninjahome.ninja.ui.activity.main.MainActivity
 import com.ninjahome.ninja.utils.AccountUtils
 import com.ninjahome.ninja.utils.fromJson
+import com.ninjahome.ninja.view.contacts.ColorGenerator
+import com.ninjahome.ninja.view.contacts.TextDrawable
 import com.orhanobut.logger.Logger
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
@@ -30,12 +32,19 @@ class UnLockViewModel : BaseViewModel(), KoinComponent {
     val model: UnlockModel by inject()
     val password = MutableLiveData("")
     val accountJson = MutableLiveData("")
+    val iconDrawable = MutableLiveData<TextDrawable>()
+    val userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "")
+    private val subName: String = if (userName.length >= 2) userName.substring(0, 2) else userName
+    private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(40)
     var openFingerPrint: Boolean by SharedPref(context(), Constants.KEY_OPEN_FINGERPRINT, false)
 
     fun loadAccount() {
         rxLifeScope.launch({
             accountJson.value = model.loadAccount(AccountUtils.getAccountPath(context()))
             NinjaApp.instance.account = accountJson.value!!.fromJson()!!
+            val iconColor = ColorGenerator.MATERIAL.getColor(NinjaApp.instance.account.address)
+            iconDrawable.value = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(iconColor))
+
         }, {
             showToast(R.string.load_account_error)
         })

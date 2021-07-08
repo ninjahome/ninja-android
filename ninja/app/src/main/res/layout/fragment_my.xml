@@ -23,16 +23,17 @@
             android:layout_height="wrap_content"
             tools:ignore="ContentDescription" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             android:id="@+id/avatarIv"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            android:src="@drawable/profile_photo"
             android:layout_marginTop="60dp"
+            android:background="@{viewModel.iconDrawable}"
             app:siBorderWidth="0dp"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="20dp"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/idTv"
@@ -134,6 +135,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="40dp"
             android:textSize="16sp"
+            android:visibility="gone"
             android:textColor="@color/color_0c123d"
             android:layout_height="wrap_content"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

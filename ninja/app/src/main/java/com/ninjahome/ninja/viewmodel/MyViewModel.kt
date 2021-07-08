@@ -19,6 +19,8 @@ import com.ninjahome.ninja.ui.activity.accountmanager.AccountManagerActivity
 import com.ninjahome.ninja.ui.activity.edituserinfo.EditUserInfoActivity
 import com.ninjahome.ninja.utils.AccountUtils
 import com.ninjahome.ninja.utils.toJson
+import com.ninjahome.ninja.view.contacts.ColorGenerator
+import com.ninjahome.ninja.view.contacts.TextDrawable
 import com.orhanobut.logger.Logger
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
@@ -35,12 +37,15 @@ class MyViewModel : BaseViewModel(), KoinComponent {
     val name = SingleLiveEvent<String>()
     val id = SingleLiveEvent<String>()
     val showIDQR = SingleLiveEvent<Any>()
+    val iconDrawable = SingleLiveEvent<TextDrawable>()
     val fingerPrintEvent = SingleLiveEvent<Boolean>()
     val showFingerPrintDialogEvent = SingleLiveEvent<String>()
     val dismissPasswordDialogEvent = SingleLiveEvent<Boolean>()
     var openFingerPrint: Boolean by SharedPref(context(), Constants.KEY_OPEN_FINGERPRINT, false)
     var openFingerPrintObservable: ObservableBoolean = ObservableBoolean(openFingerPrint)
     val userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "")
+    private val subName: String = if (userName.length >= 2) userName.substring(0, 2) else userName
+    private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(40)
 
     init {
         setValue()
@@ -50,6 +55,8 @@ class MyViewModel : BaseViewModel(), KoinComponent {
         name.value = userName
         rxLifeScope.launch({
             id.value = AccountUtils.getAddress(context())
+            val iconColor = ColorGenerator.MATERIAL.getColor(id.value!!)
+             iconDrawable.value = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(iconColor))
         }, {
             Logger.e(it.message!!)
         })
