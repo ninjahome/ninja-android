@@ -7,12 +7,15 @@ import com.ninja.android.lib.base.BaseViewModel
 import com.ninja.android.lib.command.BindingAction
 import com.ninja.android.lib.command.BindingCommand
 import com.ninja.android.lib.event.SingleLiveEvent
+import com.ninja.android.lib.provider.context
+import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.room.ConversationDBManager
 import com.ninjahome.ninja.ui.activity.contact.EditContactActivity
 import com.ninjahome.ninja.ui.activity.conversation.ConversationActivity
+import com.ninjahome.ninja.utils.CommonUtils
 import org.koin.core.component.KoinApiExtension
 
 /**
@@ -34,6 +37,12 @@ class ContactDetailViewModel : BaseViewModel() {
             val bundle = Bundle()
             bundle.putString(IntentKey.UID, uid.value)
             startActivity(ConversationActivity::class.java, bundle,true)
+        }
+    })
+
+    val longClickId = BindingCommand<Any>(object : BindingAction {
+        override fun call() {
+            uid.value?.let { CommonUtils.copyToMemory(context(), it) }
         }
     })
 

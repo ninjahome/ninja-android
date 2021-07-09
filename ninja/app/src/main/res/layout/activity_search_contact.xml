@@ -39,7 +39,7 @@
             android:text="@string/cancel"
             onClickCommand="@{viewModel.clickCancel}"
             android:layout_marginTop="20dp"
-            android:textColor="@color/color_3b877f"
+            android:textColor="@color/color_0c123d"
             android:textSize="17sp"
             android:layout_marginStart="16dp"
             android:gravity="center"
