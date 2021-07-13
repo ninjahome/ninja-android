@@ -181,13 +181,13 @@ class NinjaApp : BaseApplication() {
         mutex.withLock {
             var conversation = ConversationDBManager.queryByFrom(from)
             if (conversation == null) {
-                conversation = Conversation(0, from, msg, time, 1)
+                conversation = Conversation(0, from, msg, time*1000, 1)
                 val nickName = ContactDBManager.queryNickNameByUID(from)
                 conversation.nickName = if (TextUtils.isEmpty(nickName)) from else nickName!!
                 conversation.id = ConversationDBManager.insert(conversation)
             } else {
                 conversation.msg = msg
-                conversation.time = time
+                conversation.time = time*1000
                 val nickName = ContactDBManager.queryNickNameByUID(from)
                 conversation.nickName = if (TextUtils.isEmpty(nickName)) from else nickName!!
                 ConversationDBManager.updateConversations(conversation)

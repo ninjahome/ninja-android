@@ -5,6 +5,7 @@ import android.text.style.ImageSpan
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import androidlib.Androidlib
 import com.bumptech.glide.Glide
 import com.lqr.adapter.LQRAdapterForRecyclerView
 import com.lqr.adapter.LQRViewHolderForRecyclerView
@@ -15,27 +16,35 @@ import com.ninja.android.lib.utils.dp
 import com.ninjahome.ninja.Constants
 import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
-import com.ninjahome.ninja.model.bean.*
+import com.ninjahome.ninja.model.bean.Message
 import com.ninjahome.ninja.model.bean.Message.SentStatus
 import com.ninjahome.ninja.utils.TimeUtils
 import com.ninjahome.ninja.utils.UIUtils
 import com.ninjahome.ninja.view.BubbleImageView
-import com.ninjahome.ninja.view.contacts.ColorGenerator
+import com.ninjahome.ninja.view.contacts.ColorUtil
 import com.ninjahome.ninja.view.contacts.TextDrawable
 import com.ninjahome.ninja.viewmodel.ConversationViewModel
+import org.koin.core.component.KoinApiExtension
 
 /**
  * @描述 会话界面的消息列表适配器
  */
-class ConversationAdapter(private val mContext: Context, private val mData: List<Message>,val conversationViewModel: ConversationViewModel,val name:String) : LQRAdapterForRecyclerView<Message>(mContext, mData) {
-
-    val receiverIconColor= ColorGenerator.MATERIAL.getColor(conversationViewModel.uid)
+@KoinApiExtension
+class ConversationAdapter(private val mContext: Context, private val mData: List<Message>, val conversationViewModel: ConversationViewModel) : LQRAdapterForRecyclerView<Message>(mContext, mData) {
+    var receiverIcon: TextDrawable? = null
     private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(30)
-    val receiverIcon = mDrawableBuilder.textColor(mContext.getColor(R.color.white)).endConfig().buildRound(name,mContext.resources.getColor(receiverIconColor) )
     val userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "")
-    val myIconColor= ColorGenerator.MATERIAL.getColor(NinjaApp.instance.account.address)
-    val subName = if(userName.length>=2) userName.substring(0,2) else userName
-    val myIcon = mDrawableBuilder.textColor(mContext.getColor(R.color.white)).endConfig().buildRound(subName,mContext.resources.getColor(myIconColor) )
+    val myIconIndex = Androidlib.iconIndex(NinjaApp.instance.account.address, ColorUtil.colorSize)
+    val myIconColor = ColorUtil.colors[myIconIndex]
+    val subName = if (userName.length >= 2) userName.substring(0, 2) else userName
+    val myIcon = mDrawableBuilder.textColor(mContext.getColor(R.color.white)).endConfig().buildRound(subName, mContext.resources.getColor(myIconColor))
+
+    fun setReceiverNameIcon(name: String, receiverIconColor: Int) {
+        receiverIcon = mDrawableBuilder.textColor(mContext.getColor(R.color.white)).endConfig().buildRound(name, mContext.resources.getColor(receiverIconColor))
+        notifyDataSetChanged()
+
+    }
+
     override fun convert(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
         setTime(helper, item, position)
         setView(helper, item)
@@ -56,7 +65,7 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
             helper.setText(R.id.tvTitle, item.locationAddress)
             val ivLocation = helper.getView<ImageView>(R.id.ivLocation)
             Glide.with(mContext).load("http://st.map.qq.com/api?size=708*270&center=${item.lng},${item.lat}&zoom=16&referer=weixin").into(ivLocation)
-        } else if (item.type ==Message.Type.VOICE) {
+        } else if (item.type == Message.Type.VOICE) {
             val increment = (UIUtils.getDisplayWidth() / 2 / Constants.DEFAULT_MAX_AUDIO_RECORD_TIME_SECOND * item.duration)
             val rlAudio = helper.setText(R.id.tvDuration, item.duration.toString() + "''").getView<RelativeLayout>(R.id.rlAudio)
             val params = rlAudio.layoutParams
@@ -73,7 +82,7 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
     }
 
     private fun setStatus(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
-        if (item.type ==Message.Type.TEXT || item.type ==Message.Type.LOCATION || item.type ==Message.Type.VOICE) {
+        if (item.type == Message.Type.TEXT || item.type == Message.Type.LOCATION || item.type == Message.Type.VOICE) {
             //只需要设置自己发送的状态
             val sentStatus = item.sentStatus
             if (sentStatus === SentStatus.SENDING) {
@@ -83,7 +92,7 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
             } else if (sentStatus === SentStatus.SENT) {
                 helper.setViewVisibility(R.id.pbSending, View.GONE).setViewVisibility(R.id.llError, View.GONE)
             }
-        } else if (item.type ==Message.Type.IMAGE) {
+        } else if (item.type == Message.Type.IMAGE) {
             val bivPic = helper.getView<BubbleImageView>(R.id.bivPic)
             val isSend = if (item.direction === Message.MessageDirection.SEND) true else false
             if (isSend) {
@@ -110,9 +119,10 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
     }
 
     private fun setAvatar(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
-        if(item.direction == Message.MessageDirection.SEND){
+        if (item.direction == Message.MessageDirection.SEND) {
             helper.itemView.findViewById<ImageView>(R.id.ivAvatar).setBackgroundDrawable(myIcon)
-        }else{
+        } else {
+            println("---------------------2----------------------")
             helper.itemView.findViewById<ImageView>(R.id.ivAvatar).setBackgroundDrawable(receiverIcon)
         }
     }

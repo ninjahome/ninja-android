@@ -28,14 +28,13 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  */
 class ContactListFragment : BaseFragment<ContactListViewModel, FragmentContactListBinding>(R.layout.fragment_contact_list) {
     private var decoration: CustomItemDecoration? = null
-    lateinit var contactAdapter: ContactAdapter
+    val contactAdapter: ContactAdapter by lazy { ContactAdapter(mActivity) }
     var nameList = mutableListOf<Contact>()
     private var layoutManager: LinearLayoutManager? = null
 
     override val mViewModel: ContactListViewModel by viewModel()
 
     override fun initView() {
-        contactAdapter = ContactAdapter(mActivity)
         layoutManager = LinearLayoutManager(mActivity)
         contactsRecyclerView.layoutManager = layoutManager
         contactsRecyclerView.addItemDecoration(CustomItemDecoration(mActivity).also {

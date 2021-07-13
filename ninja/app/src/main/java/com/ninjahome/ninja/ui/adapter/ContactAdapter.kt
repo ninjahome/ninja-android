@@ -7,12 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidlib.Androidlib
 import androidx.recyclerview.widget.RecyclerView
 import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.ui.adapter.ContactAdapter.MyRecycleHolder
 import com.ninjahome.ninja.view.contacts.ColorGenerator
+import com.ninjahome.ninja.view.contacts.ColorUtil
 import com.ninjahome.ninja.view.contacts.TextDrawable
 import com.ninjahome.ninja.view.contacts.TextDrawable.Companion.builder
 import java.util.*
@@ -67,7 +69,8 @@ class ContactAdapter(private val mContext: Context) : RecyclerView.Adapter<MyRec
         if(contact.nickName.length>=2){
             subName = contact.nickName.substring(0,2)
         }
-       val iconColor = ColorGenerator.MATERIAL.getColor(contact.uid)
+        val index = Androidlib.iconIndex(contact.uid, ColorUtil.colorSize)
+        val iconColor = ColorUtil.colors[index]
         val drawable = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName,mContext.resources.getColor(iconColor))
         holder.iv_img.setImageDrawable(drawable)
     }

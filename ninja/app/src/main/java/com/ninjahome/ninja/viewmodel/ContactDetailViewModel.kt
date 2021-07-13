@@ -10,6 +10,7 @@ import com.ninja.android.lib.event.SingleLiveEvent
 import com.ninja.android.lib.provider.context
 import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.IntentKey
+import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.room.ConversationDBManager
@@ -42,7 +43,10 @@ class ContactDetailViewModel : BaseViewModel() {
 
     val longClickId = BindingCommand<Any>(object : BindingAction {
         override fun call() {
-            uid.value?.let { CommonUtils.copyToMemory(context(), it) }
+            uid.value?.let {
+                CommonUtils.copyToMemory(context(), it)
+                showToast(R.string.copy_success)
+            }
         }
     })
 

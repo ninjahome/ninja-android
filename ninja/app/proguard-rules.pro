@@ -27,6 +27,11 @@
  -keepclassmembers class com.myapp.packagnename.** { <init>(...); <fields>;}
  -keep @android.support.annotation.Keep class * {*;}
 
+ -keep class com.ninjahome.ninja.ui.adapter.ConversationAdapter{ *;}
+-keepclassmembers class com.ninjahome.ninja.ui.adapter.ConversationAdapter{ *;}
+-keep class kotlin.reflect.jvm.internal.** { *; }
+-keep class kotlin.reflect.jvm.ReflectJvmMapping { *; }
+-keep class kotlin.reflect.jvm.KCallablesJvm
 
  #EventBus
  -keepattributes *Annotation*

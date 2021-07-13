@@ -72,7 +72,9 @@ class LocationSearchActivity : BaseActivity<LocationSearchViewModel, ActivityLoc
 
     override fun initObserve() {
         mViewModel.searchSuccessEvent.observe(this) {
-            mAdapter.notifyDataSetChanged()
+            if(this::mAdapter.isLateinit){
+                mAdapter.notifyDataSetChanged()
+            }
         }
     }
 

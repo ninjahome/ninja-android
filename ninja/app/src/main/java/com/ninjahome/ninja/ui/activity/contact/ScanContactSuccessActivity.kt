@@ -1,6 +1,7 @@
 package com.ninjahome.ninja.ui.activity.contact
 
 import android.graphics.Color
+import androidlib.Androidlib
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.gyf.immersionbar.ImmersionBar
 import com.ninja.android.lib.base.BaseActivity
@@ -9,6 +10,7 @@ import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.databinding.ActivityScanContactSuccessBinding
 import com.ninjahome.ninja.view.contacts.ColorGenerator
+import com.ninjahome.ninja.view.contacts.ColorUtil
 import com.ninjahome.ninja.view.contacts.TextDrawable
 import com.ninjahome.ninja.viewmodel.ScanContactSuccessViewModel
 import kotlinx.android.synthetic.main.activity_contact_detail.*
@@ -33,15 +35,14 @@ class ScanContactSuccessActivity:BaseActivity<ScanContactSuccessViewModel,Activi
     override fun initData() {
         val uid = intent.getStringExtra(IntentKey.UID)!!
         mViewModel.uid.value = uid
-       val color = ColorGenerator.MATERIAL.getColor(mViewModel.uid.value!!)
-       val drawable = mDrawableBuilder.textColor(resources.getColor(R.color.white)).endConfig().buildRound(uid.substring(0,2),resources.getColor(color) )
+       val drawable = mDrawableBuilder.textColor(resources.getColor(R.color.white)).endConfig().buildRound(uid.substring(0,2),resources.getColor(R.color.color_D8D8D8) )
         nameIv.setImageDrawable(drawable)
     }
 
     override fun initObserve() {
     }
 
-    override fun statusBarStyle(): Int = STATUSBAR_STYLE_TRANSPARENT
+    override fun statusBarStyle(): Int = STATUSBAR_STYLE_CUSTOMER
 
     override fun initVariableId(): Int= BR.viewModel
 }

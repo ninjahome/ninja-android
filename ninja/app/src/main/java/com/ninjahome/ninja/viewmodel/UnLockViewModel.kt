@@ -1,6 +1,7 @@
 package com.ninjahome.ninja.viewmodel
 
 import android.text.TextUtils
+import androidlib.Androidlib
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.rxLifeScope
 import com.ninja.android.lib.base.BaseViewModel
@@ -16,6 +17,7 @@ import com.ninjahome.ninja.ui.activity.main.MainActivity
 import com.ninjahome.ninja.utils.AccountUtils
 import com.ninjahome.ninja.utils.fromJson
 import com.ninjahome.ninja.view.contacts.ColorGenerator
+import com.ninjahome.ninja.view.contacts.ColorUtil
 import com.ninjahome.ninja.view.contacts.TextDrawable
 import com.orhanobut.logger.Logger
 import org.koin.core.component.KoinApiExtension
@@ -42,7 +44,8 @@ class UnLockViewModel : BaseViewModel(), KoinComponent {
         rxLifeScope.launch({
             accountJson.value = model.loadAccount(AccountUtils.getAccountPath(context()))
             NinjaApp.instance.account = accountJson.value!!.fromJson()!!
-            val iconColor = ColorGenerator.MATERIAL.getColor(NinjaApp.instance.account.address)
+            val iconIndex = Androidlib.iconIndex(NinjaApp.instance.account.address, ColorUtil.colorSize)
+            val iconColor = ColorUtil.colors[iconIndex]
             iconDrawable.value = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(iconColor))
 
         }, {

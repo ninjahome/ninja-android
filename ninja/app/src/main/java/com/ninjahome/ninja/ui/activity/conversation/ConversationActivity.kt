@@ -12,6 +12,7 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
+import androidlib.Androidlib
 import androidlib.Androidlib.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.rxLifeScope
@@ -42,6 +43,7 @@ import com.ninjahome.ninja.room.MessageDBManager
 import com.ninjahome.ninja.ui.adapter.ConversationAdapter
 import com.ninjahome.ninja.utils.DialogUtils
 import com.ninjahome.ninja.view.ConversationMoreActionPop
+import com.ninjahome.ninja.view.contacts.ColorUtil
 import com.ninjahome.ninja.viewmodel.ConversationViewModel
 import com.qingmei2.rximagepicker.core.RxImagePicker.create
 import com.qingmei2.rximagepicker_extension.MimeType
@@ -87,10 +89,9 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     override fun initView() {
         imagePicker = create(WechatImagePicker::class.java)
+        initAdapter()
         ImmersionBar.with(this).statusBarColor(com.ninja.android.lib.R.color.white).barEnable(true).keyboardEnable(true).statusBarDarkFont(true).fitsSystemWindows(true).init()
         initEmotionKeyboard()
-        rvMsg.itemAnimator = null
-        rvMsg.animation = null
         moreActionDialog = DialogUtils.showMoreActionDialog(this, object : ConversationMoreActionPop.ConversationMoreActionListener {
             override fun action(index: Int) {
                 when (index) {
@@ -113,8 +114,8 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         initAudioRecordManager()
     }
 
-    fun initAdapter(name:String){
-        conversationAdapter = ConversationAdapter(this, mData, mViewModel,name)
+    fun initAdapter(){
+        conversationAdapter = ConversationAdapter(this, mData, mViewModel)
         rvMsg.adapter = conversationAdapter
         conversationAdapter.onItemClickListener = this
     }
@@ -127,7 +128,18 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                     mViewModel.title.set(it)
                 }
                 val subName = if(mViewModel.title.get()!!.toString().length>=2) mViewModel.title.get()!!.substring(0,2) else  mViewModel.title.get()!!
-                initAdapter(subName)
+                MainScope().launch {
+                    var receiverIconColor = R.color.color_D8D8D8
+                    val contact = ContactDBManager.queryByID(mViewModel.uid)
+                    if(contact !=null){
+                        val receiverIconIndex = Androidlib.iconIndex(mViewModel.uid, ColorUtil.colorSize)
+                        receiverIconColor = ColorUtil.colors[receiverIconIndex]
+                    }
+                    if(this@ConversationActivity::conversationAdapter.isLateinit){
+                        conversationAdapter.setReceiverNameIcon(subName,receiverIconColor)
+                    }
+                }
+
             }
         }
 
@@ -221,7 +233,9 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                     if (it != null) {
                         mData.addAll(it)
                     }
-                    conversationAdapter.notifyDataSetChanged()
+                    if(this@ConversationActivity::conversationAdapter.isLateinit){
+                        conversationAdapter.notifyDataSetChanged()
+                    }
                     if(isFirstObserable){
                         isFirstObserable = false
                         rvMsg.scrollToPosition((rvMsg.adapter?.itemCount ?: 1) - 1)
@@ -240,8 +254,10 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             conversation?.let {
                 MessageDBManager.updateMessage2Read(it.id)
                 it.unreadCount = 0
-                if (conversationAdapter.lastItem != null) {
-                    it.msg = conversationAdapter.lastItem.msg
+                if(this@ConversationActivity::conversationAdapter.isLateinit){
+                    if (conversationAdapter.lastItem != null) {
+                        it.msg = conversationAdapter.lastItem.msg
+                    }
                 }
                 ConversationDBManager.updateConversations(it)
             }
@@ -294,7 +310,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         startActivityForResult(intent, REQUEST_TAKE_PHOTO)
     }
 
-    override fun statusBarStyle(): Int = STATUSBAR_STYLE_WHITE
+    override fun statusBarStyle(): Int = STATUSBAR_STYLE_CUSTOMER
 
     override fun initVariableId(): Int = BR.viewModel
 
