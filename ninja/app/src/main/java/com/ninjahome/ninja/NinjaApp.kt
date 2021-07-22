@@ -101,6 +101,9 @@ class NinjaApp : BaseApplication() {
             viewModel { LocationSearchViewModel() }
             viewModel { LocationShowViewModel() }
             viewModel { ScanContactSuccessViewModel() }
+            viewModel { CreateGroupChatViewModel() }
+            viewModel { GroupChatDetailViewModel() }
+            viewModel { GroupChatRemoveMemberViewModel() }
 
             single { UnlockModel() }
             single { CreateAccountModel() }

@@ -70,7 +70,7 @@ class CreateAccountViewModel : BaseViewModel(), KoinComponent {
         }, {
             println(it.message)
             dismissDialog()
-            showToast(R.string.createAccount_error)
+            showToast(R.string.create_account_error)
         }, {
             showDialog()
         })
@@ -86,7 +86,7 @@ class CreateAccountViewModel : BaseViewModel(), KoinComponent {
         }, {
             println(it.message)
             dismissDialog()
-            showToast(R.string.createAccount_import_error)
+            showToast(R.string.create_account_import_error)
         }, {
             showDialog()
         })

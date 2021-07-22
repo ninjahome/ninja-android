@@ -1,6 +1,7 @@
 package com.ninjahome.ninja.ui.activity.splash
 
 import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
 import com.ninja.android.lib.base.BaseActivity
 import com.ninja.android.lib.utils.SharedPref
@@ -22,12 +23,13 @@ import org.koin.core.component.KoinApiExtension
  */
 @KoinApiExtension
 class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>(R.layout.activity_splash) {
-    val userName: String by SharedPref(this, Constants.KEY_USER_NAME, "")
+    private val mHandler :Handler by lazy { Handler(Looper.getMainLooper()) }
+    private val userName: String by SharedPref(this, Constants.KEY_USER_NAME, "")
     override val mViewModel: SplashViewModel by viewModel()
 
 
     override fun initView() {
-        Handler(mainLooper).postDelayed({
+        mHandler.postDelayed({
             if (!mViewModel.hasAccount) {
                 startActivity(CreateAccountActivity::class.java)
                 finish()
@@ -56,5 +58,9 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>(R.la
 
     override fun initVariableId(): Int = BR.viewModel
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mHandler.removeCallbacksAndMessages(null)
+    }
 
 }

@@ -5,7 +5,7 @@ import com.ninja.android.lib.command.BindingAction
 import com.ninja.android.lib.command.BindingCommand
 import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.R
-import com.ninjahome.ninja.ui.activity.contact.ApplyListActivity
+import com.ninjahome.ninja.ui.activity.groupchat.GroupChatCreateActivity
 import com.ninjahome.ninja.ui.activity.search.SearchContactActivity
 
 /**
@@ -27,9 +27,9 @@ class ContactListViewModel : BaseViewModel() {
         startActivity(SearchContactActivity::class.java)
     }
 
-    val clickNewFriend = BindingCommand<Any>(object : BindingAction {
+    val clickGroup = BindingCommand<Any>(object : BindingAction {
         override fun call() {
-            startActivity(ApplyListActivity::class.java)
+            startActivity(GroupChatCreateActivity::class.java)
         }
     })
 

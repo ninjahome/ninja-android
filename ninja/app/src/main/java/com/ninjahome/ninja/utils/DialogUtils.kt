@@ -11,6 +11,7 @@ import com.lxj.xpopup.interfaces.SimpleCallback
 import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.view.ConversationMoreActionPop
+import com.ninjahome.ninja.view.CreateGroupChatPop
 import com.ninjahome.ninja.view.PasswordPop
 import com.orhanobut.logger.Logger
 
@@ -72,6 +73,10 @@ object DialogUtils {
 
     fun showDeleteContactDialog(activity: AppCompatActivity,confirmListerer: OnConfirmListener): BasePopupView {
         return XPopup.Builder(activity).dismissOnBackPressed(true).asConfirm(context().getString(R.string.delete_contact),"",confirmListerer).show()
+    }
+
+    fun showCreateGroupChatDialog(activity: AppCompatActivity,listener: CreateGroupChatPop.ClickListener): BasePopupView {
+        return XPopup.Builder(activity).dismissOnBackPressed(true).asCustom(CreateGroupChatPop(activity, listener)).show()
     }
 
 }

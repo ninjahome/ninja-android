@@ -79,7 +79,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     private var mIsFirst = false
     private lateinit var mEmotionKeyboard: EmotionKeyboard
-    private val handler: Handler by lazy { Handler(Looper.getMainLooper()) }
+    private val mHandler: Handler by lazy { Handler(Looper.getMainLooper()) }
     private val mData: MutableList<Message> = mutableListOf()
 
     var conversation: Conversation? = null
@@ -129,7 +129,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                 }
                 val subName = if(mViewModel.title.get()!!.toString().length>=2) mViewModel.title.get()!!.substring(0,2) else  mViewModel.title.get()!!
                 MainScope().launch {
-                    var receiverIconColor = R.color.color_D8D8D8
+                    var receiverIconColor = R.color.color_d8d8d8
                     val contact = ContactDBManager.queryByID(mViewModel.uid)
                     if(contact !=null){
                         val receiverIconIndex = Androidlib.iconIndex(mViewModel.uid, ColorUtil.colorSize)
@@ -267,7 +267,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     }
 
     fun ScrollToBottom() {
-        handler.postDelayed({
+        mHandler.postDelayed({
             rvMsg.smoothMoveToPosition((rvMsg.adapter?.itemCount ?: 0) - 1)
         }, 50)
     }
@@ -377,7 +377,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                     hideEmotionLayout()
                     hideAudioButton()
                     mEmotionKeyboard.hideSoftInput()
-                    handler.postDelayed(({
+                    mHandler.postDelayed(({
                         showMoreLayout()
                     }), 50)
                     return@setOnEmotionButtonOnClickListener true
@@ -462,13 +462,13 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     }
 
     private fun initAudioRecordManager() {
-        AudioRecordManager.getInstance(this).maxVoiceDuration = Constants.DEFAULT_MAX_AUDIO_RECORD_TIME_SECOND
+        AudioRecordManager.getInstance(NinjaApp.instance.applicationContext).maxVoiceDuration = Constants.DEFAULT_MAX_AUDIO_RECORD_TIME_SECOND
         val audioDir = File(Constants.AUDIO_SAVE_DIR)
         if (!audioDir.exists()) {
             audioDir.mkdirs()
         }
-        AudioRecordManager.getInstance(this).setAudioSavePath(audioDir.absolutePath)
-        AudioRecordManager.getInstance(this).audioRecordListener = object : IAudioRecordListener {
+        AudioRecordManager.getInstance(NinjaApp.instance.applicationContext).setAudioSavePath(audioDir.absolutePath)
+        AudioRecordManager.getInstance(NinjaApp.instance.applicationContext).audioRecordListener = object : IAudioRecordListener {
             private lateinit var timerTV: TextView
             private lateinit var waveView: VoiceWaveView
             private lateinit var popRoot: ConstraintLayout
@@ -477,7 +477,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             private var mRecordWindow: PopupWindow? = null
             private var startRecordTime: Long = 0
             override fun initTipView() {
-                val view = View.inflate(this@ConversationActivity, R.layout.popup_audio, null)
+                val view = View.inflate(this@ConversationActivity, R.layout.pop_audio, null)
                 popRoot = view.findViewById(R.id.popRoot)
                 waveView = view.findViewById(R.id.waveview)
                 timerTV = view.findViewById(R.id.timeTv)
@@ -585,6 +585,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     override fun onDestroy() {
         super.onDestroy()
         clearUnreadNumber()
+        mHandler.removeCallbacksAndMessages(null)
     }
 
     override fun onItemClick(helper: LQRViewHolder, parent: ViewGroup?, itemView: View?, position: Int) {

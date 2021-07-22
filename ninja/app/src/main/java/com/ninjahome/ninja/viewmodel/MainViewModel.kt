@@ -13,11 +13,5 @@ import java.io.File
  *Description:
  */
 class MainViewModel : BaseViewModel() {
-    fun clearCache() {
-        rxLifeScope.launch {
-            withContext(Dispatchers.IO) {
-                FileUtils.deleteDir(File(FileUtils.cacheDir))
-            }
-        }
-    }
+
 }

@@ -34,7 +34,6 @@ import java.io.IOException
  */
 class TakePhotoActivity : BaseActivity<TakePhotoViewModel, ActivityTakePhotoBinding>(R.layout.activity_take_photo) {
 
-    val handler = Handler(Looper.getMainLooper())
     override val mViewModel: TakePhotoViewModel by viewModel()
 
     override fun initView() {

@@ -13,7 +13,6 @@ import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.bean.Conversation
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.ui.activity.conversation.ConversationActivity
-import com.ninjahome.ninja.view.contacts.ColorGenerator
 import com.ninjahome.ninja.view.contacts.ColorUtil
 import com.ninjahome.ninja.view.contacts.TextDrawable
 import org.koin.core.component.KoinApiExtension
@@ -34,7 +33,7 @@ class ConversationItemViewModel(viewModel: ConversationListViewModel, val conver
         rxLifeScope.launch {
            val contact = ContactDBManager.queryByID(conversation.from)
             if(contact ==null){
-                receiverIconColor = R.color.color_D8D8D8
+                receiverIconColor = R.color.color_d8d8d8
             }
             receiverIcon.value = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(receiverIconColor) )
         }

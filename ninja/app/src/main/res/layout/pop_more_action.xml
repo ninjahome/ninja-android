@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:layout_width="match_parent"
+android:layout_height="230dp"
+android:background="@drawable/bg_more_action"
+app:cardBackgroundColor="@android:color/transparent">
+
+<TextView
+    android:id="@+id/albumTv"
+    android:layout_marginTop="29dp"
+    style="@style/MoreActionTextViewStyle"
+    app:layout_constraintEnd_toStartOf="@+id/takePhotoTv"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    android:text="@string/album"
+    app:drawableTopCompat="@drawable/ic_func_pic" />
+
+<TextView
+    android:id="@+id/takePhotoTv"
+    style="@style/MoreActionTextViewStyle"
+    app:drawableTopCompat="@drawable/ic_func_shot"
+    app:layout_constraintEnd_toStartOf="@+id/locationTv"
+
+    android:text="@string/shot"
+    app:layout_constraintStart_toEndOf="@+id/albumTv"
+    app:layout_constraintTop_toTopOf="@+id/albumTv" />
+
+<TextView
+    android:id="@+id/locationTv"
+    style="@style/MoreActionTextViewStyle"
+    app:drawableTopCompat="@drawable/location_icon"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:text="@string/location"
+    app:layout_constraintStart_toEndOf="@+id/takePhotoTv"
+    app:layout_constraintTop_toTopOf="@+id/albumTv" />
+
+<TextView
+    android:id="@+id/cancelTv"
+    android:layout_width="0dp"
+    android:layout_height="42dp"
+    android:layout_marginStart="44dp"
+    android:layout_marginEnd="44dp"
+    android:background="@drawable/shape_session_btn_cancle"
+    android:gravity="center"
+    android:text="@string/cancel"
+    android:textColor="@color/color_0c123d"
+    android:textSize="16sp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/takePhotoTv" />
+</androidx.constraintlayout.widget.ConstraintLayout>

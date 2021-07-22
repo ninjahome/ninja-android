@@ -16,10 +16,10 @@ class ColorGenerator private constructor(private val mColors: List<Int>) {
         }
 
         init {
-            MATERIAL = create(Arrays.asList(R.color.color_eff2f1,R.color.color_F4CCE3,R.color.color_D6CCF4,
-                    R.color.color_BACEF0,R.color.color_ABDDEE,R.color.color_CBEEA8,R.color.color_BAF1E6,
-                    R.color.color_FAE5A6,R.color.color_F0B5B2,R.color.color_ACEFBA,R.color.color_BAD4EE,
-                    R.color.color_EBEFAE,R.color.color_F2C2B4,R.color.color_D8D8D8
+            MATERIAL = create(Arrays.asList(R.color.color_eff2f1,R.color.color_f4cce3,R.color.color_d6ccf4,
+                    R.color.color_bacef0,R.color.color_abddee,R.color.color_cbeea8,R.color.color_baf1e6,
+                    R.color.color_fae5a6,R.color.color_f0b5b2,R.color.color_acefba,R.color.color_bad4ee,
+                    R.color.color_ebefae,R.color.color_f2c2b4,R.color.color_d8d8d8
             ))
         }
     }

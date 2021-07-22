@@ -287,4 +287,9 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
         finish()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacksAndMessages(null)
+    }
 }

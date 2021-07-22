@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+    <variable
+        name="viewModel"
+        type="com.ninjahome.ninja.viewmodel.GroupChatDetailViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/title_layout"
+            app:viewModel="@{viewModel}"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/groupNumberRv"
+            android:layout_width="0dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/titleLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="250dp"/>
+        <TextView
+            android:id="@+id/nameLabTv"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="20dp"
+            android:textSize="16sp"
+            android:gravity="center_vertical"
+            android:textColor="@color/color_26253c"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/groupNumberRv"
+            android:text="@string/group_chat_detail_name"
+            android:layout_height="54dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            app:layout_constraintTop_toTopOf="@+id/nameLabTv"
+            android:textSize="16sp"
+            android:text="@{viewModel.name}"
+            onClickCommand="@{viewModel.clickUpdateGroupName}"
+            android:textColor="@color/color_86868a"
+            android:gravity="center_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="20dp"
+            android:layout_height="wrap_content"
+            app:drawableEndCompat="@drawable/next_icon" />
+        <TextView
+            android:id="@+id/gourpqrTv"
+            android:layout_width="0dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:drawableEndCompat="@drawable/next_icon"
+            android:textSize="16sp"
+            android:gravity="center_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="20dp"
+            android:textColor="@color/color_26253c"
+            app:layout_constraintTop_toBottomOf="@+id/nameLabTv"
+            android:text="@string/group_chat_detail_qr"
+            onClickCommand="@{viewModel.clickShowQRCode}"
+            android:layout_height="54dp"/>
+        <TextView
+            android:id="@+id/deleteTv"
+            android:layout_width="0dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:drawableEndCompat="@drawable/next_icon"
+            android:textSize="16sp"
+            android:gravity="center_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="20dp"
+            android:textColor="@color/color_26253c"
+            app:layout_constraintTop_toBottomOf="@+id/gourpqrTv"
+            android:text="@string/group_chat_detail_delete_member"
+            onClickCommand="@{viewModel.clickRemoveMember}"
+            android:layout_height="54dp"/>
+        <Button
+            app:layout_constraintTop_toBottomOf="@+id/deleteTv"
+            android:layout_width="0dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/color_ee674c"
+            android:background="@drawable/bg_group_detail_signout"
+            android:text="@string/group_chat_detail_out"
+            onClickCommand="@{viewModel.clickSignOut}"
+            android:layout_height="48dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

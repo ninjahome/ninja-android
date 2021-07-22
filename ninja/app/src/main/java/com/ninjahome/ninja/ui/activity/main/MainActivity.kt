@@ -92,7 +92,6 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
         super.onDestroy()
         Androidlib.wsOffline()
 
-        mViewModel.clearCache()
     }
 
 

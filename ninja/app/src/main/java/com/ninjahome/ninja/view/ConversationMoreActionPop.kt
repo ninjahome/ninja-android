@@ -25,7 +25,7 @@ class ConversationMoreActionPop(context: Context, val listener: ConversationMore
     }
 
     override fun getImplLayoutId(): Int {
-        return R.layout.popup_more_action
+        return R.layout.pop_more_action
     }
 
     override fun onCreate() {

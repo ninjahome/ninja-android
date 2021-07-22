@@ -40,12 +40,14 @@ class EditContactViewModel : BaseViewModel() {
             rxLifeScope.launch({
                 val owner = AccountUtils.getAddress(context())
                 if (contact == null) {
-                    contact = Contact(0, "", nickName.value!!, owner!!, remark.value!!, address.value!!)
+                    val subName: String = if (nickName.value!!.length >= 2) nickName.value!!.substring(0, 2) else nickName.value!!
+                    contact = Contact(0, "", nickName.value!!,subName, owner!!, remark.value!!, address.value!!)
                     ContactDBManager.insert(contact!!)
                 } else {
                     contact!!.nickName = nickName.value!!
                     contact!!.remark = remark.value!!
                     contact!!.uid = address.value!!
+                    contact!!.subName = if (nickName.value!!.length >= 2) nickName.value!!.substring(0, 2) else nickName.value!!
                     ContactDBManager.updateAccounts(contact!!)
                 }
                 val conversation = ConversationDBManager.queryByFrom(contact!!.uid)

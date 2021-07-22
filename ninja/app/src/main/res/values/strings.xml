@@ -34,6 +34,8 @@
     <string name="send_error">发送失败</string>
     <string name="no_support_msg_type">不支持的消息类型</string>
     <string name="version">version:%s</string>
+    <string name="complete">完成</string>
+
 
     <!--  conversation  -->
     <string name="conversation_unline_tip">离线状态，下拉更新状态</string>
@@ -69,8 +71,9 @@
     <string name="create_account_sure">确定</string>
     <string name="create_account_has_account">已有账号,</string>
     <string name="create_account_import_account">导入二维码</string>
-    <string name="createAccount_error">创建账号失败</string>
-    <string name="createAccount_import_error">导入账号失败</string>
+    <string name="create_account_error">创建账号失败</string>
+    <string name="create_account_import_error">导入账号失败</string>
+    <string name="create_account_input_alias">请输入备注名称</string>
 
     <!--    info-->
     <string name="edit_user_info_title">个人信息</string>
@@ -94,6 +97,7 @@
     <string name="contact_remark">备注</string>
     <string name="contact_des">描述</string>
 
+
     <!--    search contact-->
     <string name="search_contact_scan_qr_code">扫描二维码</string>
     <string name="search_contact_input_nick_name">备注名称</string>
@@ -103,7 +107,7 @@
     <string name="search_contact_save_error">保存失败</string>
     <string name="search_contact_add_title">设置备注信息</string>
     <string name="search_contact_address_error">地址有误</string>
-    <string name="create_account_input_alias">请输入备注名称</string>
+
     <!--    my-->
     <string name="my_set">安全设置</string>
     <string name="my_help">帮助与反馈</string>
@@ -124,4 +128,17 @@
     <string name="account_manager_qr_id_name">ninja_id.png</string>
     <string name="account_manager_save_account_success">保存成功</string>
     <string name="account_manager_save_account_failure">保存失败</string>
+
+    <!--    qroupchat-->
+    <string name="contact_group_chat">群聊</string>
+    <string name="contact_group_chat_complete">完成</string>
+    <string name="contact_group_create">创建群聊</string>
+    <string name="create_group_chat_create_name">取个群名</string>
+    <string name="create_group_chat_create_no_name">暂不取名</string>
+
+    <string name="group_chat_detail_name">群聊名称</string>
+    <string name="group_chat_detail_qr">群二维码</string>
+    <string name="group_chat_detail_delete_member">删除群成员</string>
+    <string name="group_chat_detail_out">退出群聊</string>
+    <string name="group_chat_remove_member_title">删除群成员</string>
 </resources>

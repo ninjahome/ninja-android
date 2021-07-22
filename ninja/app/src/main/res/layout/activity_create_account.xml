@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:paddingStart="31dp"
         android:paddingEnd="31dp"
+        android:background="@color/white"
         android:layout_height="match_parent">
 
         <ImageView

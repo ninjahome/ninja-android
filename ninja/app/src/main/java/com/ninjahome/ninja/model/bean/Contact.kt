@@ -13,4 +13,4 @@ import kotlinx.android.parcel.Parcelize
  */
 @Entity
 @Parcelize
-data class Contact(@PrimaryKey(autoGenerate = true) var id: Int = 0, var avatar: String = "", var nickName: String = "", var owner: String = "", var remark: String = "", var uid: String = "", @Ignore var indexTag: String = "") : Parcelable
+data class Contact(@PrimaryKey(autoGenerate = true) var id: Int = 0, var avatar: String = "", var nickName: String = "",var subName: String = "", var owner: String = "", var remark: String = "", var uid: String = "", @Ignore var indexTag: String = "",var isSelected:Boolean = false) : Parcelable
