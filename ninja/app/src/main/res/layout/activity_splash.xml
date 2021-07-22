@@ -15,12 +15,12 @@
 
         <ProgressBar
             android:layout_width="40dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:indeterminateTintMode="src_atop"
+            android:layout_height="40dp"
             android:layout_marginBottom="60dp"
             android:indeterminateTint="@color/color_26253c"
-            android:layout_height="40dp" />
+            android:indeterminateTintMode="src_atop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

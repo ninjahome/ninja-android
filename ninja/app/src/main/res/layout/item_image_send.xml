@@ -15,10 +15,10 @@
         android:layout_margin="10dp"
         android:background="@drawable/shape_notification_bg"
         android:gravity="center"
-        android:paddingBottom="2dp"
         android:paddingLeft="5dp"
-        android:paddingRight="5dp"
         android:paddingTop="2dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="2dp"
         android:text="下午 5点"
         android:textColor="#fff"
         android:textSize="12sp" />
@@ -29,10 +29,10 @@
         android:layout_gravity="end"
         android:gravity="end"
         android:orientation="horizontal"
-        android:paddingBottom="20dp"
         android:paddingLeft="5dp"
+        android:paddingTop="10dp"
         android:paddingRight="5dp"
-        android:paddingTop="10dp">
+        android:paddingBottom="20dp">
 
         <!-- 重试 -->
 
@@ -73,11 +73,11 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:maxHeight="150dp"
-                android:minHeight="80dp"
                 android:minWidth="80dp"
+                android:minHeight="80dp"
                 android:scaleType="centerCrop"
-                app:bubble_angle="10dp"
                 android:transitionName="share"
+                app:bubble_angle="10dp"
                 app:bubble_arrowHeight="10dp"
                 app:bubble_arrowLocation="right"
                 app:bubble_arrowOffset="-5dp"

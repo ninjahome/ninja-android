@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -12,90 +12,90 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:paddingStart="31dp"
-        android:paddingEnd="31dp"
+        android:layout_height="match_parent"
         android:background="@color/white"
-        android:layout_height="match_parent">
+        android:paddingStart="31dp"
+        android:paddingEnd="31dp">
 
         <ImageView
             android:id="@+id/iconIV"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="79dp"
             android:layout_width="122dp"
+            android:layout_height="122dp"
+            android:layout_marginTop="79dp"
             android:scaleType="center"
             android:src="@drawable/logo"
-            android:layout_height="122dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/titleTv"
             android:layout_width="wrap_content"
-            android:textSize="20sp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:textStyle="bold"
-            android:textColor="@color/color_26253c"
             android:text="@string/create_account_register"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/color_26253c"
+            android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iconIV"
-            android:layout_height="wrap_content" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iconIV" />
 
         <EditText
             android:id="@+id/passwordET"
+            style="@style/EditTextStyle"
             android:layout_marginTop="16dp"
+            android:hint="@string/create_account_input_password"
+            android:importantForAutofill="no"
             android:inputType="textPassword"
             android:text="@={viewModel.password}"
-            style="@style/EditTextStyle"
-            android:hint="@string/create_account_input_password"
             app:layout_constraintTop_toBottomOf="@+id/titleTv"
-            tools:ignore="MissingConstraints,TextFields"
-            android:importantForAutofill="no" />
+            tools:ignore="MissingConstraints,TextFields" />
 
         <EditText
             android:id="@+id/rePasswordET"
             style="@style/EditTextStyle"
             android:layout_marginTop="16dp"
+            android:hint="@string/create_account_input_repassword"
+            android:importantForAutofill="no"
             android:inputType="textPassword"
             android:text="@={viewModel.rePassword}"
-            android:hint="@string/create_account_input_repassword"
             app:layout_constraintTop_toBottomOf="@+id/passwordET"
-            tools:ignore="MissingConstraints,TextFields"
-            android:importantForAutofill="no" />
+            tools:ignore="MissingConstraints,TextFields" />
 
         <TextView
             android:id="@+id/sureTv"
             style="@style/ButtonStyle"
             onClickCommand="@{viewModel.clickSure}"
-            android:text="@string/create_account_sure"
             android:layout_marginTop="16dp"
+            android:text="@string/create_account_sure"
             app:layout_constraintTop_toBottomOf="@+id/rePasswordET"
             tools:ignore="MissingConstraints" />
 
         <TextView
             android:id="@+id/hasAccountTv"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/importTv"
-            android:textColor="@color/color_86868a"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintTop_toBottomOf="@+id/sureTv"
             android:text="@string/create_account_has_account"
-            android:layout_height="wrap_content" />
+            android:textColor="@color/color_86868a"
+            app:layout_constraintEnd_toStartOf="@+id/importTv"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sureTv" />
 
         <TextView
             android:id="@+id/importTv"
-            android:layout_width="wrap_content"
-            app:layout_constraintStart_toEndOf="@+id/hasAccountTv"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="32dp"
-            android:textStyle="bold"
             onClickCommand="@{viewModel.clickImport}"
-            android:textColor="@color/color_26253c"
-            app:layout_constraintTop_toBottomOf="@+id/sureTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
             android:text="@string/create_account_import_account"
-            android:layout_height="wrap_content" />
+            android:textColor="@color/color_26253c"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/hasAccountTv"
+            app:layout_constraintTop_toBottomOf="@+id/sureTv" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -12,71 +12,74 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:background="@color/white"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
         <include
             layout="@layout/title_layout"
             app:viewModel="@{viewModel}" />
+
         <TextView
             android:id="@+id/remarkLabTv"
             android:layout_width="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="27dp"
-            android:textSize="14sp"
-            android:textColor="@color/color_86868a"
-            app:layout_constraintTop_toBottomOf="@+id/titleLayout"
             android:text="@string/contact_remark"
-            android:layout_height="wrap_content"/>
+            android:textColor="@color/color_86868a"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleLayout" />
 
         <EditText
             android:id="@+id/nickNameEt"
             style="@style/EditTextStyle"
-            android:layout_marginTop="8dp"
-            android:text="@={viewModel.nickName}"
-            app:layout_constraintTop_toBottomOf="@+id/remarkLabTv"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="20dp"
             android:hint="@string/search_contact_input_nick_name"
-            android:singleLine="true"
-            tools:ignore="MissingConstraints"
             android:importantForAutofill="no"
-            android:inputType="text" />
+            android:inputType="text"
+            android:singleLine="true"
+            android:text="@={viewModel.nickName}"
+            app:layout_constraintTop_toBottomOf="@+id/remarkLabTv"
+            tools:ignore="MissingConstraints" />
+
         <TextView
             android:id="@+id/desLabTv"
             android:layout_width="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="27dp"
-            android:textSize="14sp"
-            android:textColor="@color/color_86868a"
-            app:layout_constraintTop_toBottomOf="@+id/nickNameEt"
             android:text="@string/contact_des"
-            android:layout_height="wrap_content"/>
+            android:textColor="@color/color_86868a"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nickNameEt" />
+
         <EditText
             style="@style/EditTextStyle"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="20dp"
+            android:gravity="top"
+            android:hint="@string/search_contact_remark"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:minHeight="90dp"
+            android:minLines="3"
+            android:paddingTop="6dp"
             android:text="@={viewModel.remark}"
             app:layout_constraintTop_toBottomOf="@+id/desLabTv"
-            android:layout_marginStart="20dp"
-            android:paddingTop="6dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="16dp"
-            android:hint="@string/search_contact_remark"
-            tools:ignore="MissingConstraints"
-            android:importantForAutofill="no"
-            android:gravity="top"
-            android:minLines="3"
-            android:minHeight="90dp"
-            android:layout_height="wrap_content"
-            android:inputType="text" />
+            tools:ignore="MissingConstraints" />
 
         <TextView
             style="@style/ButtonStyle"
-            android:layout_marginBottom="75dp"
             onClickCommand="@{viewModel.clickSave}"
-            android:text="@string/search_contact_add"
             android:layout_width="158dp"
+            android:layout_marginBottom="75dp"
+            android:text="@string/search_contact_add"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:ignore="MissingConstraints" />
     </androidx.constraintlayout.widget.ConstraintLayout>

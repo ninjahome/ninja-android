@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.journeyapps.barcodescanner.BarcodeView
+        android:id="@+id/zxing_barcode_surface"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/zxing_barcode_surface" />
+        android:layout_height="match_parent" />
 
     <com.ninjahome.ninja.view.ZxingViewfinderView
+        android:id="@+id/zxing_viewfinder_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:zxing_viewfinder_laser="@color/color_26253c"
         app:zxing_possible_result_points="@color/color_26253c"
         app:zxing_result_view="@color/color_26253c"
-        android:id="@+id/zxing_viewfinder_view" />
+        app:zxing_viewfinder_laser="@color/color_26253c" />
 
 </merge>

@@ -17,26 +17,27 @@
         <include
             layout="@layout/title_layout"
             app:viewModel="@{viewModel}" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/memberRv"
             android:layout_width="0dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:overScrollMode="never"
-            app:layout_constraintTop_toBottomOf="@+id/titleLayout"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="0dp"
             android:layout_marginBottom="120dp"
-            android:layout_height="0dp"/>
+            android:overScrollMode="never"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleLayout" />
 
         <Button
-            android:layout_width="158dp"
             style="@style/ButtonStyle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="32dp"
             onClickCommand="@{viewModel.clickComplete}"
+            android:layout_width="158dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="32dp"
             android:text="@string/complete"
-            android:layout_height="48dp"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
