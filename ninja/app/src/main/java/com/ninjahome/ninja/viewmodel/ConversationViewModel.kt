@@ -71,11 +71,11 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
         super.clickRightIv()
         rxLifeScope.launch {
             val contact = ContactDBManager.queryByID(uid)
-            if(contact ==null){
+            if (contact == null) {
                 val bundle = Bundle()
                 bundle.putString(IntentKey.UID, uid)
                 startActivity(ScanContactSuccessActivity::class.java, bundle)
-            }else{
+            } else {
                 val bundle = Bundle()
                 bundle.putString(IntentKey.UID, uid)
                 startActivity(ContactDetailActivity::class.java, bundle)

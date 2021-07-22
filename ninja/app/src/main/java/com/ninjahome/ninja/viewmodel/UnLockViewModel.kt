@@ -16,7 +16,6 @@ import com.ninjahome.ninja.model.UnlockModel
 import com.ninjahome.ninja.ui.activity.main.MainActivity
 import com.ninjahome.ninja.utils.AccountUtils
 import com.ninjahome.ninja.utils.fromJson
-import com.ninjahome.ninja.view.contacts.ColorGenerator
 import com.ninjahome.ninja.view.contacts.ColorUtil
 import com.ninjahome.ninja.view.contacts.TextDrawable
 import com.orhanobut.logger.Logger

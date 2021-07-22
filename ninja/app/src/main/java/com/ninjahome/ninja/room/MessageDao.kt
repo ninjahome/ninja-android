@@ -11,22 +11,23 @@ interface MessageDao {
     fun all(): LiveData<List<Message>?>
 
     @Query("SELECT * FROM message where conversationId = :conversationId order by time")
-    fun queryByConversationId(conversationId:Long): LiveData<List<Message>?>
+    fun queryByConversationId(conversationId: Long): LiveData<List<Message>?>
 
     @Query("SELECT count(*) FROM message where conversationId = :conversationId and unRead = 1")
-    fun queryUnReadCount(conversationId:Long): Int
+    fun queryUnReadCount(conversationId: Long): Int
 
     @Query("UPDATE message SET unRead = 0 where conversationId = :conversationId ")
-    fun updateMessage2Read(conversationId:Long)
+    fun updateMessage2Read(conversationId: Long)
 
     @Insert
-    fun insert(msg: Message):Long
+    fun insert(msg: Message): Long
 
     @Update
     fun updateMessage(vararg msg: Message)
 
     @Delete
     fun delete(vararg msg: Message)
+
     @Query("DELETE FROM message")
     fun deleteAll()
 

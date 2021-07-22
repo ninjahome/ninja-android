@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
 import com.lxj.xpopup.core.BottomPopupView
 import com.ninjahome.ninja.R
 
@@ -16,9 +15,10 @@ import com.ninjahome.ninja.R
  *Description:
  */
 class CreateGroupChatPop(context: Context, val listener: ClickListener) : BottomPopupView(context), View.OnClickListener {
-    lateinit var nameEt :EditText
+    lateinit var nameEt: EditText
+
     interface ClickListener {
-        fun clickSure(name:String)
+        fun clickSure(name: String)
         fun clickNoName()
     }
 

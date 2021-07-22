@@ -17,7 +17,7 @@ interface ConversationDao {
     fun queryByID(id: Long): Conversation?
 
     @Insert
-    fun insert(conversation: Conversation):Long
+    fun insert(conversation: Conversation): Long
 
     @Update
     fun updateConversations(vararg conversation: Conversation)

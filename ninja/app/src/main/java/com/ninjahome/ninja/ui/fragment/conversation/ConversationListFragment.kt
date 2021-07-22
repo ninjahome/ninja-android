@@ -51,7 +51,7 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
 
         ConversationDBManager.all().observe(this) {
             mViewModel.items.clear()
-             it?.forEach {
+            it?.forEach {
                 mViewModel.items.add(ConversationItemViewModel(mViewModel, it))
             }
         }

@@ -21,7 +21,6 @@ import org.android.agoo.xiaomi.MiPushRegistar
  * PushSDK集成帮助类
  */
 object PushHelper {
-    private val TAG = PushHelper::class.java.simpleName
     var token = ""
 
     /**
@@ -65,7 +64,7 @@ object PushHelper {
 
         //获取消息推送实例
         val pushAgent = PushAgent.getInstance(context)
-                pushAgent.setNotificationPlaySound(MsgConstant.NOTIFICATION_PLAY_SERVER); //服务端控制声音
+        pushAgent.notificationPlaySound = MsgConstant.NOTIFICATION_PLAY_SERVER //服务端控制声音
         //        MessageSharedPrefs.getInstance(context).setDisplayNotificationNumber(100);
         //注册推送服务，每次调用register方法都会回调该接口
         pushAgent.register(object : IUmengRegisterCallback {

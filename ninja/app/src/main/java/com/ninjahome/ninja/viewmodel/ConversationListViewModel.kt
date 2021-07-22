@@ -12,7 +12,6 @@ import com.ninja.android.lib.event.SingleLiveEvent
 import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.R
-import com.ninjahome.ninja.room.ConversationDBManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.tatarka.bindingcollectionadapter2.ItemBinding

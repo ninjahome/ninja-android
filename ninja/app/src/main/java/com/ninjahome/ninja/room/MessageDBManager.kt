@@ -18,9 +18,9 @@ object MessageDBManager {
         return msgDao.all()
     }
 
-    suspend fun insert(msg: Message):Long {
-       return withContext(Dispatchers.IO) {
-           return@withContext msgDao.insert(msg)
+    suspend fun insert(msg: Message): Long {
+        return withContext(Dispatchers.IO) {
+            return@withContext msgDao.insert(msg)
         }
     }
 
@@ -30,19 +30,19 @@ object MessageDBManager {
         }
     }
 
-    suspend fun queryByConversationId(conversationId:Long):LiveData<List<Message>?> {
-      return  withContext(Dispatchers.IO) {
-           return@withContext msgDao.queryByConversationId(conversationId)
+    suspend fun queryByConversationId(conversationId: Long): LiveData<List<Message>?> {
+        return withContext(Dispatchers.IO) {
+            return@withContext msgDao.queryByConversationId(conversationId)
         }
     }
 
-    suspend fun queryUnReadCount(conversationId:Long):Int {
-        return  withContext(Dispatchers.IO) {
+    suspend fun queryUnReadCount(conversationId: Long): Int {
+        return withContext(Dispatchers.IO) {
             return@withContext msgDao.queryUnReadCount(conversationId)
         }
     }
 
-    suspend fun updateMessage2Read(conversationId:Long) {
+    suspend fun updateMessage2Read(conversationId: Long) {
         withContext(Dispatchers.IO) {
             msgDao.updateMessage2Read(conversationId)
         }

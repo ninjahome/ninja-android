@@ -27,7 +27,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  */
 class LocationSearchActivity : BaseActivity<LocationSearchViewModel, ActivityLocationSearchBinding>(R.layout.activity_location_search) {
 
-    private var mSelectedPosi = 0
+    private var mSelectedPosition = 0
     private var currentLat = 0.0
     private var currentLng = 0.0
     private lateinit var mAdapter: LQRAdapterForRecyclerView<SuggestionResultObject.SuggestionData>
@@ -35,7 +35,7 @@ class LocationSearchActivity : BaseActivity<LocationSearchViewModel, ActivityLoc
     override val mViewModel: LocationSearchViewModel by viewModel()
 
     override fun initView() {
-        contactIdEt.setOnEditorActionListener { v, actionId, event ->
+        contactIdEt.setOnEditorActionListener { _, _, _ ->
             mViewModel.searchAddress()
             return@setOnEditorActionListener true
         }
@@ -43,21 +43,21 @@ class LocationSearchActivity : BaseActivity<LocationSearchViewModel, ActivityLoc
         mAdapter = object : LQRAdapterForRecyclerView<SuggestionResultObject.SuggestionData>(this, mViewModel.suggestionDatas, R.layout.item_location_poi) {
             override fun convert(helper: LQRViewHolderForRecyclerView, item: SuggestionResultObject.SuggestionData, position: Int) {
                 if (currentLat == 0.0) {
-                    helper.setText(R.id.tvTitle, item.title).setText(R.id.tvDesc, item.address).setViewVisibility(R.id.ivSelected, if (mSelectedPosi == position) View.VISIBLE else View.GONE)
+                    helper.setText(R.id.tvTitle, item.title).setText(R.id.tvDesc, item.address).setViewVisibility(R.id.ivSelected, if (mSelectedPosition == position) View.VISIBLE else View.GONE)
                 } else {
                     val distanceM = TencentLocationUtils.distanceBetween(currentLat, currentLng, item.location.lat.toDouble(), item.location.lng.toDouble())
                     val distance = UnitConversionUtils.m2Km(distanceM.toFloat())
-                    helper.setText(R.id.tvTitle, item.title).setText(R.id.tvDesc, "${distance} |${item.address}").setViewVisibility(R.id.ivSelected, if (mSelectedPosi == position) View.VISIBLE else View.GONE)
+                    helper.setText(R.id.tvTitle, item.title).setText(R.id.tvDesc, "$distance |${item.address}").setViewVisibility(R.id.ivSelected, if (mSelectedPosition == position) View.VISIBLE else View.GONE)
                 }
 
             }
         }
         rvPOI.adapter = mAdapter
         mAdapter.onItemClickListener = OnItemClickListener { _: LQRViewHolder?, _: ViewGroup?, _: View?, position: Int ->
-            mSelectedPosi = position
+            mSelectedPosition = position
             mAdapter.notifyDataSetChangedWrapper()
             val data = Intent()
-            val location = mViewModel.suggestionDatas.get(position).location
+            val location = mViewModel.suggestionDatas[position].location
             data.putExtra(IntentKey.LOCATION_LAT, location.lat)
             data.putExtra(IntentKey.LOCATION_LNG, location.lng)
             setResult(RESULT_OK, data)
@@ -72,7 +72,7 @@ class LocationSearchActivity : BaseActivity<LocationSearchViewModel, ActivityLoc
 
     override fun initObserve() {
         mViewModel.searchSuccessEvent.observe(this) {
-            if(this::mAdapter.isLateinit){
+            if (this::mAdapter.isLateinit) {
                 mAdapter.notifyDataSetChanged()
             }
         }

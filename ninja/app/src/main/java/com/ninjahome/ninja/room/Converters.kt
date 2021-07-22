@@ -16,10 +16,10 @@ class Converters {
     }
 
     @TypeConverter
-    fun int2messageDirection(direction:Int): Message.MessageDirection {
+    fun int2messageDirection(direction: Int): Message.MessageDirection {
         val values = Message.MessageDirection.values()
         values.forEach {
-            if(direction ==it.value){
+            if (direction == it.value) {
                 return it
             }
         }
@@ -36,7 +36,7 @@ class Converters {
     fun int2Type(type: Int): Message.Type {
         val types = Message.Type.values()
         types.forEach {
-            if(type ==it.value){
+            if (type == it.value) {
                 return it
             }
         }
@@ -52,7 +52,7 @@ class Converters {
     fun int2SentStatus(statu: Int): Message.SentStatus {
         val status = Message.SentStatus.values()
         status.forEach {
-            if(statu ==it.value){
+            if (statu == it.value) {
                 return it
             }
         }

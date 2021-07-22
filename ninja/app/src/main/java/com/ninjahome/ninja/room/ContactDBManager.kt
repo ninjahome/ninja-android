@@ -13,8 +13,8 @@ import kotlinx.coroutines.*
 object ContactDBManager {
     private val contactDao: ContactDao by lazy { NinjaDB.getInstance(context()).contactDao() }
 
-     fun all(): LiveData<List<Contact>?> {
-            return contactDao.all()
+    fun all(): LiveData<List<Contact>?> {
+        return contactDao.all()
     }
 
     suspend fun queryByID(uid: String): Contact? {
@@ -31,8 +31,8 @@ object ContactDBManager {
 
     }
 
-    fun observeNickNameByUID(uid: String):LiveData<String?>{
-        return  contactDao.observeNickNameByUID(uid)
+    fun observeNickNameByUID(uid: String): LiveData<String?> {
+        return contactDao.observeNickNameByUID(uid)
     }
 
     suspend fun insert(contact: Contact) {

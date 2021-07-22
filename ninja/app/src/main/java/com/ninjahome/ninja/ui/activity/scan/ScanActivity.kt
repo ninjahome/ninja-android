@@ -34,7 +34,7 @@ class ScanActivity : BaseActivity<ScanViewModel, ActivityScanBinding>(R.layout.a
     }
 
     private val capture: CaptureManager by lazy { CaptureManager(this, zxing_barcode_scanner) }
-    var bundle: Bundle? = null
+    private var bundle: Bundle? = null
 
 
     override val mViewModel: ScanViewModel by viewModel()

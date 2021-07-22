@@ -27,17 +27,19 @@ class ConversationItemViewModel(viewModel: ConversationListViewModel, val conver
     val receiverIconIndex = Androidlib.iconIndex(conversation.from, ColorUtil.colorSize)
     var receiverIconColor = ColorUtil.colors[receiverIconIndex]
     private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(30)
-    val subName = if(conversation.nickName.length>=2) conversation.nickName.substring(0,2) else conversation.nickName
-    var receiverIcon :MutableLiveData<TextDrawable> = MutableLiveData()
+    val subName = if (conversation.nickName.length >= 2) conversation.nickName.substring(0, 2) else conversation.nickName
+    var receiverIcon: MutableLiveData<TextDrawable> = MutableLiveData()
+
     init {
         rxLifeScope.launch {
-           val contact = ContactDBManager.queryByID(conversation.from)
-            if(contact ==null){
+            val contact = ContactDBManager.queryByID(conversation.from)
+            if (contact == null) {
                 receiverIconColor = R.color.color_d8d8d8
             }
-            receiverIcon.value = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(receiverIconColor) )
+            receiverIcon.value = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(receiverIconColor))
         }
     }
+
     val clickItem = BindingCommand<Any>(object : BindingAction {
         override fun call() {
             val bundle = Bundle()

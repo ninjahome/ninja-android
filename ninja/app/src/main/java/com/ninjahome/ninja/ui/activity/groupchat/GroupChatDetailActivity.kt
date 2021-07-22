@@ -6,12 +6,13 @@ import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityGroupChatDetailBinding
 import com.ninjahome.ninja.viewmodel.GroupChatDetailViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
-class GroupChatDetailActivity:BaseActivity<GroupChatDetailViewModel,ActivityGroupChatDetailBinding>(R.layout.activity_group_chat_detail) {
+class GroupChatDetailActivity : BaseActivity<GroupChatDetailViewModel, ActivityGroupChatDetailBinding>(R.layout.activity_group_chat_detail) {
     override val mViewModel: GroupChatDetailViewModel by viewModel()
 
     override fun initView() {
@@ -23,7 +24,7 @@ class GroupChatDetailActivity:BaseActivity<GroupChatDetailViewModel,ActivityGrou
     override fun initObserve() {
     }
 
-    override fun statusBarStyle(): Int =STATUSBAR_STYLE_WHITE
+    override fun statusBarStyle(): Int = STATUSBAR_STYLE_WHITE
 
     override fun initVariableId(): Int = BR.viewModel
 

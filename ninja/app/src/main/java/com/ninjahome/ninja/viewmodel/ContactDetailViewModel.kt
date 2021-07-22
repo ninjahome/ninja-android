@@ -8,7 +8,6 @@ import com.ninja.android.lib.command.BindingAction
 import com.ninja.android.lib.command.BindingCommand
 import com.ninja.android.lib.event.SingleLiveEvent
 import com.ninja.android.lib.provider.context
-import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.bean.Contact
@@ -30,14 +29,14 @@ class ContactDetailViewModel : BaseViewModel() {
     val showDeleteDialogEvent = SingleLiveEvent<Any>()
     val deleteSuccessEvent = SingleLiveEvent<Any>()
     val uid = MutableLiveData<String>()
-    var contact =MutableLiveData<Contact>()
+    var contact = MutableLiveData<Contact>()
 
 
     val clickSend = BindingCommand<Any>(object : BindingAction {
         override fun call() {
             val bundle = Bundle()
             bundle.putString(IntentKey.UID, uid.value)
-            startActivity(ConversationActivity::class.java, bundle,true)
+            startActivity(ConversationActivity::class.java, bundle, true)
         }
     })
 
@@ -78,7 +77,7 @@ class ContactDetailViewModel : BaseViewModel() {
             contact.value?.let {
                 ContactDBManager.delete(it)
                 val conversation = ConversationDBManager.queryByFrom(it.uid)
-                conversation?.let {c->
+                conversation?.let { c ->
                     c.nickName = contact.value!!.uid
                     ConversationDBManager.updateConversations(c)
                 }

@@ -71,11 +71,11 @@ object DialogUtils {
         return XPopup.Builder(activity).popupType(PopupType.Bottom).dismissOnTouchOutside(false).dismissOnBackPressed(true).setPopupCallback(xpopListener).asCustom(ConversationMoreActionPop(activity, listener))
     }
 
-    fun showDeleteContactDialog(activity: AppCompatActivity,confirmListerer: OnConfirmListener): BasePopupView {
-        return XPopup.Builder(activity).dismissOnBackPressed(true).asConfirm(context().getString(R.string.delete_contact),"",confirmListerer).show()
+    fun showDeleteContactDialog(activity: AppCompatActivity, confirmListerer: OnConfirmListener): BasePopupView {
+        return XPopup.Builder(activity).dismissOnBackPressed(true).asConfirm(context().getString(R.string.delete_contact), "", confirmListerer).show()
     }
 
-    fun showCreateGroupChatDialog(activity: AppCompatActivity,listener: CreateGroupChatPop.ClickListener): BasePopupView {
+    fun showCreateGroupChatDialog(activity: AppCompatActivity, listener: CreateGroupChatPop.ClickListener): BasePopupView {
         return XPopup.Builder(activity).dismissOnBackPressed(true).asCustom(CreateGroupChatPop(activity, listener)).show()
     }
 

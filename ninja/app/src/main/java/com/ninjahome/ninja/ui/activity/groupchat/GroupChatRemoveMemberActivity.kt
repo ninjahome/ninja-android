@@ -7,10 +7,8 @@ import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityGroupChatRemoveMemberBinding
 import com.ninjahome.ninja.model.bean.Contact
-import com.ninjahome.ninja.ui.adapter.CreateGroupAdapter
 import com.ninjahome.ninja.ui.adapter.GroupRemoveMemberAdapter
 import com.ninjahome.ninja.viewmodel.GroupChatRemoveMemberViewModel
-import kotlinx.android.synthetic.main.activity_create_group_chat.*
 import kotlinx.android.synthetic.main.activity_group_chat_remove_member.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -33,7 +31,7 @@ class GroupChatRemoveMemberActivity : BaseActivity<GroupChatRemoveMemberViewMode
         memberAdapter.setItemCLickListener(this)
     }
 
-    
+
     override fun initData() {
 
     }

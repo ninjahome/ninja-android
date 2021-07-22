@@ -11,7 +11,6 @@ import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivitySearchContactBinding
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.ui.activity.contact.ContactDetailActivity
-import com.ninjahome.ninja.ui.activity.contact.EditContactActivity
 import com.ninjahome.ninja.ui.activity.contact.ScanContactSuccessActivity
 import com.ninjahome.ninja.ui.activity.scan.ScanActivity
 import com.ninjahome.ninja.viewmodel.SearchContactViewModel
@@ -19,17 +18,19 @@ import kotlinx.android.synthetic.main.activity_search_contact.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.component.KoinApiExtension
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
+@KoinApiExtension
 class SearchContactActivity : BaseActivity<SearchContactViewModel, ActivitySearchContactBinding>(R.layout.activity_search_contact) {
     override val mViewModel: SearchContactViewModel by viewModel()
 
     override fun initView() {
-        contactIdEt.setOnEditorActionListener { v, actionId, event ->
+        contactIdEt.setOnEditorActionListener { _, _, _ ->
             if (!Androidlib.isValidNinjaAddr(mViewModel.inputID.value)) {
                 toast(getString(R.string.search_contact_address_error))
             } else {
@@ -43,9 +44,9 @@ class SearchContactActivity : BaseActivity<SearchContactViewModel, ActivitySearc
     private fun nextStep() {
         MainScope().launch {
             val contact = mViewModel.inputID.value?.let { ContactDBManager.queryByID(it) }
-            if(contact ==null){
+            if (contact == null) {
                 startScanContactSuccessActivity()
-            }else{
+            } else {
                 startContactDetailActivity()
             }
         }

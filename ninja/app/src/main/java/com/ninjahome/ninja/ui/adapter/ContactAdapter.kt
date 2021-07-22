@@ -6,23 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidlib.Androidlib
 import androidx.recyclerview.widget.RecyclerView
-import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.ui.adapter.ContactAdapter.MyRecycleHolder
 import com.ninjahome.ninja.utils.ContactIconUtils
-import com.ninjahome.ninja.view.contacts.ColorGenerator
-import com.ninjahome.ninja.view.contacts.ColorUtil
-import com.ninjahome.ninja.view.contacts.TextDrawable
 import java.util.*
 
 /**
  * Created by MQ on 2017/5/8.
  */
 class ContactAdapter(private val mContext: Context) : RecyclerView.Adapter<MyRecycleHolder>() {
-    private val FONT_SIZE=30
+    private val FONT_SIZE = 30
     private val contactBeanList: MutableList<Contact>?
     var clickItemListener: ClickItemListener? = null
 
@@ -57,15 +52,13 @@ class ContactAdapter(private val mContext: Context) : RecyclerView.Adapter<MyRec
         if (contactBeanList == null || contactBeanList.size == 0 || contactBeanList.size <= position) return
         val contact = contactBeanList[position]
         holder.itemView.setOnClickListener {
-            clickItemListener?.let {
-                it.clickItem(position, contact)
-            }
+            clickItemListener?.clickItem(position, contact)
         }
-        holder.tv_name.text = contact.nickName
+        holder.name.text = contact.nickName
 
 
-        val drawable = ContactIconUtils.getDrawable(FONT_SIZE,contact.uid,contact.subName)
-        holder.iv_img.setImageDrawable(drawable)
+        val drawable = ContactIconUtils.getDrawable(FONT_SIZE, contact.uid, contact.subName)
+        holder.icon.setImageDrawable(drawable)
     }
 
     override fun getItemCount(): Int {
@@ -73,8 +66,8 @@ class ContactAdapter(private val mContext: Context) : RecyclerView.Adapter<MyRec
     }
 
     class MyRecycleHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tv_name: TextView = itemView.findViewById<View>(R.id.tv_name) as TextView
-        val iv_img: ImageView = itemView.findViewById<View>(R.id.iv_img) as ImageView
+        val name: TextView = itemView.findViewById<View>(R.id.tv_name) as TextView
+        val icon: ImageView = itemView.findViewById<View>(R.id.iv_img) as ImageView
 
     }
 

@@ -9,7 +9,7 @@ import com.ninja.android.lib.command.BindingCommand
  *Time:
  *Description:
  */
-class GroupChatRemoveMemberViewModel :BaseViewModel(){
+class GroupChatRemoveMemberViewModel : BaseViewModel() {
 
     val clickComplete = BindingCommand<Any>(object : BindingAction {
         override fun call() {

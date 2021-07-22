@@ -1,7 +1,6 @@
 package com.ninjahome.ninja.ui.fragment.contact
 
 import android.content.Intent
-import android.text.TextUtils
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ninja.android.lib.base.BaseFragment
 import com.ninjahome.ninja.BR
@@ -14,22 +13,22 @@ import com.ninjahome.ninja.ui.activity.contact.ContactDetailActivity
 import com.ninjahome.ninja.ui.adapter.ContactAdapter
 import com.ninjahome.ninja.view.ContactsUtils
 import com.ninjahome.ninja.view.contacts.CustomItemDecoration
-import com.ninjahome.ninja.view.contacts.SideBar
 import com.ninjahome.ninja.view.contacts.itemanimator.SlideInOutLeftItemAnimator
 import com.ninjahome.ninja.viewmodel.ContactListViewModel
 import kotlinx.android.synthetic.main.fragment_contact_list.*
-import org.greenrobot.eventbus.EventBus
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.component.KoinApiExtension
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
+@KoinApiExtension
 class ContactListFragment : BaseFragment<ContactListViewModel, FragmentContactListBinding>(R.layout.fragment_contact_list) {
     private var decoration: CustomItemDecoration? = null
-    val contactAdapter: ContactAdapter by lazy { ContactAdapter(mActivity) }
-    var nameList = mutableListOf<Contact>()
+    private val contactAdapter: ContactAdapter by lazy { ContactAdapter(mActivity) }
+    private var nameList = mutableListOf<Contact>()
     private var layoutManager: LinearLayoutManager? = null
 
     override val mViewModel: ContactListViewModel by viewModel()
@@ -73,9 +72,6 @@ class ContactListFragment : BaseFragment<ContactListViewModel, FragmentContactLi
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
 
     override fun initData() {}
 

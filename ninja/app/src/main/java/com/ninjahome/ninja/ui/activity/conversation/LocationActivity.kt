@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.lqr.adapter.LQRAdapterForRecyclerView
 import com.lqr.adapter.LQRViewHolder
@@ -53,11 +54,11 @@ import kotlin.math.abs
  *Description:
  */
 class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding>(R.layout.activity_location), TencentLocationListener, EasyPermissions.PermissionCallbacks {
-    val CODE_REQUEST = 200
+    private val CODE_REQUEST = 200
     var maxHeight: Int = 300.dp.toInt()
     var minHeight: Int = 150.dp.toInt()
     private lateinit var mSensorManager: SensorManager
-    private lateinit var mOritationSensor: Sensor
+    private lateinit var mOrientationSensor: Sensor
     private lateinit var mLocationManager: TencentLocationManager
     private lateinit var mLocationRequest: TencentLocationRequest
     private lateinit var mTencentMap: TencentMap
@@ -79,10 +80,10 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
         rightTv.setTextColor(resources.getColor(R.color.white, null))
         rightTv.layoutParams.width = 64.dp.toInt()
         rightTv.layoutParams.height = 32.dp.toInt()
-        rightTv.background = resources.getDrawable(R.drawable.bg_location_send, null)
+        rightTv.background = ResourcesCompat.getDrawable(resources,R.drawable.bg_location_send,null)
         setRlMapHeight(maxHeight)
         mSensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-        mOritationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION)
+        mOrientationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION)
         mLocationManager = TencentLocationManager.getInstance(this)
         mLocationRequest = TencentLocationRequest.create()
         mTencentMap = map.map
@@ -106,7 +107,7 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
         mAdapter = object : LQRAdapterForRecyclerView<Geo2AddressResultObject.ReverseAddressResult.Poi>(this, mData, R.layout.item_location_poi) {
             override fun convert(helper: LQRViewHolderForRecyclerView, item: Geo2AddressResultObject.ReverseAddressResult.Poi, position: Int) {
                 helper.setText(R.id.tvTitle, item.title).setText(R.id.tvDesc, "${UnitConversionUtils.m2Km(item._distance)} | ${item.address}").setViewVisibility(R.id.ivSelected, if (mSelectedPosi == position) View.VISIBLE else View.GONE)
-//                helper.setText(R.id.tvTitle, item.title).setText(R.id.tvDesc, "${item.address}").setViewVisibility(R.id.ivSelected, if (mSelectedPosi == position) View.VISIBLE else View.GONE)
+                //                helper.setText(R.id.tvTitle, item.title).setText(R.id.tvDesc, "${item.address}").setViewVisibility(R.id.ivSelected, if (mSelectedPosi == position) View.VISIBLE else View.GONE)
             }
         }
         rvPOI.adapter = mAdapter
@@ -123,7 +124,7 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
             if (mData.size > mSelectedPosi) {
                 val poi: Geo2AddressResultObject.ReverseAddressResult.Poi = mData[mSelectedPosi]
                 val data = Intent()
-                val locationData = LocationData(poi.location.lat, poi.location.lng, "${poi.title}(${poi.address})", getMapUrl(poi.location.lat, poi.location.lng))
+                val locationData = LocationData(poi.location.lat, poi.location.lng, "${poi.title}(${poi.address})")
                 data.putExtra("location", locationData)
                 setResult(RESULT_OK, data)
                 finish()
@@ -243,11 +244,6 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
         Logger.d("location status:$s, $s1 $desc")
     }
 
-    private fun getMapUrl(x: Float, y: Float): String {
-        return "http://st.map.qq.com/api?size=708*270&center=$y,$x&zoom=17&referer=weixin"
-    }
-
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode != RESULT_OK) return
@@ -267,7 +263,7 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
 
 
     private fun requestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !== PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             EasyPermissions.requestPermissions(this, getString(R.string.import_apply_location_permission), Constants.CODE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
         } else {
             requestLocationUpdate()

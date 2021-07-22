@@ -28,7 +28,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  */
 class GroupChatCreateActivity : BaseActivity<CreateGroupChatViewModel, ActivityCreateGroupChatBinding>(R.layout.activity_create_group_chat), CreateGroupAdapter.ClickItemListener {
 
-    private lateinit var createGroupChatDialog:BasePopupView
+    private lateinit var createGroupChatDialog: BasePopupView
     private var decoration: CustomItemDecoration = CustomItemDecoration(this)
     private var layoutManager: LinearLayoutManager? = null
     private val contactAdapter: CreateGroupAdapter by lazy { CreateGroupAdapter(this) }
@@ -67,7 +67,7 @@ class GroupChatCreateActivity : BaseActivity<CreateGroupChatViewModel, ActivityC
 
         }
 
-        mViewModel.showCreateGroupChatPop.observe(this){
+        mViewModel.showCreateGroupChatPop.observe(this) {
             createGroupChatDialog = DialogUtils.showCreateGroupChatDialog(this@GroupChatCreateActivity, object : CreateGroupChatPop.ClickListener {
                 override fun clickSure(name: String) {
                     toast(name)
@@ -107,7 +107,7 @@ class GroupChatCreateActivity : BaseActivity<CreateGroupChatViewModel, ActivityC
         }
     }
 
-    fun setCreateBtnText() {
+    private fun setCreateBtnText() {
         var text = getString(R.string.contact_group_chat_complete)
         if (mViewModel.contacts.size != 0) {
             text = getString(R.string.contact_group_chat_complete) + "(${mViewModel.contacts.size})"

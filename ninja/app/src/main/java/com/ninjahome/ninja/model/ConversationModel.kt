@@ -22,17 +22,17 @@ class ConversationModel {
         }
     }
 
-    suspend fun sendImageMessage(uid: String, path: String,compress:Boolean) {
+    suspend fun sendImageMessage(uid: String, path: String, compress: Boolean) {
         withContext(Dispatchers.IO) {
             if (!Androidlib.wsIsOnline()) {
                 Androidlib.wsOnline()
             }
-            var imageFileSource:File? = null
-            if(compress){
+            var imageFileSource: File? = null
+            if (compress) {
                 imageFileSource = ImageUtils.compressImage(path)
             }
             imageFileSource = imageFileSource ?: File(path)
-            Androidlib.writeImageMessage(uid, File(imageFileSource!!.path).readBytes())
+            Androidlib.writeImageMessage(uid, File(imageFileSource.path).readBytes())
         }
     }
 

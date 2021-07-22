@@ -114,11 +114,12 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         initAudioRecordManager()
     }
 
-    fun initAdapter(){
+    fun initAdapter() {
         conversationAdapter = ConversationAdapter(this, mData, mViewModel)
         rvMsg.adapter = conversationAdapter
         conversationAdapter.onItemClickListener = this
     }
+
     private fun setTitle() {
         rxLifeScope.launch {
             ContactDBManager.observeNickNameByUID(mViewModel.uid).observe(this@ConversationActivity) {
@@ -127,16 +128,16 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                 } else {
                     mViewModel.title.set(it)
                 }
-                val subName = if(mViewModel.title.get()!!.toString().length>=2) mViewModel.title.get()!!.substring(0,2) else  mViewModel.title.get()!!
+                val subName = if (mViewModel.title.get()!!.toString().length >= 2) mViewModel.title.get()!!.substring(0, 2) else mViewModel.title.get()!!
                 MainScope().launch {
                     var receiverIconColor = R.color.color_d8d8d8
                     val contact = ContactDBManager.queryByID(mViewModel.uid)
-                    if(contact !=null){
+                    if (contact != null) {
                         val receiverIconIndex = Androidlib.iconIndex(mViewModel.uid, ColorUtil.colorSize)
                         receiverIconColor = ColorUtil.colors[receiverIconIndex]
                     }
-                    if(this@ConversationActivity::conversationAdapter.isLateinit){
-                        conversationAdapter.setReceiverNameIcon(subName,receiverIconColor)
+                    if (this@ConversationActivity::conversationAdapter.isLateinit) {
+                        conversationAdapter.setReceiverNameIcon(subName, receiverIconColor)
                     }
                 }
 
@@ -233,13 +234,13 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                     if (it != null) {
                         mData.addAll(it)
                     }
-                    if(this@ConversationActivity::conversationAdapter.isLateinit){
+                    if (this@ConversationActivity::conversationAdapter.isLateinit) {
                         conversationAdapter.notifyDataSetChanged()
                     }
-                    if(isFirstObserable){
+                    if (isFirstObserable) {
                         isFirstObserable = false
                         rvMsg.scrollToPosition((rvMsg.adapter?.itemCount ?: 1) - 1)
-                    }else{
+                    } else {
                         rvMsg.smoothScrollToPosition((rvMsg.adapter?.itemCount ?: 1) - 1)
                     }
                 }
@@ -254,7 +255,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             conversation?.let {
                 MessageDBManager.updateMessage2Read(it.id)
                 it.unreadCount = 0
-                if(this@ConversationActivity::conversationAdapter.isLateinit){
+                if (this@ConversationActivity::conversationAdapter.isLateinit) {
                     if (conversationAdapter.lastItem != null) {
                         it.msg = conversationAdapter.lastItem.msg
                     }
@@ -294,14 +295,14 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     private fun startAlbumActivity() {
         val build = WechatConfigrationBuilder(MimeType.INSTANCE.ofImage(), false).maxSelectable(9).countable(true).spanCount(4).countable(false).build()
         imagePicker.openGallery(this, build).subscribe {
-                    val original = it.getBooleanExtra(WechatImagePickerFragment.EXTRA_ORIGINAL_IMAGE, false)
-                    var path = PhotoFromPhotoAlbum.getRealPathFromUri(this@ConversationActivity, it.uri)
-                    if (path == null) {
-                        path = it.uri.toString()
-                    }
-                    mViewModel.sendImage(path, !original)
-                    ScrollToBottom()
-                }
+            val original = it.getBooleanExtra(WechatImagePickerFragment.EXTRA_ORIGINAL_IMAGE, false)
+            var path = PhotoFromPhotoAlbum.getRealPathFromUri(this@ConversationActivity, it.uri)
+            if (path == null) {
+                path = it.uri.toString()
+            }
+            mViewModel.sendImage(path, !original)
+            ScrollToBottom()
+        }
     }
 
     private fun startTakePhotoActivity() {

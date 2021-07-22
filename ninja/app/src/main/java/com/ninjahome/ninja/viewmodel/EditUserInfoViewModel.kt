@@ -26,11 +26,11 @@ import org.koin.core.component.KoinApiExtension
 class EditUserInfoViewModel : BaseViewModel() {
     var userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "", commit = true)
     private val mColorGenerator = ColorGenerator.MATERIAL
-    private val mDrawableBuilder =  TextDrawable.builder().beginConfig().fontSize(40)
+    private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(40)
     val iconIndex = Androidlib.iconIndex(NinjaApp.instance.account.address, ColorUtil.colorSize)
     val iconColor = ColorUtil.colors[iconIndex]
-    private var subName = if(TextUtils.isEmpty(userName)) NinjaApp.instance.account.address.subSequence(0,2).toString() else if(userName.length>=2) userName.substring(0,2) else userName
-    val iconDrawable = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName,context().resources.getColor(iconColor))
+    private var subName = if (TextUtils.isEmpty(userName)) NinjaApp.instance.account.address.subSequence(0, 2).toString() else if (userName.length >= 2) userName.substring(0, 2) else userName
+    val iconDrawable = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(iconColor))
     val name = MutableLiveData("")
     var isEdit = false
 

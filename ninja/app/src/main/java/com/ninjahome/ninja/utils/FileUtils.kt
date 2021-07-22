@@ -483,7 +483,7 @@ object FileUtils {
 
 
     suspend fun saveImageToPath(root: String, payload: ByteArray): String {
-        val path = root + System.currentTimeMillis() + "temp."+ImageUtils.getPicType(payload.copyOfRange(0,5))
+        val path = root + System.currentTimeMillis() + "temp." + ImageUtils.getPicType(payload.copyOfRange(0, 5))
         return withContext(Dispatchers.IO) {
             val isSaved = writeFile(payload, path, false)
             if (isSaved) {

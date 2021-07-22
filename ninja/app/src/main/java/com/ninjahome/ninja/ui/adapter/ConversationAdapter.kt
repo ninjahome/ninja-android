@@ -30,17 +30,17 @@ import org.koin.core.component.KoinApiExtension
  * @描述 会话界面的消息列表适配器
  */
 @KoinApiExtension
-class ConversationAdapter(private val mContext: Context, private val mData: List<Message>, val conversationViewModel: ConversationViewModel) : LQRAdapterForRecyclerView<Message>(mContext, mData) {
+class ConversationAdapter(private val mContext: Context, private val mData: List<Message>, private val conversationViewModel: ConversationViewModel) : LQRAdapterForRecyclerView<Message>(mContext, mData) {
     var receiverIcon: TextDrawable? = null
     private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(30)
-    val userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "")
-    val myIconIndex = Androidlib.iconIndex(NinjaApp.instance.account.address, ColorUtil.colorSize)
-    val myIconColor = ColorUtil.colors[myIconIndex]
+    private val userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "")
+    private val myIconIndex = Androidlib.iconIndex(NinjaApp.instance.account.address, ColorUtil.colorSize)
+    private val myIconColor = ColorUtil.colors[myIconIndex]
     val subName = if (userName.length >= 2) userName.substring(0, 2) else userName
-    val myIcon = mDrawableBuilder.textColor(mContext.getColor(R.color.white)).endConfig().buildRound(subName, mContext.resources.getColor(myIconColor))
+    private val myIcon = mDrawableBuilder.textColor(mContext.getColor(R.color.white)).endConfig().buildRound(subName, mContext.resources.getColor(myIconColor,null))
 
     fun setReceiverNameIcon(name: String, receiverIconColor: Int) {
-        receiverIcon = mDrawableBuilder.textColor(mContext.getColor(R.color.white)).endConfig().buildRound(name, mContext.resources.getColor(receiverIconColor))
+        receiverIcon = mDrawableBuilder.textColor(mContext.getColor(R.color.white)).endConfig().buildRound(name, mContext.resources.getColor(receiverIconColor,null))
         notifyDataSetChanged()
 
     }
@@ -64,7 +64,8 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
         } else if (item.type == Message.Type.LOCATION) {
             helper.setText(R.id.tvTitle, item.locationAddress)
             val ivLocation = helper.getView<ImageView>(R.id.ivLocation)
-            Glide.with(mContext).load("http://st.map.qq.com/api?size=708*270&center=${item.lng},${item.lat}&zoom=16&referer=weixin").into(ivLocation)
+            val url = "http://st.map.qq.com/api?size=708*270&center=${item.lng},${item.lat}&zoom=16&referer=weixin"
+            Glide.with(mContext).load(url).into(ivLocation)
         } else if (item.type == Message.Type.VOICE) {
             val increment = (UIUtils.getDisplayWidth() / 2 / Constants.DEFAULT_MAX_AUDIO_RECORD_TIME_SECOND * item.duration)
             val rlAudio = helper.setText(R.id.tvDuration, item.duration.toString() + "''").getView<RelativeLayout>(R.id.rlAudio)
@@ -75,10 +76,10 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
     }
 
     private fun setOnClick(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
-        helper.getView<View>(R.id.llError).setOnClickListener { v: View? ->
+        helper.getView<View>(R.id.llError).setOnClickListener {
             conversationViewModel.updateMessage(item)
         }
-        helper.getView<View>(R.id.ivAvatar).setOnClickListener { v: View? -> }
+        helper.getView<View>(R.id.ivAvatar).setOnClickListener { }
     }
 
     private fun setStatus(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
@@ -94,21 +95,27 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
             }
         } else if (item.type == Message.Type.IMAGE) {
             val bivPic = helper.getView<BubbleImageView>(R.id.bivPic)
-            val isSend = if (item.direction === Message.MessageDirection.SEND) true else false
+            val isSend = item.direction == Message.MessageDirection.SEND
             if (isSend) {
-                val sentStatus = item.sentStatus
-                if (sentStatus === SentStatus.SENDING) {
-                    bivPic.setProgressVisible(true)
-                    bivPic.showShadow(true)
-                    helper.setViewVisibility(R.id.llError, View.GONE)
-                } else if (sentStatus === SentStatus.FAILED) {
-                    bivPic.setProgressVisible(false)
-                    bivPic.showShadow(false)
-                    helper.setViewVisibility(R.id.llError, View.VISIBLE)
-                } else if (sentStatus === SentStatus.SENT) {
-                    bivPic.setProgressVisible(false)
-                    bivPic.showShadow(false)
-                    helper.setViewVisibility(R.id.llError, View.GONE)
+                when (item.sentStatus) {
+                    SentStatus.SENDING -> {
+                        bivPic.setProgressVisible(true)
+                        bivPic.showShadow(true)
+                        helper.setViewVisibility(R.id.llError, View.GONE)
+                    }
+                    SentStatus.FAILED -> {
+                        bivPic.setProgressVisible(false)
+                        bivPic.showShadow(false)
+                        helper.setViewVisibility(R.id.llError, View.VISIBLE)
+                    }
+                    SentStatus.SENT -> {
+                        bivPic.setProgressVisible(false)
+                        bivPic.showShadow(false)
+                        helper.setViewVisibility(R.id.llError, View.GONE)
+                    }
+                    else -> {
+
+                    }
                 }
             } else {
                 bivPic.setProgressVisible(false)
@@ -120,10 +127,9 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
 
     private fun setAvatar(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
         if (item.direction == Message.MessageDirection.SEND) {
-            helper.itemView.findViewById<ImageView>(R.id.ivAvatar).setBackgroundDrawable(myIcon)
+            helper.itemView.findViewById<ImageView>(R.id.ivAvatar).background = myIcon
         } else {
-            println("---------------------2----------------------")
-            helper.itemView.findViewById<ImageView>(R.id.ivAvatar).setBackgroundDrawable(receiverIcon)
+            helper.itemView.findViewById<ImageView>(R.id.ivAvatar).background = receiverIcon
         }
     }
 
@@ -133,7 +139,7 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
     private fun setTime(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
         val msgTime = item.time
         if (position > 0) {
-            val preMsg = mData.get(position - 1)
+            val preMsg = mData[position - 1]
             val preMsgTime = preMsg.time
             if (msgTime - preMsgTime > (5 * 60 * 1000)) {
                 helper.setViewVisibility(R.id.tvTime, View.VISIBLE).setText(R.id.tvTime, TimeUtils.getMsgFormatTime(msgTime))
@@ -146,7 +152,7 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
     }
 
     override fun getItemViewType(position: Int): Int {
-        val msg = mData.get(position)
+        val msg = mData[position]
         val isSend = msg.direction == Message.MessageDirection.SEND
 
         if (msg.type == Message.Type.TEXT) {

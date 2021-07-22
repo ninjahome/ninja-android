@@ -1,6 +1,5 @@
 package com.ninjahome.ninja.viewmodel
 
-import android.graphics.Color
 import android.text.TextUtils
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.rxLifeScope
@@ -13,7 +12,6 @@ import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.room.ConversationDBManager
 import com.ninjahome.ninja.utils.AccountUtils
-import com.ninjahome.ninja.view.contacts.ColorGenerator
 import com.orhanobut.logger.Logger
 import org.koin.core.component.KoinApiExtension
 
@@ -41,7 +39,7 @@ class EditContactViewModel : BaseViewModel() {
                 val owner = AccountUtils.getAddress(context())
                 if (contact == null) {
                     val subName: String = if (nickName.value!!.length >= 2) nickName.value!!.substring(0, 2) else nickName.value!!
-                    contact = Contact(0, "", nickName.value!!,subName, owner!!, remark.value!!, address.value!!)
+                    contact = Contact(0, "", nickName.value!!, subName, owner!!, remark.value!!, address.value!!)
                     ContactDBManager.insert(contact!!)
                 } else {
                     contact!!.nickName = nickName.value!!
@@ -68,11 +66,11 @@ class EditContactViewModel : BaseViewModel() {
         }
     })
 
-    fun queryContract(){
+    fun queryContract() {
         rxLifeScope.launch {
-            contact= address.value?.let { ContactDBManager.queryByID(it) }
+            contact = address.value?.let { ContactDBManager.queryByID(it) }
             contact?.let {
-                nickName.value= it.nickName
+                nickName.value = it.nickName
                 remark.value = it.remark
             }
 

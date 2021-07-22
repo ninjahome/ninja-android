@@ -1,11 +1,7 @@
 package com.ninjahome.ninja.viewmodel
 
-import android.text.TextUtils
 import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableList
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
 import com.ninja.android.lib.base.BaseViewModel
 import com.ninja.android.lib.command.BindingAction
 import com.ninja.android.lib.command.BindingCommand
@@ -21,7 +17,7 @@ import me.tatarka.bindingcollectionadapter2.ItemBinding
  *Time:
  *Description:
  */
-class CreateGroupChatViewModel:BaseViewModel() {
+class CreateGroupChatViewModel : BaseViewModel() {
     val allContact = ContactDBManager.all()
     val contacts = mutableListOf<Contact>()
     val showCreateGroupChatPop = SingleLiveEvent<Any>()

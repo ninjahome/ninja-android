@@ -20,7 +20,6 @@ import com.ninjahome.ninja.ui.activity.accountmanager.AccountManagerActivity
 import com.ninjahome.ninja.ui.activity.edituserinfo.EditUserInfoActivity
 import com.ninjahome.ninja.utils.AccountUtils
 import com.ninjahome.ninja.utils.toJson
-import com.ninjahome.ninja.view.contacts.ColorGenerator
 import com.ninjahome.ninja.view.contacts.ColorUtil
 import com.ninjahome.ninja.view.contacts.TextDrawable
 import com.orhanobut.logger.Logger
@@ -59,8 +58,8 @@ class MyViewModel : BaseViewModel(), KoinComponent {
             id.value = AccountUtils.getAddress(context())
             val iconIndex = Androidlib.iconIndex(id.value!!, ColorUtil.colorSize)
             val iconColor = ColorUtil.colors[iconIndex]
-             val subName: String = if (userName.length >= 2) userName.substring(0, 2) else userName
-             iconDrawable.value = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(iconColor))
+            val subName: String = if (userName.length >= 2) userName.substring(0, 2) else userName
+            iconDrawable.value = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(iconColor))
         }, {
             Logger.e(it.message!!)
         })

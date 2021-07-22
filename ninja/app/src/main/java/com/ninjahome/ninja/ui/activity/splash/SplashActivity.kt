@@ -23,7 +23,7 @@ import org.koin.core.component.KoinApiExtension
  */
 @KoinApiExtension
 class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>(R.layout.activity_splash) {
-    private val mHandler :Handler by lazy { Handler(Looper.getMainLooper()) }
+    private val mHandler: Handler by lazy { Handler(Looper.getMainLooper()) }
     private val userName: String by SharedPref(this, Constants.KEY_USER_NAME, "")
     override val mViewModel: SplashViewModel by viewModel()
 

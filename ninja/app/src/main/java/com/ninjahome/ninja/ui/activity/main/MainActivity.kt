@@ -7,7 +7,6 @@ import androidlib.Androidlib
 import com.ninja.android.lib.base.BaseActivity
 import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.BR
-import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityMainBinding
 import com.ninjahome.ninja.room.ConversationDBManager
@@ -22,8 +21,6 @@ import org.koin.core.component.KoinApiExtension
 
 @KoinApiExtension
 class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.activity_main) {
-    private val TAB_MESSAGE = 0
-    private val TAB_CONTACT = 1
     private val tabIcons = arrayListOf(R.drawable.tab_message, R.drawable.tab_contact, R.drawable.tab_my)
     private val tabName = arrayListOf(R.string.message, R.string.contact, R.string.my)
     override val mViewModel: MainViewModel by viewModel()
@@ -37,8 +34,8 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
     }
 
     private fun initTabLayout() {
-        tabIcons.forEachIndexed { index, i ->
-            tabLayout.getTabAt(index)!!.setCustomView(getTabItemView(index))
+        tabIcons.forEachIndexed { index,_ ->
+            tabLayout.getTabAt(index)!!.customView = getTabItemView(index)
 
         }
 
@@ -62,7 +59,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
 
     override fun initVariableId(): Int = BR.viewModel
 
-    var last: Long = -1
+    private var last: Long = -1
 
     override fun onBackPressed() {
         val now = System.currentTimeMillis()

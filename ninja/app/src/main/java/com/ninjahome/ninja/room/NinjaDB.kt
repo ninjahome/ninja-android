@@ -13,7 +13,7 @@ import com.ninjahome.ninja.model.bean.Message
  *Time:
  *Description:
  */
-@Database(entities = [Contact::class,Message::class,Conversation::class], version = 1, exportSchema = false)
+@Database(entities = [Contact::class, Message::class, Conversation::class], version = 1, exportSchema = false)
 abstract class NinjaDB : RoomDatabase() {
     abstract fun contactDao(): ContactDao
     abstract fun messageDao(): MessageDao

@@ -17,9 +17,9 @@ object ConversationDBManager {
         return conversationDao.all()
     }
 
-    suspend fun insert(conversation: Conversation):Long {
-       return withContext(Dispatchers.IO) {
-           return@withContext conversationDao.insert(conversation)
+    suspend fun insert(conversation: Conversation): Long {
+        return withContext(Dispatchers.IO) {
+            return@withContext conversationDao.insert(conversation)
         }
     }
 

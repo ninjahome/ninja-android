@@ -5,8 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Environment
-import android.os.Handler
-import android.os.Looper
 import android.os.SystemClock
 import androidx.core.content.ContextCompat
 import com.cjt2325.cameralibrary.JCameraView
@@ -43,7 +41,7 @@ class TakePhotoActivity : BaseActivity<TakePhotoViewModel, ActivityTakePhotoBind
         cameraview.setSaveVideoPath(Environment.getExternalStorageDirectory().path)
         cameraview.setFeatures(JCameraView.BUTTON_STATE_ONLY_CAPTURE)
         //设置小视频保存路径
-        val file: File = File(Constants.VIDEO_SAVE_DIR)
+        val file = File(Constants.VIDEO_SAVE_DIR)
         if (!file.exists()) file.mkdirs()
         cameraview.setSaveVideoPath(Constants.VIDEO_SAVE_DIR)
         cameraview.setJCameraLisenter(object : JCameraListener {
@@ -77,7 +75,7 @@ class TakePhotoActivity : BaseActivity<TakePhotoViewModel, ActivityTakePhotoBind
 
     @AfterPermissionGranted(Constants.CODE_OPEN_CAMERA)
     private fun initPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !== PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !== PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) !== PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             EasyPermissions.requestPermissions(this, getString(R.string.import_apply_album_permission), Constants.CODE_OPEN_CAMERA, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO)
         }
     }

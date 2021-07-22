@@ -25,9 +25,10 @@ class GroupRemoveMemberAdapter(private val mContext: Context) : RecyclerView.Ada
         fun onSelected(position: Int, contact: Contact)
     }
 
-    fun setItemCLickListener(clickItemListener: ClickItemListener){
+    fun setItemCLickListener(clickItemListener: ClickItemListener) {
         this.clickItemListener = clickItemListener
     }
+
     fun addAll(beans: List<Contact>?) {
         if (contactBeanList!!.size > 0) {
             contactBeanList.clear()
@@ -54,22 +55,22 @@ class GroupRemoveMemberAdapter(private val mContext: Context) : RecyclerView.Ada
     override fun onBindViewHolder(holder: MyRecycleHolder, position: Int) {
         if (contactBeanList == null || contactBeanList.size == 0 || contactBeanList.size <= position) return
         val contact = contactBeanList[position]
-        holder.tv_name.text = contact.nickName
-        if(contact.isSelected){
-            holder.selectedIv.setImageBitmap(BitmapFactory.decodeResource(mContext.resources,R.drawable.group_number_selected))
-        }else{
-            holder.selectedIv.setImageBitmap(BitmapFactory.decodeResource(mContext.resources,R.drawable.remove_member_normal))
+        holder.nameTv.text = contact.nickName
+        if (contact.isSelected) {
+            holder.selectedIv.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.drawable.group_number_selected))
+        } else {
+            holder.selectedIv.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.drawable.remove_member_normal))
         }
-        holder.selectedIv.setOnClickListener{
-            if(!contact.isSelected){
+        holder.selectedIv.setOnClickListener {
+            if (!contact.isSelected) {
                 contact.isSelected = true
                 notifyItemChanged(position)
-                clickItemListener?.onSelected(position,contact)
+                clickItemListener?.onSelected(position, contact)
             }
 
         }
         val drawable = ContactIconUtils.getDrawable(FONT_SIZE, contact.uid, contact.subName)
-        holder.iv_img.setImageDrawable(drawable)
+        holder.iconIv.setImageDrawable(drawable)
     }
 
     override fun getItemCount(): Int {
@@ -77,8 +78,8 @@ class GroupRemoveMemberAdapter(private val mContext: Context) : RecyclerView.Ada
     }
 
     class MyRecycleHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tv_name: TextView = itemView.findViewById<View>(R.id.tv_name) as TextView
-        val iv_img: ImageView = itemView.findViewById<View>(R.id.iv_img) as ImageView
+        val nameTv: TextView = itemView.findViewById<View>(R.id.tv_name) as TextView
+        val iconIv: ImageView = itemView.findViewById<View>(R.id.iv_img) as ImageView
         val selectedIv: ImageView = itemView.findViewById<View>(R.id.selectedIv) as ImageView
 
     }

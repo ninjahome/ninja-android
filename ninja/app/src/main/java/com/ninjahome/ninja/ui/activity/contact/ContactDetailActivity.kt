@@ -1,6 +1,5 @@
 package com.ninjahome.ninja.ui.activity.contact
 
-import android.graphics.Color
 import androidlib.Androidlib
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.gyf.immersionbar.ImmersionBar
@@ -12,7 +11,6 @@ import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityContactDetailBinding
 import com.ninjahome.ninja.utils.DialogUtils
-import com.ninjahome.ninja.view.contacts.ColorGenerator
 import com.ninjahome.ninja.view.contacts.ColorUtil
 import com.ninjahome.ninja.view.contacts.TextDrawable
 import com.ninjahome.ninja.viewmodel.ContactDetailViewModel
@@ -37,7 +35,7 @@ class ContactDetailActivity : BaseActivity<ContactDetailViewModel, ActivityConta
 
     override fun initData() {
         val uid = intent.getStringExtra(IntentKey.UID)!!
-        mViewModel.uid.value =uid
+        mViewModel.uid.value = uid
         mViewModel.getContact(uid)
         mViewModel.showBottomLine.set(false)
         mViewModel.showRightIv.set(true)
@@ -45,22 +43,23 @@ class ContactDetailActivity : BaseActivity<ContactDetailViewModel, ActivityConta
     }
 
     override fun initObserve() {
-        mViewModel.name.observe(this){
-            var subName:String = it.toString()
-            if(it.length>=2){
-                subName = it.substring(0,2)
+        mViewModel.name.observe(this) {
+            var subName: String = it.toString()
+            if (it.length >= 2) {
+                subName = it.substring(0, 2)
             }
-           val drawable= mViewModel.contact.value?.let { it1 ->
-              val index = Androidlib.iconIndex(mViewModel.uid.value!!, ColorUtil.colorSize)
-               val iconColor = ColorUtil.colors.get(index)
-               mDrawableBuilder.textColor(resources.getColor(R.color.white)).endConfig().buildRound(subName, resources.getColor(iconColor) ) }
+            val drawable = mViewModel.contact.value?.let { _ ->
+                val index = Androidlib.iconIndex(mViewModel.uid.value!!, ColorUtil.colorSize)
+                val iconColor = ColorUtil.colors.get(index)
+                mDrawableBuilder.textColor(resources.getColor(R.color.white)).endConfig().buildRound(subName, resources.getColor(iconColor))
+            }
             nameIv.setImageDrawable(drawable)
         }
-        mViewModel.showDeleteDialogEvent.observe(this){
+        mViewModel.showDeleteDialogEvent.observe(this) {
             DialogUtils.showDeleteContactDialog(this, this)
         }
 
-        mViewModel.deleteSuccessEvent.observe(this){
+        mViewModel.deleteSuccessEvent.observe(this) {
             toast(getString(R.string.delete_success))
             finish()
         }
