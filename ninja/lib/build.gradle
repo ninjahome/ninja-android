@@ -45,7 +45,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.31"
+    api rootProject.ext.dependencies["kotlinStdlib"]
     api rootProject.ext.androidx["appcompat"]
     api rootProject.ext.androidx["core-ktx"]
     api rootProject.ext.androidx["lifecycle-extensions"]

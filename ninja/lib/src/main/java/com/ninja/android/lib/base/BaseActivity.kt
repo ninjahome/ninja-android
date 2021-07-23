@@ -28,7 +28,7 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding>(@LayoutRes
     private var viewModelId = 0
     protected val STATUSBAR_STYLE_TRANSPARENT = 1
     protected val STATUSBAR_STYLE_WHITE = 2
-    protected val STATUSBAR_STYLE_GRAY = 3
+    private val STATUSBAR_STYLE_GRAY = 3
     protected val STATUSBAR_STYLE_CUSTOMER = 4
     private lateinit var loadingDialog: LoadingPopupView
     protected abstract val mViewModel: VM

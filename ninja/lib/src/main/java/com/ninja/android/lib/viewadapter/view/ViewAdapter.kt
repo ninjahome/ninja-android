@@ -40,7 +40,7 @@ fun onLongClickCommand(view: View, clickCommand: BindingCommand<*>) {
  */
 @BindingAdapter(value = ["currentView"], requireAll = false)
 fun replyCurrentView(currentView: View, bindingCommand: BindingCommand<View>) {
-    bindingCommand?.execute(currentView)
+    bindingCommand.execute(currentView)
 }
 
 /**
@@ -62,7 +62,7 @@ fun requestFocusCommand(view: View, needRequestFocus: Boolean) {
 @BindingAdapter("onFocusChangeCommand")
 fun onFocusChangeCommand(view: View, onFocusChangeCommand: BindingCommand<Boolean?>?) {
     view.onFocusChangeListener =
-        OnFocusChangeListener { v, hasFocus -> onFocusChangeCommand?.execute(hasFocus) }
+        OnFocusChangeListener { _, hasFocus -> onFocusChangeCommand?.execute(hasFocus) }
 }
 
 /**
@@ -79,14 +79,8 @@ fun isVisible(view: View, visibility: Boolean) {
 
     @BindingAdapter("onTouchCommand")
    fun onTouchCommand(view:View, onTouchCommand : ResponseCommand<MotionEvent, Boolean>) {
-        view.setOnTouchListener(object: View.OnTouchListener {
-            override fun onTouch(v: View?, event: MotionEvent): Boolean {
-                if (onTouchCommand != null) {
-                    onTouchCommand.execute(event)
-                    return false
-                }
-                return false
-            }
-
-        })
+        view.setOnTouchListener { _, event ->
+            onTouchCommand.execute(event)
+            false
+        }
     }

@@ -10,7 +10,7 @@ import androidx.lifecycle.OnLifecycleEvent
  *Time:
  *Description:
  */
-open interface IBaseViewModel : LifecycleObserver {
+ interface IBaseViewModel : LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
     fun onAny(owner: LifecycleOwner?, event: Lifecycle.Event?)
 

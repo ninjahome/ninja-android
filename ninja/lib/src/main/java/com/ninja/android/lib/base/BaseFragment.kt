@@ -168,8 +168,8 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding>(@LayoutRes
     }
 
     open fun dismissDialog() {
-        if (this::loadingDialog.isInitialized && loadingDialog != null && loadingDialog?.isShow!!) {
-            loadingDialog?.dismiss()
+        if (this::loadingDialog.isInitialized && loadingDialog.isShow) {
+            loadingDialog.dismiss()
         }
     }
 

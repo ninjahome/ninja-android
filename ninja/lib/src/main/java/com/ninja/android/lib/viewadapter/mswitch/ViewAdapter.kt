@@ -23,7 +23,7 @@ fun onCheckedChangeCommand(mSwitch: SwitchCompat, changeListener: BindingCommand
     if (changeListener != null) {
         //延迟设置监听。防止第一次设置值也去执行回调
         Handler(Looper.getMainLooper()).postDelayed({
-            mSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            mSwitch.setOnCheckedChangeListener { _, isChecked ->
                 changeListener.execute(isChecked)
             }
         },200)

@@ -50,7 +50,7 @@ fun onItemClickCommand(
     onItemClickCommand: BindingCommand<Int?>?
 ) {
     listView.onItemClickListener =
-        OnItemClickListener { parent, view, position, id -> onItemClickCommand?.execute(position) }
+        OnItemClickListener { _, _, position, _ -> onItemClickCommand?.execute(position) }
 }
 
 class ListViewScrollDataWrapper(

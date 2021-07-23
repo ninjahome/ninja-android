@@ -51,7 +51,7 @@ class ContactDetailActivity : BaseActivity<ContactDetailViewModel, ActivityConta
             val drawable = mViewModel.contact.value?.let { _ ->
                 val index = Androidlib.iconIndex(mViewModel.uid.value!!, ColorUtil.colorSize)
                 val iconColor = ColorUtil.colors.get(index)
-                mDrawableBuilder.textColor(resources.getColor(R.color.white)).endConfig().buildRound(subName, resources.getColor(iconColor))
+                mDrawableBuilder.textColor(resources.getColor(R.color.white)).endConfig().buildRound(subName, resources.getColor(iconColor,null))
             }
             nameIv.setImageDrawable(drawable)
         }

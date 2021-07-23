@@ -11,7 +11,7 @@ fun onScrollChangeCommand(
     nestedScrollView: NestedScrollView,
     onScrollChangeCommand: BindingCommand<NestScrollDataWrapper?>?
 ) {
-    nestedScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+    nestedScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, scrollX, scrollY, oldScrollX, oldScrollY ->
         onScrollChangeCommand?.execute(
             NestScrollDataWrapper(
                 scrollX,

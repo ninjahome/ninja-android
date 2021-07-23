@@ -23,15 +23,26 @@
 
 
  -dontwarn org.jetbrains.annotations.**
+ -keep class kotlin.** { *; }
  -keep class kotlin.Metadata { *; }
+ -keepclassmembers class kotlin.Metadata {
+     public <methods>;
+ }
+ -assumenosideeffects class kotlin.jvm.internal.Intrinsics {
+     static void checkParameterIsNotNull(java.lang.Object, java.lang.String);
+ }
+
+
  -keepclassmembers class com.myapp.packagnename.** { <init>(...); <fields>;}
  -keep @android.support.annotation.Keep class * {*;}
 
- -keep class com.ninjahome.ninja.ui.adapter.ConversationAdapter{ *;}
--keepclassmembers class com.ninjahome.ninja.ui.adapter.ConversationAdapter{ *;}
 -keep class kotlin.reflect.jvm.internal.** { *; }
 -keep class kotlin.reflect.jvm.ReflectJvmMapping { *; }
 -keep class kotlin.reflect.jvm.KCallablesJvm
+
+-keep class com.ninjahome.ninja.room.Converters{*;}
+-keep class com.ninjahome.ninja.ui.adapter.ConversationAdapter{*;}
+-keep class com.ninjahome.ninja.view.contacts.TextDrawable{*;}
 
  #EventBus
  -keepattributes *Annotation*
@@ -86,6 +97,7 @@
 -keep class com.heytap.**{*;}
 -keep class a.**{*;}
 -keep class com.vivo.**{*;}
+-keep class androidlib.**{*;}
 
 
 #小米推送

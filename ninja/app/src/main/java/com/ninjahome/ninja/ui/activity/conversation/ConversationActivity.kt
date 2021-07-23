@@ -13,7 +13,6 @@ import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidlib.Androidlib
-import androidlib.Androidlib.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.rxLifeScope
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout
@@ -69,11 +68,10 @@ import java.util.*
 @KoinApiExtension
 class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConversationBinding>(R.layout.activity_conversation), BGARefreshLayout.BGARefreshLayoutDelegate, EasyPermissions.PermissionCallbacks, OnItemClickListener {
 
-    private val REQUEST_IMAGE_PICKER = 1000
     private val REQUEST_TAKE_PHOTO = 1001
     private val REQUEST_LOCATION = 1002
     lateinit var imagePicker: WechatImagePicker
-    private var isFirstObserable = true
+    private var isFirstObserv = true
 
     private lateinit var conversationAdapter: ConversationAdapter
 
@@ -104,7 +102,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
         })
 
-
     }
 
 
@@ -114,7 +111,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         initAudioRecordManager()
     }
 
-    fun initAdapter() {
+    private fun initAdapter() {
         conversationAdapter = ConversationAdapter(this, mData, mViewModel)
         rvMsg.adapter = conversationAdapter
         conversationAdapter.onItemClickListener = this
@@ -136,9 +133,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                         val receiverIconIndex = Androidlib.iconIndex(mViewModel.uid, ColorUtil.colorSize)
                         receiverIconColor = ColorUtil.colors[receiverIconIndex]
                     }
-                    if (this@ConversationActivity::conversationAdapter.isLateinit) {
-                        conversationAdapter.setReceiverNameIcon(subName, receiverIconColor)
-                    }
+                    conversationAdapter.setReceiverNameIcon(subName, receiverIconColor)
                 }
 
             }
@@ -164,7 +159,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                 hideEmotionLayout()
                 hideMoreLayout()
             }
-            ScrollToBottom()
+            scrollToBottom()
         }
 
         mViewModel.textChangeEvent.observe(this) {
@@ -179,7 +174,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         }
         mViewModel.clickSendEvent.observe(this) {
             mViewModel.sendText(etContent.text.toString().trim())
-            ScrollToBottom()
+            scrollToBottom()
             mViewModel.textData.value = ""
         }
 
@@ -229,16 +224,14 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         MainScope().launch {
             conversation = mViewModel.queryConversation()
             if (conversation != null) {
-                MessageDBManager.queryByConversationId(conversation!!.id).observe(this@ConversationActivity) { it ->
+                MessageDBManager.queryByConversationId(conversation!!.id).observe(this@ConversationActivity) {
                     mData.clear()
                     if (it != null) {
                         mData.addAll(it)
                     }
-                    if (this@ConversationActivity::conversationAdapter.isLateinit) {
-                        conversationAdapter.notifyDataSetChanged()
-                    }
-                    if (isFirstObserable) {
-                        isFirstObserable = false
+                    conversationAdapter.notifyDataSetChanged()
+                    if (isFirstObserv) {
+                        isFirstObserv = false
                         rvMsg.scrollToPosition((rvMsg.adapter?.itemCount ?: 1) - 1)
                     } else {
                         rvMsg.smoothScrollToPosition((rvMsg.adapter?.itemCount ?: 1) - 1)
@@ -255,10 +248,8 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             conversation?.let {
                 MessageDBManager.updateMessage2Read(it.id)
                 it.unreadCount = 0
-                if (this@ConversationActivity::conversationAdapter.isLateinit) {
-                    if (conversationAdapter.lastItem != null) {
-                        it.msg = conversationAdapter.lastItem.msg
-                    }
+                if (conversationAdapter.lastItem != null) {
+                    it.msg = conversationAdapter.lastItem.msg
                 }
                 ConversationDBManager.updateConversations(it)
             }
@@ -267,7 +258,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     }
 
-    fun ScrollToBottom() {
+    fun scrollToBottom() {
         mHandler.postDelayed({
             rvMsg.smoothMoveToPosition((rvMsg.adapter?.itemCount ?: 0) - 1)
         }, 50)
@@ -294,14 +285,14 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     private fun startAlbumActivity() {
         val build = WechatConfigrationBuilder(MimeType.INSTANCE.ofImage(), false).maxSelectable(9).countable(true).spanCount(4).countable(false).build()
-        imagePicker.openGallery(this, build).subscribe {
+       val observable = imagePicker.openGallery(this, build).subscribe {
             val original = it.getBooleanExtra(WechatImagePickerFragment.EXTRA_ORIGINAL_IMAGE, false)
             var path = PhotoFromPhotoAlbum.getRealPathFromUri(this@ConversationActivity, it.uri)
             if (path == null) {
                 path = it.uri.toString()
             }
             mViewModel.sendImage(path, !original)
-            ScrollToBottom()
+            scrollToBottom()
         }
     }
 
@@ -353,7 +344,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         mEmotionKeyboard.setOnEmotionButtonOnClickListener { view: View ->
             when (view.id) {
                 R.id.ivEmo -> {
-                    ScrollToBottom()
+                    scrollToBottom()
                     etContent.clearFocus()
                     if (!elEmotion.isShown) {
                         if (moreActionDialog.isShown) {
@@ -437,21 +428,21 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-
             REQUEST_TAKE_PHOTO -> if (resultCode == RESULT_OK) {
                 val path = data!!.getStringExtra("path")
                 if (data.getBooleanExtra("take_photo", true)) {
                     path?.let { mViewModel.sendImage(it, true) }
                 }
-                ScrollToBottom()
+                scrollToBottom()
             }
             REQUEST_LOCATION -> if (resultCode == RESULT_OK) {
                 val locationData: LocationData = data!!.getSerializableExtra("location") as LocationData
                 mViewModel.sendLocation(locationData.lng, locationData.lat, locationData.poi)
             }
         }
-        super.onActivityResult(requestCode, resultCode, data)
+
     }
 
     override fun onBGARefreshLayoutBeginRefreshing(refreshLayout: BGARefreshLayout?) {
@@ -474,7 +465,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             private lateinit var waveView: VoiceWaveView
             private lateinit var popRoot: ConstraintLayout
             private lateinit var stateTV: TextView
-            private lateinit var voiceBg: ImageView
+            private var voiceBg: ImageView? = null
             private var mRecordWindow: PopupWindow? = null
             private var startRecordTime: Long = 0
             override fun initTipView() {
@@ -489,7 +480,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                 mRecordWindow!!.isFocusable = true
                 mRecordWindow!!.isOutsideTouchable = false
                 mRecordWindow!!.isTouchable = false
-                waveView?.apply {
+                waveView.apply {
                     lineWidth = 3.dp
                     duration = 150
                     addHeader(2)
@@ -505,7 +496,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             override fun setTimeoutTipView(counter: Int) {
                 if (mRecordWindow != null) {
                     stateTV.setText(R.string.voice_rec)
-                    voiceBg.setBackgroundResource(R.drawable.pop_voice_bg)
+                    voiceBg?.setBackgroundResource(R.drawable.pop_voice_bg)
 
                 }
             }
@@ -513,7 +504,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             override fun setRecordingTipView() {
                 if (mRecordWindow != null) {
                     stateTV.setText(R.string.voice_rec)
-                    voiceBg.setBackgroundResource(R.drawable.pop_voice_bg)
+                    voiceBg?.setBackgroundResource(R.drawable.pop_voice_bg)
 
                 }
             }
@@ -527,7 +518,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             override fun setCancelTipView() {
                 if (mRecordWindow != null) {
                     stateTV.setText(R.string.voice_cancel)
-                    voiceBg.setBackgroundResource(R.drawable.pop_voice_cancle_bg)
+                    voiceBg?.setBackgroundResource(R.drawable.pop_voice_cancle_bg)
                 }
             }
 
@@ -548,7 +539,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                 val file = File(audioPath.path)
                 if (file.exists()) {
                     mViewModel.sendAudio(audioPath, duration)
-                    ScrollToBottom()
+                    scrollToBottom()
                 }
             }
 
@@ -591,44 +582,50 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     override fun onItemClick(helper: LQRViewHolder, parent: ViewGroup?, itemView: View?, position: Int) {
         val message = mData[position]
-        if (message.type == Message.Type.IMAGE) {
-            val intent = Intent(this, ShowBigImageActivity::class.java)
-            //                val bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(this, itemView, "share").toBundle()
-            intent.putExtra(IntentKey.URL, message.uri)
-            startActivity(intent)
-        } else if (message.type == Message.Type.VOICE) {
-            val ivAudio: ImageView = helper.getView(R.id.ivAudioL)
+        when (message.type) {
+            Message.Type.IMAGE -> {
+                val intent = Intent(this, ShowBigImageActivity::class.java)
+                //                val bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(this, itemView, "share").toBundle()
+                intent.putExtra(IntentKey.URL, message.uri)
+                startActivity(intent)
+            }
+            Message.Type.VOICE -> {
+                val ivAudio: ImageView = helper.getView(R.id.ivAudioL)
 
-            AudioPlayManager.getInstance().startPlay(this@ConversationActivity, Uri.parse(message.uri), object : IAudioPlayListener {
-                override fun onStart(var1: Uri) {
-                    if (ivAudio.background is AnimationDrawable) {
-                        val animation = ivAudio.background as AnimationDrawable
-                        animation.start()
+                AudioPlayManager.getInstance().startPlay(this@ConversationActivity, Uri.parse(message.uri), object : IAudioPlayListener {
+                    override fun onStart(var1: Uri) {
+                        if (ivAudio.background is AnimationDrawable) {
+                            val animation = ivAudio.background as AnimationDrawable
+                            animation.start()
+                        }
                     }
-                }
 
-                override fun onStop(var1: Uri) {
-                    if (ivAudio.background is AnimationDrawable) {
-                        val animation = ivAudio.background as AnimationDrawable
-                        animation.stop()
-                        animation.selectDrawable(0)
+                    override fun onStop(var1: Uri) {
+                        if (ivAudio.background is AnimationDrawable) {
+                            val animation = ivAudio.background as AnimationDrawable
+                            animation.stop()
+                            animation.selectDrawable(0)
+                        }
                     }
-                }
 
-                override fun onComplete(var1: Uri) {
-                    if (ivAudio.background is AnimationDrawable) {
-                        val animation = ivAudio.background as AnimationDrawable
-                        animation.stop()
-                        animation.selectDrawable(0)
+                    override fun onComplete(var1: Uri) {
+                        if (ivAudio.background is AnimationDrawable) {
+                            val animation = ivAudio.background as AnimationDrawable
+                            animation.stop()
+                            animation.selectDrawable(0)
+                        }
                     }
-                }
-            })
-        } else if (message.type == Message.Type.LOCATION) {
-            val intent = Intent(this@ConversationActivity, LocationShowActivity::class.java)
-            intent.putExtra(IntentKey.LOCATION_LAT, message.lat)
-            intent.putExtra(IntentKey.LOCATION_LNG, message.lng)
-            intent.putExtra(IntentKey.LOCATION_ADDRESS, message.locationAddress)
-            startActivity(intent)
+                })
+            }
+            Message.Type.LOCATION -> {
+                val intent = Intent(this@ConversationActivity, LocationShowActivity::class.java)
+                intent.putExtra(IntentKey.LOCATION_LAT, message.lat)
+                intent.putExtra(IntentKey.LOCATION_LNG, message.lng)
+                intent.putExtra(IntentKey.LOCATION_ADDRESS, message.locationAddress)
+                startActivity(intent)
+            }
+            else -> {
+            }
         }
     }
 
