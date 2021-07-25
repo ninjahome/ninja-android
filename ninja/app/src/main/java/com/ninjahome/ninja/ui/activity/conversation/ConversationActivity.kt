@@ -202,13 +202,13 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             when (it.action) {
                 MotionEvent.ACTION_DOWN -> AudioRecordManager.getInstance(this@ConversationActivity).startRecord()
                 MotionEvent.ACTION_MOVE -> if (isCancelled(btnAudio, it)) {
-                    AudioRecordManager.getInstance(this@ConversationActivity).willCancelRecord()
+                    AudioRecordManager.getInstance(NinjaApp.instance.applicationContext).willCancelRecord()
                 } else {
-                    AudioRecordManager.getInstance(this@ConversationActivity).continueRecord()
+                    AudioRecordManager.getInstance(NinjaApp.instance.applicationContext).continueRecord()
                 }
                 MotionEvent.ACTION_UP -> {
-                    AudioRecordManager.getInstance(this@ConversationActivity).stopRecord()
-                    AudioRecordManager.getInstance(this@ConversationActivity).destroyRecord()
+                    AudioRecordManager.getInstance(NinjaApp.instance.applicationContext).stopRecord()
+                    AudioRecordManager.getInstance(NinjaApp.instance.applicationContext).destroyRecord()
                 }
             }
         }

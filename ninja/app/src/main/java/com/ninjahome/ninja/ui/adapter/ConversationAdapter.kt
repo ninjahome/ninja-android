@@ -16,6 +16,7 @@ import com.ninja.android.lib.utils.dp
 import com.ninjahome.ninja.Constants
 import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
+import com.ninjahome.ninja.imageloader.ImageLoaderProxy
 import com.ninjahome.ninja.model.bean.Message
 import com.ninjahome.ninja.model.bean.Message.SentStatus
 import com.ninjahome.ninja.utils.TimeUtils
@@ -60,12 +61,12 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
             MoonUtils.identifyFaceExpression(mContext, helper.getView(R.id.tvText), item.msg, ImageSpan.ALIGN_BOTTOM)
         } else if (item.type == Message.Type.IMAGE) {
             val bivPic = helper.getView<BubbleImageView>(R.id.bivPic)
-            Glide.with(mContext).load(item.uri).error(R.drawable.default_img_failed).override(80.dp.toInt(), 150.dp.toInt()).centerCrop().into(bivPic)
+            ImageLoaderProxy.loadImage(item.uri,bivPic,R.drawable.default_img_failed)
         } else if (item.type == Message.Type.LOCATION) {
             helper.setText(R.id.tvTitle, item.locationAddress)
             val ivLocation = helper.getView<ImageView>(R.id.ivLocation)
             val url = "http://st.map.qq.com/api?size=708*270&center=${item.lng},${item.lat}&zoom=16&referer=weixin"
-            Glide.with(mContext).load(url).into(ivLocation)
+            ImageLoaderProxy.loadImage(item.uri,ivLocation)
         } else if (item.type == Message.Type.VOICE) {
             val increment = (UIUtils.getDisplayWidth() / 2 / Constants.DEFAULT_MAX_AUDIO_RECORD_TIME_SECOND * item.duration)
             val rlAudio = helper.setText(R.id.tvDuration, item.duration.toString() + "''").getView<RelativeLayout>(R.id.rlAudio)

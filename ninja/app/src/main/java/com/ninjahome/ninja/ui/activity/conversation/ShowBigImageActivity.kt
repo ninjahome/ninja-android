@@ -9,6 +9,7 @@ import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityShowBigImageBinding
+import com.ninjahome.ninja.imageloader.ImageLoaderProxy
 import com.ninjahome.ninja.viewmodel.ShowBigImageViewModel
 import kotlinx.android.synthetic.main.activity_show_big_image.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -26,12 +27,9 @@ class ShowBigImageActivity : BaseActivity<ShowBigImageViewModel, ActivityShowBig
         val mUrl = intent.getStringExtra(IntentKey.URL)
         if (TextUtils.isEmpty(mUrl)) {
             finish()
+            return
         }
-        if (mUrl!!.startsWith("http")) {
-            Glide.with(this).load(Uri.parse(mUrl)).into(pv)
-        } else {
-            Glide.with(this).load(File(mUrl)).into(pv)
-        }
+            ImageLoaderProxy.loadImage(mUrl!!,pv)
 
         pv.setOnClickListener {
             ActivityCompat.finishAfterTransition(this@ShowBigImageActivity)

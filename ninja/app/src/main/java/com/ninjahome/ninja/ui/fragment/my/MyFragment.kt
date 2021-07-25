@@ -2,11 +2,17 @@ package com.ninjahome.ninja.ui.fragment.my
 
 import android.content.ComponentName
 import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import androidx.annotation.Nullable
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import com.gyf.immersionbar.ImmersionBar
+import com.gyf.immersionbar.components.SimpleImmersionOwner
+import com.gyf.immersionbar.components.SimpleImmersionProxy
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.ninja.android.lib.base.BaseFragment
@@ -43,6 +49,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>(R.layout.fragmen
     override val mViewModel: MyViewModel by viewModel()
     override fun initView() {
         versionTv.text = String.format(getString(R.string.version), UIUtils.getVersion(mActivity))
+        Log.d(TAG, "initView: -----------------------------MyFragment")
     }
 
     override fun initData() {

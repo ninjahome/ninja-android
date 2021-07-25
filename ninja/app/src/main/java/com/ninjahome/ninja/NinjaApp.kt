@@ -8,6 +8,8 @@ import com.lqr.emoji.LQREmotionKit
 import com.ninja.android.lib.base.BaseApplication
 import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.event.*
+import com.ninjahome.ninja.imageloader.GlideImageLoader
+import com.ninjahome.ninja.imageloader.ImageLoaderProxy
 import com.ninjahome.ninja.model.ConversationModel
 import com.ninjahome.ninja.model.CreateAccountModel
 import com.ninjahome.ninja.model.UnlockModel
@@ -54,6 +56,7 @@ class NinjaApp : BaseApplication() {
         initKoin()
         initPush()
         initImagePicker()
+        ImageLoaderProxy.initLoader(GlideImageLoader())
         UMConfigure.setLogEnabled(true)
         UMConfigure.init(this, "609ce659c9aacd3bd4d3f092", "Umeng", UMConfigure.DEVICE_TYPE_PHONE, "")
         LQREmotionKit.init(this) { _, path, imageView -> imageView.load(path) }

@@ -15,6 +15,7 @@ import com.ninjahome.ninja.view.ContactsUtils
 import com.ninjahome.ninja.view.contacts.CustomItemDecoration
 import com.ninjahome.ninja.view.contacts.itemanimator.SlideInOutLeftItemAnimator
 import com.ninjahome.ninja.viewmodel.ContactListViewModel
+import com.zhy.autolayout.utils.ScreenUtils
 import kotlinx.android.synthetic.main.fragment_contact_list.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinApiExtension
@@ -34,6 +35,7 @@ class ContactListFragment : BaseFragment<ContactListViewModel, FragmentContactLi
     override val mViewModel: ContactListViewModel by viewModel()
 
     override fun initView() {
+        initMarginTop()
         layoutManager = LinearLayoutManager(mActivity)
         contactsRecyclerView.layoutManager = layoutManager
         contactsRecyclerView.addItemDecoration(CustomItemDecoration(mActivity).also {
@@ -51,6 +53,13 @@ class ContactListFragment : BaseFragment<ContactListViewModel, FragmentContactLi
             }
 
         }
+
+    }
+
+    private fun initMarginTop() {
+        val layoutParams = status_bar_view.layoutParams
+        layoutParams.height =  ScreenUtils.getStatusBarHeight(mActivity)
+        status_bar_view.layoutParams = layoutParams
     }
 
     override fun initVariableId(): Int = BR.viewModel
@@ -72,7 +81,9 @@ class ContactListFragment : BaseFragment<ContactListViewModel, FragmentContactLi
 
     }
 
+    override fun initData() {
 
-    override fun initData() {}
+    }
+
 
 }

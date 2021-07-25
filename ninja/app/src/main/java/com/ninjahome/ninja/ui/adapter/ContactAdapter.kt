@@ -17,12 +17,13 @@ import java.util.*
  * Created by MQ on 2017/5/8.
  */
 class ContactAdapter(private val mContext: Context) : RecyclerView.Adapter<MyRecycleHolder>() {
+
     private val FONT_SIZE = 30
     private val contactBeanList: MutableList<Contact>?
     var clickItemListener: ClickItemListener? = null
 
-    interface ClickItemListener {
-        fun clickItem(position: Int, contact: Contact)
+    init {
+        contactBeanList = ArrayList()
     }
 
     fun addAll(beans: List<Contact>?) {
@@ -65,13 +66,13 @@ class ContactAdapter(private val mContext: Context) : RecyclerView.Adapter<MyRec
         return contactBeanList!!.size
     }
 
+    interface ClickItemListener {
+        fun clickItem(position: Int, contact: Contact)
+    }
+
     class MyRecycleHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name: TextView = itemView.findViewById<View>(R.id.tv_name) as TextView
         val icon: ImageView = itemView.findViewById<View>(R.id.iv_img) as ImageView
 
-    }
-
-    init {
-        contactBeanList = ArrayList()
     }
 }

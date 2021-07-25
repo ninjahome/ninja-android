@@ -24,7 +24,7 @@
         android:textSize="12sp" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:gravity="end"
@@ -72,17 +72,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:maxHeight="150dp"
-                android:minWidth="80dp"
-                android:minHeight="80dp"
+                android:maxWidth="200dp"
+                android:maxHeight="200dp"
                 android:scaleType="centerCrop"
-                android:transitionName="share"
                 app:bubble_angle="10dp"
                 app:bubble_arrowHeight="10dp"
                 app:bubble_arrowLocation="right"
                 app:bubble_arrowOffset="-5dp"
                 app:bubble_arrowTop="20dp"
-                app:bubble_arrowWidth="8dp" />
+                app:bubble_arrowWidth="8dp"
+                app:bubble_showShadow="false"
+                app:bubble_showText="false" />
 
         </LinearLayout>
         <!-- 人物头像 -->
