@@ -66,7 +66,7 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
             helper.setText(R.id.tvTitle, item.locationAddress)
             val ivLocation = helper.getView<ImageView>(R.id.ivLocation)
             val url = "http://st.map.qq.com/api?size=708*270&center=${item.lng},${item.lat}&zoom=16&referer=weixin"
-            ImageLoaderProxy.loadImage(item.uri,ivLocation)
+            ImageLoaderProxy.loadImage(url,ivLocation)
         } else if (item.type == Message.Type.VOICE) {
             val increment = (UIUtils.getDisplayWidth() / 2 / Constants.DEFAULT_MAX_AUDIO_RECORD_TIME_SECOND * item.duration)
             val rlAudio = helper.setText(R.id.tvDuration, item.duration.toString() + "''").getView<RelativeLayout>(R.id.rlAudio)

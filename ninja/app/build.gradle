@@ -17,8 +17,11 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
+            //只打包配置的so文件
             abiFilters  "armeabi-v7a"
         }
+        //只打包对应的字符串文件
+        resConfigs 'zh'
     }
 
     buildTypes {

@@ -200,7 +200,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
         mViewModel.touchAudioEvent.observe(this) {
             when (it.action) {
-                MotionEvent.ACTION_DOWN -> AudioRecordManager.getInstance(this@ConversationActivity).startRecord()
+                MotionEvent.ACTION_DOWN -> AudioRecordManager.getInstance(NinjaApp.instance.applicationContext).startRecord()
                 MotionEvent.ACTION_MOVE -> if (isCancelled(btnAudio, it)) {
                     AudioRecordManager.getInstance(NinjaApp.instance.applicationContext).willCancelRecord()
                 } else {

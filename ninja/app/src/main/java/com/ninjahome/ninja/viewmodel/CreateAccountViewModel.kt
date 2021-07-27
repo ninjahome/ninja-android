@@ -68,7 +68,7 @@ class CreateAccountViewModel : BaseViewModel(), KoinComponent {
             createAccountSuccess(account)
 
         }, {
-            println(it.message)
+           it.printStackTrace()
             dismissDialog()
             showToast(R.string.create_account_error)
         }, {

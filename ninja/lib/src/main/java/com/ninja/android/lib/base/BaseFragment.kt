@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,7 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.impl.LoadingPopupView
 import com.ninja.android.lib.R
 import com.ninja.android.lib.utils.toast
+import kotlin.math.log
 
 /**
  * @description:
@@ -53,6 +55,9 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding>(@LayoutRes
         initObserve()
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
 
     abstract fun initView()
 
@@ -65,6 +70,7 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding>(@LayoutRes
     open fun <T : ViewModel> createViewModel(cls: Class<T>): T {
         return ViewModelProvider(this).get(cls)
     }
+
 
     open fun onShow() {}
     fun onHide() {}
