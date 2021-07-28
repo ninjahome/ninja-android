@@ -9,4 +9,4 @@ import androidx.room.PrimaryKey
  *Description:
  */
 @Entity
-class Conversation(@PrimaryKey(autoGenerate = true) var id: Long = 0, var from: String, var msg: String, var time: Long, var unreadCount: Int, var nickName: String = "")
+class Conversation(@PrimaryKey(autoGenerate = true) var id: Long = 0, var from: String, var isGroup: Boolean, var msg: String, var time: Long, var unreadCount: Int, var title: String = "")

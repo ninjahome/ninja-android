@@ -50,7 +50,7 @@ class EditContactViewModel : BaseViewModel() {
                 }
                 val conversation = ConversationDBManager.queryByFrom(contact!!.uid)
                 conversation?.let {
-                    it.nickName = contact!!.nickName
+                    it.title = contact!!.nickName
                     ConversationDBManager.updateConversations(it)
                 }
 

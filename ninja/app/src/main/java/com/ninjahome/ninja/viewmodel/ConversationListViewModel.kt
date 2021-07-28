@@ -25,6 +25,7 @@ import org.koin.core.component.KoinApiExtension
 @KoinApiExtension
 class ConversationListViewModel : BaseViewModel() {
     var finishRefreshingEvent = SingleLiveEvent<Any>()
+    var showPop = SingleLiveEvent<Any>()
     val unline = MutableLiveData<Boolean>()
 
     val items: ObservableList<ConversationItemViewModel> = ObservableArrayList()
@@ -34,6 +35,14 @@ class ConversationListViewModel : BaseViewModel() {
     init {
         title.set(context().getString(R.string.message))
         showBackImage.set(false)
+        showRightIv.set(true)
+        rightIv.set(R.drawable.add)
+    }
+
+    override fun clickRightIv() {
+        super.clickRightIv()
+        showPop.call()
+
     }
 
     val refreshCommand = BindingCommand<Any>(object : BindingAction {

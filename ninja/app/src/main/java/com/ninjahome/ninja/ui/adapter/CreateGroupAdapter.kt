@@ -18,7 +18,7 @@ import java.util.*
  */
 class CreateGroupAdapter(private val mContext: Context) : RecyclerView.Adapter<CreateGroupAdapter.MyRecycleHolder>() {
     private val FONT_SIZE = 30
-    private val contactBeanList: MutableList<Contact>?
+    public val contactBeanList: MutableList<Contact>?
     var clickItemListener: ClickItemListener? = null
 
     interface ClickItemListener {

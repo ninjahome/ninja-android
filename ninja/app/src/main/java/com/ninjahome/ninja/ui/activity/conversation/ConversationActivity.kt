@@ -106,7 +106,11 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
 
     override fun initData() {
-        mViewModel.uid = intent.getStringExtra(IntentKey.UID)!!
+        mViewModel.id = intent.getStringExtra(IntentKey.UID)!!
+        mViewModel.isGroup = intent.getBooleanExtra(IntentKey.IS_GROUP,false)
+        if( mViewModel.isGroup){
+            mViewModel.queryGroup()
+        }
         setTitle()
         initAudioRecordManager()
     }
@@ -119,18 +123,18 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     private fun setTitle() {
         rxLifeScope.launch {
-            ContactDBManager.observeNickNameByUID(mViewModel.uid).observe(this@ConversationActivity) {
+            ContactDBManager.observeNickNameByUID(mViewModel.id).observe(this@ConversationActivity) {
                 if (TextUtils.isEmpty(it)) {
-                    mViewModel.title.set(mViewModel.uid)
+                    mViewModel.title.set(mViewModel.id)
                 } else {
                     mViewModel.title.set(it)
                 }
                 val subName = if (mViewModel.title.get()!!.toString().length >= 2) mViewModel.title.get()!!.substring(0, 2) else mViewModel.title.get()!!
                 MainScope().launch {
                     var receiverIconColor = R.color.color_d8d8d8
-                    val contact = ContactDBManager.queryByID(mViewModel.uid)
+                    val contact = ContactDBManager.queryByID(mViewModel.id)
                     if (contact != null) {
-                        val receiverIconIndex = Androidlib.iconIndex(mViewModel.uid, ColorUtil.colorSize)
+                        val receiverIconIndex = Androidlib.iconIndex(mViewModel.id, ColorUtil.colorSize)
                         receiverIconColor = ColorUtil.colors[receiverIconIndex]
                     }
                     conversationAdapter.setReceiverNameIcon(subName, receiverIconColor)
@@ -578,6 +582,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         super.onDestroy()
         clearUnreadNumber()
         mHandler.removeCallbacksAndMessages(null)
+        AudioRecordManager.getInstance(NinjaApp.instance.applicationContext).audioRecordListener = null
     }
 
     override fun onItemClick(helper: LQRViewHolder, parent: ViewGroup?, itemView: View?, position: Int) {

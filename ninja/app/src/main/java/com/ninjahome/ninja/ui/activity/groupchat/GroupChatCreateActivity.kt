@@ -70,7 +70,7 @@ class GroupChatCreateActivity : BaseActivity<CreateGroupChatViewModel, ActivityC
         mViewModel.showCreateGroupChatPop.observe(this) {
             createGroupChatDialog = DialogUtils.showCreateGroupChatDialog(this@GroupChatCreateActivity, object : CreateGroupChatPop.ClickListener {
                 override fun clickSure(name: String) {
-                    toast(name)
+                    mViewModel.createGroupChat(name,contactAdapter.contactBeanList)
                     createGroupChatDialog.dismiss()
                 }
 

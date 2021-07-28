@@ -27,7 +27,7 @@ class ConversationItemViewModel(viewModel: ConversationListViewModel, val conver
     val receiverIconIndex = Androidlib.iconIndex(conversation.from, ColorUtil.colorSize)
     var receiverIconColor = ColorUtil.colors[receiverIconIndex]
     private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(30)
-    val subName = if (conversation.nickName.length >= 2) conversation.nickName.substring(0, 2) else conversation.nickName
+    val subName = if (conversation.title.length >= 2) conversation.title.substring(0, 2) else conversation.title
     var receiverIcon: MutableLiveData<TextDrawable> = MutableLiveData()
 
     init {
@@ -36,7 +36,7 @@ class ConversationItemViewModel(viewModel: ConversationListViewModel, val conver
             if (contact == null) {
                 receiverIconColor = R.color.color_d8d8d8
             }
-            receiverIcon.value = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(receiverIconColor))
+            receiverIcon.value = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(receiverIconColor,null))
         }
     }
 
@@ -44,6 +44,7 @@ class ConversationItemViewModel(viewModel: ConversationListViewModel, val conver
         override fun call() {
             val bundle = Bundle()
             bundle.putString(IntentKey.UID, conversation.from)
+            bundle.putBoolean(IntentKey.IS_GROUP, conversation.isGroup)
             viewModel.startActivity(ConversationActivity::class.java, bundle)
         }
     })

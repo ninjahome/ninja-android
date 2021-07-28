@@ -1,17 +1,16 @@
 package com.ninjahome.ninja.ui.fragment.conversation
 
-import android.content.res.Configuration
-import android.os.Bundle
+import android.animation.ObjectAnimator
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
+import android.widget.ImageView
 import androidlib.Androidlib
 import androidlib.Androidlib.*
-import androidx.annotation.Nullable
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.gyf.immersionbar.ImmersionBar
-import com.gyf.immersionbar.components.SimpleImmersionOwner
-import com.gyf.immersionbar.components.SimpleImmersionProxy
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.BasePopupView
+import com.lxj.xpopup.enums.PopupAnimation
+import com.lxj.xpopup.impl.AttachListPopupView
+import com.lxj.xpopup.interfaces.SimpleCallback
 import com.ninja.android.lib.base.BaseFragment
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.R
@@ -19,6 +18,8 @@ import com.ninjahome.ninja.databinding.FragmentConversationListBinding
 import com.ninjahome.ninja.event.*
 import com.ninjahome.ninja.model.bean.*
 import com.ninjahome.ninja.room.ConversationDBManager
+import com.ninjahome.ninja.ui.activity.groupchat.GroupChatCreateActivity
+import com.ninjahome.ninja.ui.activity.search.SearchContactActivity
 import com.ninjahome.ninja.viewmodel.ConversationItemViewModel
 import com.ninjahome.ninja.viewmodel.ConversationListViewModel
 import com.zhy.autolayout.utils.ScreenUtils
@@ -33,6 +34,7 @@ import org.greenrobot.eventbus.ThreadMode
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinApiExtension
 
+
 /**
  *Author:Mr'x
  *Time:
@@ -40,17 +42,27 @@ import org.koin.core.component.KoinApiExtension
  */
 @KoinApiExtension
 class ConversationListFragment : BaseFragment<ConversationListViewModel, FragmentConversationListBinding>(R.layout.fragment_conversation_list), Handler.Callback {
+    val ADD_FRIEND = 0;
+    lateinit var animator: ObjectAnimator
+    lateinit var animatorRecover: ObjectAnimator
+    var isRotate = false
+    lateinit var rightIv: ImageView
+    lateinit var moreActionPop: AttachListPopupView
 
     override val mViewModel: ConversationListViewModel by viewModel()
     private val handler: Handler by lazy { Handler(Looper.getMainLooper(), this@ConversationListFragment) }
     override fun initView() {
         EventBus.getDefault().register(this)
+        rightIv = mDatabinding.root.findViewById<ImageView>(R.id.title_right_iv)
+        animator = ObjectAnimator.ofFloat(rightIv, "rotation", 0.0F, 45.0F)
+        animatorRecover = ObjectAnimator.ofFloat(rightIv, "rotation", -45.0F, 0.0F)
         recyclerView.itemAnimator = null
         initMarginTop()
     }
+
     private fun initMarginTop() {
         val layoutParams = status_bar_view.layoutParams
-        layoutParams.height =  ScreenUtils.getStatusBarHeight(mActivity)
+        layoutParams.height = ScreenUtils.getStatusBarHeight(mActivity)
         status_bar_view.layoutParams = layoutParams
     }
 
@@ -66,12 +78,40 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
             swipeRefreshLayout.isRefreshing = false
         }
 
+        mViewModel.showPop.observe(this) {
+            animator.start()
+            showPop()
+
+        }
+
         ConversationDBManager.all().observe(this) {
             mViewModel.items.clear()
             it?.forEach {
                 mViewModel.items.add(ConversationItemViewModel(mViewModel, it))
             }
         }
+
+
+    }
+
+    private fun showPop() {
+        if (!this::moreActionPop.isInitialized) {
+            moreActionPop = XPopup.Builder(context).hasShadowBg(false).popupAnimation(PopupAnimation.ScrollAlphaFromTop).atView(rightIv).setPopupCallback(object : SimpleCallback() {
+
+                override fun beforeDismiss(popupView: BasePopupView?) {
+                    super.beforeDismiss(popupView)
+                    animatorRecover.start()
+                }
+            }).asAttachList(arrayOf(resources.getString(R.string.add_friend), resources.getString(R.string.create_group_chat)), intArrayOf(R.drawable.home_add_friend, R.drawable.home_group_chat), { position, text ->
+                if (position == ADD_FRIEND) {
+                    startActivity(SearchContactActivity::class.java)
+                } else {
+                    startActivity(GroupChatCreateActivity::class.java)
+                }
+            }, 0, 0)
+
+        }
+        moreActionPop.show()
     }
 
 

@@ -35,6 +35,8 @@
     <string name="no_support_msg_type">不支持的消息类型</string>
     <string name="version">version:%s</string>
     <string name="complete">完成</string>
+    <string name="add_friend">添加好友</string>
+    <string name="create_group_chat">创建群聊</string>
 
 
     <!--  conversation  -->
@@ -119,6 +121,7 @@
     <string name="my_user_name">用户名</string>
     <string name="my_account_manager">管理账号</string>
     <string name="my_no_support_fingerprint">当前手机不支持指纹识别</string>
+    <string name="my_address_title">Ninja Address:</string>
 
     <!--    accountManager-->
     <string name="account_manager_new_account">新建账号</string>

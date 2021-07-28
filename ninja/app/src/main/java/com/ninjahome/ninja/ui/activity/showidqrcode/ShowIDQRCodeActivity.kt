@@ -28,7 +28,7 @@ class ShowIDQRCodeActivity : BaseActivity<ShowIDQRCodeViewModel, ActivityShowIdQ
         val id = intent.getStringExtra(IntentKey.ADDRESS)
         val barcodeEncoder = BarcodeEncoder()
         try {
-            val bitmap = barcodeEncoder.encodeBitmap(id, BarcodeFormat.QR_CODE, 400.dp.toInt(), 400.dp.toInt())
+            val bitmap = barcodeEncoder.encodeBitmap(id, BarcodeFormat.QR_CODE, 288.dp.toInt(), 288.dp.toInt())
             qrIv.setImageBitmap(bitmap)
         } catch (e: WriterException) {
             e.printStackTrace()

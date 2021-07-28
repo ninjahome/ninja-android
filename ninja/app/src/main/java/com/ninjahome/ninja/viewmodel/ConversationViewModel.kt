@@ -17,9 +17,11 @@ import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.ConversationModel
 import com.ninjahome.ninja.model.bean.Conversation
+import com.ninjahome.ninja.model.bean.GroupChat
 import com.ninjahome.ninja.model.bean.Message
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.room.ConversationDBManager
+import com.ninjahome.ninja.room.GroupDBManager
 import com.ninjahome.ninja.room.MessageDBManager
 import com.ninjahome.ninja.ui.activity.contact.ContactDetailActivity
 import com.ninjahome.ninja.ui.activity.contact.ScanContactSuccessActivity
@@ -39,7 +41,9 @@ import org.koin.core.component.inject
 @KoinApiExtension
 class ConversationViewModel : BaseViewModel(), KoinComponent {
     val model: ConversationModel by inject()
-    var uid: String = ""
+    var id: String = ""
+    lateinit var groupChat: GroupChat
+    var isGroup: Boolean = false
     val textData = MutableLiveData("")
     val clickAudioEvent = SingleLiveEvent<Any>()
     val clickSendEvent = SingleLiveEvent<Any>()
@@ -70,14 +74,14 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
     override fun clickRightIv() {
         super.clickRightIv()
         rxLifeScope.launch {
-            val contact = ContactDBManager.queryByID(uid)
+            val contact = ContactDBManager.queryByID(id)
             if (contact == null) {
                 val bundle = Bundle()
-                bundle.putString(IntentKey.UID, uid)
+                bundle.putString(IntentKey.UID, id)
                 startActivity(ScanContactSuccessActivity::class.java, bundle)
             } else {
                 val bundle = Bundle()
-                bundle.putString(IntentKey.UID, uid)
+                bundle.putString(IntentKey.UID, id)
                 startActivity(ContactDetailActivity::class.java, bundle)
             }
         }
@@ -139,8 +143,13 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
             val conversationId = getConversationId(data)
             message.conversationId = conversationId
             message.id = MessageDBManager.insert(message)
-            model.sendTextMessage(uid, data)
+            if(isGroup){
+                model.sendGroupTextMessage(id, data)
+            }else{
+                model.sendTextMessage(id, data)
+            }
             message.sentStatus = Message.SentStatus.SENT
+
             MessageDBManager.updateMessage(message)
         }, {
             showToast(R.string.send_error)
@@ -157,7 +166,12 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
             val conversationId = getConversationId(context().getString(R.string.message_type_image))
             message.conversationId = conversationId
             message.id = MessageDBManager.insert(message)
-            model.sendImageMessage(uid, path, compress)
+            if(isGroup){
+                model.sendGroupImageMessage(id, path, compress)
+            }else{
+
+                model.sendImageMessage(id, path, compress)
+            }
             message.sentStatus = Message.SentStatus.SENT
             MessageDBManager.updateMessage(message)
         }, {
@@ -176,7 +190,12 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
                 val conversationId = getConversationId(context().getString(R.string.message_type_voice))
                 message.conversationId = conversationId
                 message.id = MessageDBManager.insert(message)
-                model.sendVoiceMessage(uid, it, duration)
+                if(isGroup){
+                    model.sendGroupVoiceMessage(id, it, duration)
+                }else{
+
+                    model.sendVoiceMessage(id, it, duration)
+                }
                 message.sentStatus = Message.SentStatus.SENT
                 MessageDBManager.updateMessage(message)
             }
@@ -195,7 +214,12 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
             val conversationId = getConversationId(context().getString(R.string.message_type_location))
             message.conversationId = conversationId
             message.id = MessageDBManager.insert(message)
-            model.sendLocationMessage(uid, lng, lat, poi)
+            if (isGroup){
+                model.sendGroupLocationMessage(id, lng, lat, poi)
+            }else{
+
+                model.sendLocationMessage(id, lng, lat, poi)
+            }
             message.sentStatus = Message.SentStatus.SENT
             MessageDBManager.updateMessage(message)
         }, {
@@ -210,11 +234,11 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
         var id: Long = 0
         var conversation = queryConversation()
         if (conversation == null) {
-            var nickName = ContactDBManager.queryNickNameByUID(uid)
+            var nickName = ContactDBManager.queryNickNameByUID(this.id)
             if (nickName == null) {
-                nickName = uid
+                nickName = this.id
             }
-            conversation = Conversation(0, uid, msg, System.currentTimeMillis(), 0, nickName)
+            conversation = Conversation(0, this.id, false, msg, System.currentTimeMillis(), 0, nickName)
             id = ConversationDBManager.insert(conversation)
             observableConversationEvent.call()
         } else {
@@ -228,7 +252,7 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
     }
 
     suspend fun queryConversation(): Conversation? {
-        return ConversationDBManager.queryByFrom(uid)
+        return ConversationDBManager.queryByFrom(id)
     }
 
     fun updateMessage(message: Message) {
@@ -238,16 +262,16 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
             MessageDBManager.updateMessage(message)
             when (message.type) {
                 Message.Type.TEXT -> {
-                    model.sendTextMessage(uid, message.msg)
+                    model.sendTextMessage(id, message.msg)
                 }
                 Message.Type.IMAGE -> {
-                    model.sendImageMessage(uid, message.uri, true)
+                    model.sendImageMessage(id, message.uri, true)
                 }
                 Message.Type.VOICE -> {
-                    model.sendVoiceMessage(uid, message.uri, message.duration)
+                    model.sendVoiceMessage(id, message.uri, message.duration)
                 }
                 Message.Type.LOCATION -> {
-                    model.sendLocationMessage(uid, message.lng, message.lat, message.locationAddress)
+                    model.sendLocationMessage(id, message.lng, message.lat, message.locationAddress)
                 }
             }
             message.sentStatus = Message.SentStatus.SENT
@@ -264,6 +288,14 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
             message.sentStatus = Message.SentStatus.FAILED
             message.time = System.currentTimeMillis()
             MessageDBManager.updateMessage(message)
+        }, {
+            it.printStackTrace()
+        })
+    }
+
+    fun queryGroup() {
+        rxLifeScope.launch({
+            groupChat = GroupDBManager.queryByGroupId(id)!!
         }, {
             it.printStackTrace()
         })

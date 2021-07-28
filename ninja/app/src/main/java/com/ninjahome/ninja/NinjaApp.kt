@@ -2,7 +2,8 @@ package com.ninjahome.ninja
 
 import android.text.TextUtils
 import androidlib.Androidlib
-import androidlib.AppCallBack
+import androidlib.MulticastCallBack
+import androidlib.UnicastCallBack
 import coil.load
 import com.lqr.emoji.LQREmotionKit
 import com.ninja.android.lib.base.BaseApplication
@@ -17,6 +18,7 @@ import com.ninjahome.ninja.model.bean.*
 import com.ninjahome.ninja.push.PushHelper
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.room.ConversationDBManager
+import com.ninjahome.ninja.room.GroupDBManager
 import com.ninjahome.ninja.room.MessageDBManager
 import com.ninjahome.ninja.utils.FileUtils
 import com.ninjahome.ninja.viewmodel.*
@@ -41,7 +43,7 @@ import org.koin.dsl.module
  *Description:
  */
 @KoinApiExtension
-class NinjaApp : BaseApplication() {
+class NinjaApp : BaseApplication(), UnicastCallBack {
     private val mutex = Mutex()
     lateinit var account: Account
 
@@ -122,53 +124,82 @@ class NinjaApp : BaseApplication() {
     }
 
     fun configApp() {
-        Androidlib.configApp("", object : AppCallBack {
-            override fun imageMessage(from: String, to: String, payload: ByteArray, time: Long) {
-                println("-----------------------------图片------------------------------")
+        Androidlib.configApp("", this, object : MulticastCallBack {
+            override fun createGroup(groupId: String, groupName: String, owner: String, memberIdList: String, memberNickNameList: String) {
+                println("-----------------createGroup-----groupId:${groupId}   groupName: ${groupName}   memberIdList:${memberIdList}   memberNickNameList:${memberNickNameList} ")
+                Logger.d("-----------------createGroup-----groupId:${groupId}   groupName: ${groupName}   memberIdList:${memberIdList}   memberNickNameList:${memberNickNameList} ")
                 MainScope().launch {
-                    val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_image), time)
-                    val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.IMAGE, msg = "[图片]")
+                    groupId?.let {
+                        val group = GroupDBManager.queryByGroupId(it)
+                        if (group == null) {
+                            val groupConversation = GroupChat(0, groupId, groupName, owner, memberIdList, memberNickNameList)
+                            GroupDBManager.insert(groupConversation)
+                        }
+                    }
+
+                }
+            }
+
+            override fun dismisGroup(groupId: String?) {
+            }
+
+            override fun quitGroup(from: String?, groupId: String?, quitId: String?) {
+
+            }
+
+            override fun syncGroup(groupId: String?): String {
+                return ""
+            }
+
+            override fun syncGroupAck(groupId: String?, groupName: String?, owner: String?, memberIdList: String?, memberNickNameList: String?) {
+
+            }
+
+            override fun joinGroup(from: String?, groupId: String?, groupName: String?, owner: String?, memberIdList: String?, memberNickNameList: String?, newIdList: String?) {
+            }
+
+            override fun kickOutUser(from: String?, groupId: String?, kickId: String?) {
+            }
+
+
+            override fun textMessage(from: String, groupId: String, payload: String, time: Long) {
+                MainScope().launch {
+                        val conversation = insertOrUpdateConversation(groupId, payload, time, true)
+                        val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.TEXT, msg = payload)
+                        insertMessage(message, conversation)
+                }
+            }
+
+
+            override fun imageMessage(from: String, groupId: String, payload: ByteArray, time: Long) {
+                MainScope().launch {
+                    val conversation = insertOrUpdateConversation(groupId, context().getString(R.string.message_type_image), time,true)
+                    val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.IMAGE, msg = context().getString(R.string.message_type_image))
                     message.uri = FileUtils.saveImageToPath(Constants.PHOTO_SAVE_DIR, payload)
                     insertMessage(message, conversation)
 
                 }
             }
 
-            override fun locationMessage(from: String, to: String, lng: Float, lat: Float, locationAddress: String, time: Long) {
-                println("-----------------------------位置------------------------------")
+            override fun voiceMessage(from: String, groupId: String, payload: ByteArray, length: Long, time: Long) {
                 MainScope().launch {
-                    val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_location), time)
-                    val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.LOCATION, lat = lat, lng = lng, locationAddress = locationAddress, msg = "[定位]")
-                    insertMessage(message, conversation)
-                }
-
-            }
-
-            override fun textMessage(from: String, to: String, data: String, time: Long) {
-                println("-----------------------------${data}------------------------------")
-                MainScope().launch {
-                    val conversation = insertOrUpdateConversation(from, data, time)
-                    val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.TEXT, msg = data)
-                    insertMessage(message, conversation)
-                }
-
-            }
-
-            override fun voiceMessage(from: String, to: String, payload: ByteArray, length: Long, time: Long) {
-                println("-----------------------------语音${length}------------------------------")
-                MainScope().launch {
-                    val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_voice), time)
-                    val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.VOICE, msg = "[语音]", duration = length.toInt())
+                    val conversation = insertOrUpdateConversation(groupId, context().getString(R.string.message_type_voice), time,true)
+                    val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.VOICE, msg =context().getString(R.string.message_type_voice), duration = length.toInt())
                     message.uri = FileUtils.saveVoiceToPath(Constants.AUDIO_SAVE_DIR, payload)
                     insertMessage(message, conversation)
                 }
             }
 
+            override fun locationMessage(from: String, groupId: String, lng: Float, lat: Float, name: String, time: Long) {
+                MainScope().launch {
+                    val conversation = insertOrUpdateConversation(groupId, context().getString(R.string.message_type_location), time, true)
+                    val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.LOCATION, lat = lat, lng = lng, locationAddress = name, msg = context().getString(R.string.message_type_location))
+                    insertMessage(message, conversation)
+                }
 
-            override fun webSocketClosed() {
-                Logger.d("webSocketClosed")
-                EventBus.getDefault().post(EventOffline())
             }
+
+
         })
     }
 
@@ -183,19 +214,36 @@ class NinjaApp : BaseApplication() {
 
     }
 
-    private suspend fun insertOrUpdateConversation(from: String, msg: String, time: Long): Conversation {
+    private suspend fun insertOrUpdateConversation(from: String, msg: String, time: Long, isGroup: Boolean): Conversation {
         mutex.withLock {
             var conversation = ConversationDBManager.queryByFrom(from)
             if (conversation == null) {
-                conversation = Conversation(0, from, msg, time * 1000, 1)
-                val nickName = ContactDBManager.queryNickNameByUID(from)
-                conversation.nickName = if (TextUtils.isEmpty(nickName)) from else nickName!!
+                conversation = Conversation(0, from, isGroup, msg, time * 1000, 1)
+                if (isGroup) {
+                    val group = GroupDBManager.queryByGroupId(from)
+                    group?.let {
+                        conversation.title = it.groupName
+                    }
+
+                } else {
+                    val nickName = ContactDBManager.queryNickNameByUID(from)
+                    conversation.title = if (TextUtils.isEmpty(nickName)) from else nickName!!
+                }
+
                 conversation.id = ConversationDBManager.insert(conversation)
             } else {
                 conversation.msg = msg
                 conversation.time = time * 1000
-                val nickName = ContactDBManager.queryNickNameByUID(from)
-                conversation.nickName = if (TextUtils.isEmpty(nickName)) from else nickName!!
+                if (isGroup) {
+                    val group = GroupDBManager.queryByGroupId(from)
+                    group?.let {
+                        conversation.title = it.groupName
+                    }
+
+                } else {
+                    val nickName = ContactDBManager.queryNickNameByUID(from)
+                    conversation.title = if (TextUtils.isEmpty(nickName)) from else nickName!!
+                }
                 ConversationDBManager.updateConversations(conversation)
             }
             return conversation
@@ -208,5 +256,54 @@ class NinjaApp : BaseApplication() {
         val unreadCount = MessageDBManager.queryUnReadCount(conversation.id)
         conversation.unreadCount = unreadCount
         ConversationDBManager.updateConversations(conversation)
+    }
+
+
+    override fun locationMessage(from: String, to: String, lng: Float, lat: Float, locationAddress: String, time: Long) {
+        println("-----------------------------位置------------------------------")
+        MainScope().launch {
+            val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_location), time, false)
+            val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.LOCATION, lat = lat, lng = lng, locationAddress = locationAddress, msg = context().getString(R.string.message_type_location))
+            insertMessage(message, conversation)
+        }
+
+    }
+
+    override fun imageMessage(from: String, to: String, payload: ByteArray, time: Long) {
+        println("-----------------------------图片------------------------------")
+        MainScope().launch {
+            val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_image), time,false)
+            val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.IMAGE, msg = context().getString(R.string.message_type_image))
+            message.uri = FileUtils.saveImageToPath(Constants.PHOTO_SAVE_DIR, payload)
+            insertMessage(message, conversation)
+
+        }
+    }
+
+
+    override fun textMessage(from: String, to: String, data: String, time: Long) {
+        println("-----------------------------${data}------------------------------")
+        MainScope().launch {
+            val conversation = insertOrUpdateConversation(from, data, time,false)
+            val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.TEXT, msg = data)
+            insertMessage(message, conversation)
+        }
+
+    }
+
+    override fun voiceMessage(from: String, to: String, payload: ByteArray, length: Long, time: Long) {
+        println("-----------------------------语音${length}------------------------------")
+        MainScope().launch {
+            val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_voice), time,false)
+            val message = Message(0, conversation.id, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.VOICE, msg =context().getString(R.string.message_type_voice), duration = length.toInt())
+            message.uri = FileUtils.saveVoiceToPath(Constants.AUDIO_SAVE_DIR, payload)
+            insertMessage(message, conversation)
+        }
+    }
+
+
+    override fun webSocketClosed() {
+        Logger.d("webSocketClosed")
+        EventBus.getDefault().post(EventOffline())
     }
 }

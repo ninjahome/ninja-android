@@ -78,7 +78,7 @@ class ContactDetailViewModel : BaseViewModel() {
                 ContactDBManager.delete(it)
                 val conversation = ConversationDBManager.queryByFrom(it.uid)
                 conversation?.let { c ->
-                    c.nickName = contact.value!!.uid
+                    c.title = contact.value!!.uid
                     ConversationDBManager.updateConversations(c)
                 }
             }

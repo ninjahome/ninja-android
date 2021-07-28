@@ -37,7 +37,7 @@
             android:ellipsize="middle"
             android:lines="1"
             android:maxLines="1"
-            android:text="@{item.conversation.nickName}"
+            android:text="@{item.conversation.title}"
             android:textColor="@color/color_0c123d"
             android:textSize="16sp"
             android:textStyle="bold"
