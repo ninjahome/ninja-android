@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.bean.Contact
+import com.ninjahome.ninja.model.bean.GroupMember
 import com.ninjahome.ninja.utils.ContactIconUtils
 import java.util.*
 
@@ -18,33 +19,33 @@ import java.util.*
  */
 class GroupRemoveMemberAdapter(private val mContext: Context) : RecyclerView.Adapter<GroupRemoveMemberAdapter.MyRecycleHolder>() {
     private val FONT_SIZE = 30
-    private val contactBeanList: MutableList<Contact>?
+    val groupMemberList: ArrayList<GroupMember>?
     var clickItemListener: ClickItemListener? = null
 
     interface ClickItemListener {
-        fun onSelected(position: Int, contact: Contact)
+        fun onSelected(position: Int, member: GroupMember)
     }
 
     fun setItemCLickListener(clickItemListener: ClickItemListener) {
         this.clickItemListener = clickItemListener
     }
 
-    fun addAll(beans: List<Contact>?) {
-        if (contactBeanList!!.size > 0) {
-            contactBeanList.clear()
+    fun addAll(beans: List<GroupMember>?) {
+        if (groupMemberList!!.size > 0) {
+            groupMemberList.clear()
         }
-        contactBeanList.addAll(beans!!)
+        groupMemberList.addAll(beans!!)
         notifyDataSetChanged()
     }
 
-    fun add(bean: Contact, position: Int) {
-        contactBeanList!!.add(position, bean)
+    fun add(bean: GroupMember, position: Int) {
+        groupMemberList!!.add(position, bean)
         notifyItemInserted(position)
     }
 
-    fun add(bean: Contact) {
-        contactBeanList!!.add(bean)
-        notifyItemChanged(contactBeanList.size - 1)
+    fun add(bean: GroupMember) {
+        groupMemberList!!.add(bean)
+        notifyItemChanged(groupMemberList.size - 1)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyRecycleHolder {
@@ -53,28 +54,27 @@ class GroupRemoveMemberAdapter(private val mContext: Context) : RecyclerView.Ada
     }
 
     override fun onBindViewHolder(holder: MyRecycleHolder, position: Int) {
-        if (contactBeanList == null || contactBeanList.size == 0 || contactBeanList.size <= position) return
-        val contact = contactBeanList[position]
-        holder.nameTv.text = contact.nickName
-        if (contact.isSelected) {
+        if (groupMemberList == null || groupMemberList.size == 0 || groupMemberList.size <= position) return
+        val member = groupMemberList[position]
+        holder.nameTv.text = member.name
+        if (member.isSelected) {
             holder.selectedIv.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.drawable.group_number_selected))
         } else {
             holder.selectedIv.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.drawable.remove_member_normal))
         }
         holder.selectedIv.setOnClickListener {
-            if (!contact.isSelected) {
-                contact.isSelected = true
-                notifyItemChanged(position)
-                clickItemListener?.onSelected(position, contact)
-            }
+            member.isSelected = !member.isSelected
+            notifyItemChanged(position)
+            clickItemListener?.onSelected(position, member)
 
         }
-        val drawable = ContactIconUtils.getDrawable(FONT_SIZE, contact.uid, contact.subName)
+        val name = if(member.name.length>2) member.name.substring(0,2) else member.name
+        val drawable = ContactIconUtils.getDrawable(FONT_SIZE, member.address, name)
         holder.iconIv.setImageDrawable(drawable)
     }
 
     override fun getItemCount(): Int {
-        return contactBeanList!!.size
+        return groupMemberList!!.size
     }
 
     class MyRecycleHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -85,6 +85,6 @@ class GroupRemoveMemberAdapter(private val mContext: Context) : RecyclerView.Ada
     }
 
     init {
-        contactBeanList = ArrayList()
+        groupMemberList = ArrayList()
     }
 }

@@ -1,9 +1,9 @@
 package com.ninjahome.ninja.viewmodel
 
 import android.os.Bundle
-import androidlib.Androidlib
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.rxLifeScope
+import chatLib.ChatLib
 import com.ninja.android.lib.base.ItemViewModel
 import com.ninja.android.lib.command.BindingAction
 import com.ninja.android.lib.command.BindingCommand
@@ -24,7 +24,7 @@ import org.koin.core.component.KoinApiExtension
  */
 @KoinApiExtension
 class ConversationItemViewModel(viewModel: ConversationListViewModel, val conversation: Conversation) : ItemViewModel<ConversationListViewModel>(viewModel) {
-    val receiverIconIndex = Androidlib.iconIndex(conversation.from, ColorUtil.colorSize)
+    val receiverIconIndex = ChatLib.iconIndex(conversation.from, ColorUtil.colorSize)
     var receiverIconColor = ColorUtil.colors[receiverIconIndex]
     private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(30)
     val subName = if (conversation.title.length >= 2) conversation.title.substring(0, 2) else conversation.title
@@ -43,7 +43,11 @@ class ConversationItemViewModel(viewModel: ConversationListViewModel, val conver
     val clickItem = BindingCommand<Any>(object : BindingAction {
         override fun call() {
             val bundle = Bundle()
-            bundle.putString(IntentKey.UID, conversation.from)
+            if(conversation.isGroup){
+                bundle.putString(IntentKey.ID, conversation.groupId)
+            }else{
+                bundle.putString(IntentKey.ID, conversation.from)
+            }
             bundle.putBoolean(IntentKey.IS_GROUP, conversation.isGroup)
             viewModel.startActivity(ConversationActivity::class.java, bundle)
         }

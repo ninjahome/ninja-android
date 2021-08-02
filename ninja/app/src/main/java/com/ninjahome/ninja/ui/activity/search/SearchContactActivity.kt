@@ -1,7 +1,7 @@
 package com.ninjahome.ninja.ui.activity.search
 
 import android.content.Intent
-import androidlib.Androidlib
+import chatLib.ChatLib
 import com.google.zxing.integration.android.IntentIntegrator
 import com.ninja.android.lib.base.BaseActivity
 import com.ninja.android.lib.utils.toast
@@ -31,7 +31,7 @@ class SearchContactActivity : BaseActivity<SearchContactViewModel, ActivitySearc
 
     override fun initView() {
         contactIdEt.setOnEditorActionListener { _, _, _ ->
-            if (!Androidlib.isValidNinjaAddr(mViewModel.inputID.value)) {
+            if (!ChatLib.isValidNinjaAddr(mViewModel.inputID.value)) {
                 toast(getString(R.string.search_contact_address_error))
             } else {
                 nextStep()
@@ -54,13 +54,13 @@ class SearchContactActivity : BaseActivity<SearchContactViewModel, ActivitySearc
 
     private fun startContactDetailActivity() {
         val intent = Intent(this, ContactDetailActivity::class.java)
-        intent.putExtra(IntentKey.UID, mViewModel.inputID.value)
+        intent.putExtra(IntentKey.ID, mViewModel.inputID.value)
         startActivity(intent)
     }
 
     private fun startScanContactSuccessActivity() {
         val intent = Intent(this, ScanContactSuccessActivity::class.java)
-        intent.putExtra(IntentKey.UID, mViewModel.inputID.value)
+        intent.putExtra(IntentKey.ID, mViewModel.inputID.value)
         startActivity(intent)
     }
 

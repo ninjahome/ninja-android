@@ -52,7 +52,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:maxAspectRatio="2.4"
-        android:resizeableActivity="true"
+        android:resizeableActivity="false"
         android:supportsRtl="true"
         android:theme="@style/Theme.Ninja"
         android:usesCleartextTraffic="true"
@@ -131,7 +131,13 @@
             android:name=".ui.activity.groupchat.GroupChatCreateActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".ui.activity.groupchat.GroupChatDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ui.activity.groupchat.GroupChatRemoveMemberActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.groupchat.GroupChatAddMemberActivity"
             android:screenOrientation="portrait" />
 
 

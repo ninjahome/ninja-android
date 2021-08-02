@@ -4,8 +4,7 @@ import android.animation.ObjectAnimator
 import android.os.Handler
 import android.os.Looper
 import android.widget.ImageView
-import androidlib.Androidlib
-import androidlib.Androidlib.*
+import chatLib.ChatLib
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.enums.PopupAnimation
@@ -42,7 +41,7 @@ import org.koin.core.component.KoinApiExtension
  */
 @KoinApiExtension
 class ConversationListFragment : BaseFragment<ConversationListViewModel, FragmentConversationListBinding>(R.layout.fragment_conversation_list), Handler.Callback {
-    val ADD_FRIEND = 0;
+    val ADD_FRIEND = 0
     lateinit var animator: ObjectAnimator
     lateinit var animatorRecover: ObjectAnimator
     var isRotate = false
@@ -127,7 +126,7 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
 
     fun setLineState() {
         handler.postDelayed({
-            mViewModel.unline.value = !Androidlib.wsIsOnline()
+            mViewModel.unline.value = !ChatLib.wsIsOnline()
         }, 1000)
 
     }

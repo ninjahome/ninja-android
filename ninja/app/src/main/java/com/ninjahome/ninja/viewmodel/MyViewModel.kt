@@ -1,9 +1,9 @@
 package com.ninjahome.ninja.viewmodel
 
 import android.os.Bundle
-import androidlib.Androidlib
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.rxLifeScope
+import chatLib.ChatLib
 import com.ninja.android.lib.base.BaseViewModel
 import com.ninja.android.lib.command.BindingAction
 import com.ninja.android.lib.command.BindingCommand
@@ -56,7 +56,7 @@ class MyViewModel : BaseViewModel(), KoinComponent {
         name.value = userName
         rxLifeScope.launch({
             id.value = AccountUtils.getAddress(context())
-            val iconIndex = Androidlib.iconIndex(id.value!!, ColorUtil.colorSize)
+            val iconIndex = ChatLib.iconIndex(id.value!!, ColorUtil.colorSize)
             val iconColor = ColorUtil.colors[iconIndex]
             val subName: String = if (userName.length >= 2) userName.substring(0, 2) else userName
             iconDrawable.value = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(iconColor))

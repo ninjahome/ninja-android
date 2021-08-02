@@ -1,7 +1,7 @@
 package com.ninjahome.ninja.ui.activity.contact
 
-import androidlib.Androidlib
 import androidx.constraintlayout.widget.ConstraintLayout
+import chatLib.ChatLib
 import com.gyf.immersionbar.ImmersionBar
 import com.lxj.xpopup.interfaces.OnConfirmListener
 import com.ninja.android.lib.base.BaseActivity
@@ -34,7 +34,7 @@ class ContactDetailActivity : BaseActivity<ContactDetailViewModel, ActivityConta
     }
 
     override fun initData() {
-        val uid = intent.getStringExtra(IntentKey.UID)!!
+        val uid = intent.getStringExtra(IntentKey.ID)!!
         mViewModel.uid.value = uid
         mViewModel.getContact(uid)
         mViewModel.showBottomLine.set(false)
@@ -49,9 +49,9 @@ class ContactDetailActivity : BaseActivity<ContactDetailViewModel, ActivityConta
                 subName = it.substring(0, 2)
             }
             val drawable = mViewModel.contact.value?.let { _ ->
-                val index = Androidlib.iconIndex(mViewModel.uid.value!!, ColorUtil.colorSize)
-                val iconColor = ColorUtil.colors.get(index)
-                mDrawableBuilder.textColor(resources.getColor(R.color.white)).endConfig().buildRound(subName, resources.getColor(iconColor,null))
+                val index = ChatLib.iconIndex(mViewModel.uid.value!!, ColorUtil.colorSize)
+                val iconColor = ColorUtil.colors[index]
+                mDrawableBuilder.textColor(resources.getColor(R.color.white,null)).endConfig().buildRound(subName, resources.getColor(iconColor,null))
             }
             nameIv.setImageDrawable(drawable)
         }

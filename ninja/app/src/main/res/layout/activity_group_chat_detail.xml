@@ -20,12 +20,19 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/groupNumberRv"
             android:layout_width="0dp"
-            android:layout_height="250dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
+            android:maxHeight="250dp"
+            android:paddingTop="19dp"
+            android:paddingBottom="19dp"
+            app:itemBinding="@{viewModel.itemBinding}"
+            app:items="@{viewModel.memberIconItem}"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/titleLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/titleLayout"
+            app:spanCount="5" />
 
         <TextView
             android:id="@+id/nameLabTv"
@@ -45,10 +52,11 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
             android:gravity="center_vertical"
-            android:text="@{viewModel.name}"
+            android:text="@{viewModel.groupDetail.groupName}"
             android:textColor="@color/color_86868a"
             android:textSize="16sp"
             app:drawableEndCompat="@drawable/next_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/nameLabTv"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/nameLabTv" />
 
@@ -63,6 +71,7 @@
             android:text="@string/group_chat_detail_qr"
             android:textColor="@color/color_26253c"
             android:textSize="16sp"
+            android:visibility="gone"
             app:drawableEndCompat="@drawable/next_icon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -70,6 +79,7 @@
 
         <TextView
             android:id="@+id/deleteTv"
+            isVisible="@{viewModel.isLord}"
             onClickCommand="@{viewModel.clickRemoveMember}"
             android:layout_width="0dp"
             android:layout_height="54dp"
@@ -85,6 +95,7 @@
             app:layout_constraintTop_toBottomOf="@+id/gourpqrTv" />
 
         <Button
+            style="?android:attr/borderlessButtonStyle"
             onClickCommand="@{viewModel.clickSignOut}"
             android:layout_width="0dp"
             android:layout_height="48dp"

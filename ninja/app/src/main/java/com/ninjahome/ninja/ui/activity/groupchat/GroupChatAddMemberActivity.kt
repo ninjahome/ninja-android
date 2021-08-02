@@ -6,9 +6,11 @@ import com.lxj.xpopup.core.BasePopupView
 import com.ninja.android.lib.base.BaseActivity
 import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.BR
+import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityCreateGroupChatBinding
 import com.ninjahome.ninja.model.bean.Contact
+import com.ninjahome.ninja.model.bean.GroupChat
 import com.ninjahome.ninja.ui.adapter.CreateGroupAdapter
 import com.ninjahome.ninja.utils.DialogUtils
 import com.ninjahome.ninja.view.ContactsUtils
@@ -17,8 +19,11 @@ import com.ninjahome.ninja.view.contacts.CustomItemDecoration
 import com.ninjahome.ninja.view.contacts.itemanimator.SlideInOutLeftItemAnimator
 import com.ninjahome.ninja.viewmodel.CreateGroupChatIconItemViewModel
 import com.ninjahome.ninja.viewmodel.CreateGroupChatViewModel
+import com.ninjahome.ninja.viewmodel.GroupChatAddMemberItemViewModel
+import com.ninjahome.ninja.viewmodel.GroupChatAddMemberViewModel
 import kotlinx.android.synthetic.main.activity_create_group_chat.*
 import kotlinx.android.synthetic.main.fragment_contact_list.contactsRecyclerView
+import org.json.JSONArray
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinApiExtension
 
@@ -28,17 +33,19 @@ import org.koin.core.component.KoinApiExtension
  *Description:
  */
 @KoinApiExtension
-class GroupChatCreateActivity : BaseActivity<CreateGroupChatViewModel, ActivityCreateGroupChatBinding>(R.layout.activity_create_group_chat), CreateGroupAdapter.ClickItemListener {
+class GroupChatAddMemberActivity : BaseActivity<GroupChatAddMemberViewModel, ActivityCreateGroupChatBinding>(R.layout.activity_group_chat_add_member), CreateGroupAdapter.ClickItemListener {
 
+    private val ids =ArrayList<String>()
+    private val contacts = ArrayList<Contact>()
     private lateinit var createGroupChatDialog: BasePopupView
     private var decoration: CustomItemDecoration = CustomItemDecoration(this)
     private var layoutManager: LinearLayoutManager? = null
     private val contactAdapter: CreateGroupAdapter by lazy { CreateGroupAdapter(this) }
 
-    override val mViewModel: CreateGroupChatViewModel by viewModel()
+    override val mViewModel: GroupChatAddMemberViewModel by viewModel()
 
     override fun initView() {
-        mViewModel.title.set(getString(R.string.contact_group_create))
+        mViewModel.title.set(getString(R.string.create_group_chat_add_member))
         val selectedContactLayoutManager = LinearLayoutManager(this)
         selectedContactLayoutManager.orientation = RecyclerView.HORIZONTAL
         selectedContactRv.layoutManager = selectedContactLayoutManager
@@ -53,37 +60,35 @@ class GroupChatCreateActivity : BaseActivity<CreateGroupChatViewModel, ActivityC
     }
 
     override fun initData() {
+        val groupDetail = intent.getParcelableExtra<GroupChat>(IntentKey.GROUPCHAT)
+        mViewModel.groupDetail.value = groupDetail
+        groupDetail?.let { parseIdsJson(it.memberIdList) }
 
+    }
+
+    private fun parseIdsJson(memberIdList:String) {
+        val idsJsonArray = JSONArray(memberIdList)
+        for(i in 0 until idsJsonArray.length()){
+            ids.add(idsJsonArray[i].toString())
+        }
     }
 
     override fun initObserve() {
         mViewModel.allContact.observe(this) {
             it?.let {
-                contactAdapter.addAll(it)
-                ContactsUtils.sortData(it)
+                it.forEach { contact ->
+                    if(!ids.contains(contact.uid)){
+                        contacts.add(contact)
+                    }
+                }
+                ContactsUtils.sortData(contacts)
                 //返回一个包含所有Tag字母在内的字符串并赋值给tagsStr
-                val tagsStr: String = ContactsUtils.getTags(it)
-                decoration.setDatas(it, tagsStr)
-                contactAdapter.addAll(it)
+                val tagsStr: String = ContactsUtils.getTags(contacts)
+                decoration.setDatas(contacts, tagsStr)
+                contactAdapter.addAll(contacts)
             }
 
         }
-
-        mViewModel.showCreateGroupChatPop.observe(this) {
-            createGroupChatDialog = DialogUtils.showCreateGroupChatDialog(this@GroupChatCreateActivity, object : CreateGroupChatPop.ClickListener {
-                override fun clickSure(name: String) {
-                    mViewModel.createGroupChat(name,contactAdapter.contactBeanList)
-                    createGroupChatDialog.dismiss()
-                }
-
-                override fun clickNoName() {
-                    toast("没有群名创建")
-                    createGroupChatDialog.dismiss()
-                }
-
-            })
-        }
-
 
     }
 
@@ -96,7 +101,7 @@ class GroupChatCreateActivity : BaseActivity<CreateGroupChatViewModel, ActivityC
         setCreateBtnText()
         mViewModel.contactIconItem.clear()
         mViewModel.contacts.forEach {
-            mViewModel.contactIconItem.add(CreateGroupChatIconItemViewModel(mViewModel, it))
+            mViewModel.contactIconItem.add(GroupChatAddMemberItemViewModel(mViewModel, it))
         }
     }
 
@@ -105,14 +110,14 @@ class GroupChatCreateActivity : BaseActivity<CreateGroupChatViewModel, ActivityC
         setCreateBtnText()
         mViewModel.contactIconItem.clear()
         mViewModel.contacts.forEach {
-            mViewModel.contactIconItem.add(CreateGroupChatIconItemViewModel(mViewModel, it))
+            mViewModel.contactIconItem.add(GroupChatAddMemberItemViewModel(mViewModel, it))
         }
     }
 
     private fun setCreateBtnText() {
-        var text = getString(R.string.contact_group_chat_complete)
+        var text = getString(R.string.create_group_chat_add)
         if (mViewModel.contacts.size != 0) {
-            text = getString(R.string.contact_group_chat_complete) + "(${mViewModel.contacts.size})"
+            text = getString(R.string.create_group_chat_add) + "(${mViewModel.contacts.size})"
             createBtn.isEnabled = true
         } else {
             createBtn.isEnabled = false

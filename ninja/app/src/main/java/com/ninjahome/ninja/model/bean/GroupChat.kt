@@ -1,7 +1,9 @@
 package com.ninjahome.ninja.model.bean
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.android.parcel.Parcelize
 
 /**
  *Author:Mr'x
@@ -9,4 +11,5 @@ import androidx.room.PrimaryKey
  *Description:
  */
 @Entity
-data class GroupChat(@PrimaryKey(autoGenerate = true) var id: Int = 0, var groupId: String, var groupName: String, var owner: String, var memberIdList: String, var memberNickNameList: String)
+@Parcelize
+data class GroupChat(@PrimaryKey(autoGenerate = true) var id: Int = 0, var groupId: String, var groupName: String, var owner: String, var memberIdList: String, var memberNickNameList: String): Parcelable

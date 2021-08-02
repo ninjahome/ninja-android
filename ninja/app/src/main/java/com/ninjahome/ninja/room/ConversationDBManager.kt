@@ -29,6 +29,12 @@ object ConversationDBManager {
         }
     }
 
+    suspend fun queryByGroupId(groupId: String): Conversation? {
+        return withContext(Dispatchers.IO) {
+            return@withContext conversationDao.queryByGroupId(groupId)
+        }
+    }
+
     suspend fun updateConversations(vararg conversation: Conversation) {
         withContext(Dispatchers.IO) {
             conversationDao.updateConversations(*conversation)

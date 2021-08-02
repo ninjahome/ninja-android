@@ -1,6 +1,6 @@
 package com.ninjahome.ninja.utils
 
-import androidlib.Androidlib
+import chatLib.ChatLib
 import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.view.contacts.ColorUtil
@@ -16,7 +16,7 @@ object ContactIconUtils {
 
     fun getDrawable(fontSize: Int, address: String, subName: String): TextDrawable {
         mDrawableBuilder.fontSize(fontSize)
-        val index = Androidlib.iconIndex(address, ColorUtil.colorSize)
+        val index = ChatLib.iconIndex(address, ColorUtil.colorSize)
         val iconColor = ColorUtil.colors[index]
         val drawable = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(iconColor))
         return drawable

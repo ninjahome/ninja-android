@@ -138,6 +138,8 @@
     <string name="contact_group_create">创建群聊</string>
     <string name="create_group_chat_create_name">取个群名</string>
     <string name="create_group_chat_create_no_name">暂不取名</string>
+    <string name="create_group_chat_add_member">添加群成员</string>
+    <string name="create_group_chat_add">添加</string>
 
     <string name="group_chat_detail_name">群聊名称</string>
     <string name="group_chat_detail_qr">群二维码</string>

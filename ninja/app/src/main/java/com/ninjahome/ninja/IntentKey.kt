@@ -2,8 +2,9 @@ package com.ninjahome.ninja
 
 object IntentKey {
     const val ADDRESS = "address"
-    const val UID = "uid"
+    const val ID = "id"
     const val IS_GROUP = "is_group"
+    const val GROUPCHAT = "group_chat"
     const val ACCOUNT = "account"
     const val CONVERSATION = "conversation"
     const val CONTACT = "contact"

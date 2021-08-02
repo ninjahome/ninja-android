@@ -35,7 +35,7 @@ class ContactDetailViewModel : BaseViewModel() {
     val clickSend = BindingCommand<Any>(object : BindingAction {
         override fun call() {
             val bundle = Bundle()
-            bundle.putString(IntentKey.UID, uid.value)
+            bundle.putString(IntentKey.ID, uid.value)
             startActivity(ConversationActivity::class.java, bundle, true)
         }
     })
@@ -58,7 +58,7 @@ class ContactDetailViewModel : BaseViewModel() {
         override fun call() {
             val bundle = Bundle()
             bundle.putParcelable(IntentKey.CONTACT, contact.value)
-            bundle.putString(IntentKey.UID, uid.value)
+            bundle.putString(IntentKey.ID, uid.value)
             startActivity(EditContactActivity::class.java, bundle, true)
         }
     })

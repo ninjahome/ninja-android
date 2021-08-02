@@ -3,9 +3,9 @@ package com.ninjahome.ninja.ui.activity.main
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidlib.Androidlib
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.ViewPager
+import chatLib.ChatLib
 import com.gyf.immersionbar.ImmersionBar
 import com.ninja.android.lib.base.BaseActivity
 import com.ninja.android.lib.utils.toast
@@ -94,7 +94,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
 
     override fun onDestroy() {
         super.onDestroy()
-        Androidlib.wsOffline()
+        ChatLib.wsOffline()
 
     }
 

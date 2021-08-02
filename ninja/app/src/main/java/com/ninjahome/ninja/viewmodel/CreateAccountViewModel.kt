@@ -1,9 +1,9 @@
 package com.ninjahome.ninja.viewmodel
 
 import android.text.TextUtils
-import androidlib.Androidlib
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.rxLifeScope
+import chatLib.ChatLib
 import com.ninja.android.lib.base.BaseViewModel
 import com.ninja.android.lib.command.BindingAction
 import com.ninja.android.lib.command.BindingCommand
@@ -60,7 +60,7 @@ class CreateAccountViewModel : BaseViewModel(), KoinComponent {
 
     private fun createAccount() {
         rxLifeScope.launch({
-            Androidlib.wsOffline()
+            ChatLib.wsOffline()
             val account = model.createAccount(password.value!!)
             NinjaApp.instance.configApp()
             model.activeAccount(account, password.value!!)
@@ -78,7 +78,7 @@ class CreateAccountViewModel : BaseViewModel(), KoinComponent {
 
     fun importAccount(accountJson: String, password: String) {
         rxLifeScope.launch({
-            Androidlib.wsOffline()
+            ChatLib.wsOffline()
             NinjaApp.instance.configApp()
             model.activeAccount(accountJson, password)
             createAccountSuccess(accountJson)

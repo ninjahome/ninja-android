@@ -1,6 +1,6 @@
 package com.ninjahome.ninja.model
 
-import androidlib.Androidlib
+import chatLib.ChatLib
 import com.ninjahome.ninja.push.PushHelper
 import com.ninjahome.ninja.utils.AccountUtils
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +21,7 @@ class UnlockModel {
 
     suspend fun openAccount(accountJson: String, password: String) {
         withContext(Dispatchers.IO) {
-            Androidlib.activeWallet(accountJson, password, PushHelper.token)
+            ChatLib.activeWallet(accountJson, password, PushHelper.token)
         }
     }
 }

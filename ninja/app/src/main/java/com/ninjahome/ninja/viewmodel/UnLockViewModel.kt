@@ -1,9 +1,9 @@
 package com.ninjahome.ninja.viewmodel
 
 import android.text.TextUtils
-import androidlib.Androidlib
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.rxLifeScope
+import chatLib.ChatLib
 import com.ninja.android.lib.base.BaseViewModel
 import com.ninja.android.lib.command.BindingAction
 import com.ninja.android.lib.command.BindingCommand
@@ -43,7 +43,7 @@ class UnLockViewModel : BaseViewModel(), KoinComponent {
         rxLifeScope.launch({
             accountJson.value = model.loadAccount(AccountUtils.getAccountPath(context()))
             NinjaApp.instance.account = accountJson.value!!.fromJson()!!
-            val iconIndex = Androidlib.iconIndex(NinjaApp.instance.account.address, ColorUtil.colorSize)
+            val iconIndex = ChatLib.iconIndex(NinjaApp.instance.account.address, ColorUtil.colorSize)
             val iconColor = ColorUtil.colors[iconIndex]
             iconDrawable.value = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(iconColor))
 

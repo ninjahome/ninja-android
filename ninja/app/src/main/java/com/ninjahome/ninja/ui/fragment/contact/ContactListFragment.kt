@@ -1,7 +1,14 @@
 package com.ninjahome.ninja.ui.fragment.contact
 
+import android.animation.ObjectAnimator
 import android.content.Intent
+import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.BasePopupView
+import com.lxj.xpopup.enums.PopupAnimation
+import com.lxj.xpopup.impl.AttachListPopupView
+import com.lxj.xpopup.interfaces.SimpleCallback
 import com.ninja.android.lib.base.BaseFragment
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.IntentKey
@@ -10,6 +17,8 @@ import com.ninjahome.ninja.databinding.FragmentContactListBinding
 import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.ui.activity.contact.ContactDetailActivity
+import com.ninjahome.ninja.ui.activity.groupchat.GroupChatCreateActivity
+import com.ninjahome.ninja.ui.activity.search.SearchContactActivity
 import com.ninjahome.ninja.ui.adapter.ContactAdapter
 import com.ninjahome.ninja.view.ContactsUtils
 import com.ninjahome.ninja.view.contacts.CustomItemDecoration
@@ -27,6 +36,12 @@ import org.koin.core.component.KoinApiExtension
  */
 @KoinApiExtension
 class ContactListFragment : BaseFragment<ContactListViewModel, FragmentContactListBinding>(R.layout.fragment_contact_list) {
+    val ADD_FRIEND = 0
+    lateinit var rightIv: ImageView
+    lateinit var moreActionPop: AttachListPopupView
+    lateinit var animator: ObjectAnimator
+    lateinit var animatorRecover: ObjectAnimator
+
     private var decoration: CustomItemDecoration? = null
     private val contactAdapter: ContactAdapter by lazy { ContactAdapter(mActivity) }
     private var nameList = mutableListOf<Contact>()
@@ -48,12 +63,14 @@ class ContactListFragment : BaseFragment<ContactListViewModel, FragmentContactLi
             override fun clickItem(position: Int, contact: Contact) {
 
                 val intent = Intent(mActivity, ContactDetailActivity::class.java)
-                intent.putExtra(IntentKey.UID, contact.uid)
+                intent.putExtra(IntentKey.ID, contact.uid)
                 startActivity(intent)
             }
 
         }
-
+        rightIv = mDatabinding.root.findViewById<ImageView>(R.id.title_right_iv)
+        animator = ObjectAnimator.ofFloat(rightIv, "rotation", 0.0F, 45.0F)
+        animatorRecover = ObjectAnimator.ofFloat(rightIv, "rotation", -45.0F, 0.0F)
     }
 
     private fun initMarginTop() {
@@ -78,6 +95,12 @@ class ContactListFragment : BaseFragment<ContactListViewModel, FragmentContactLi
 
         }
 
+        mViewModel.showPop.observe(this) {
+            animator.start()
+            showPop()
+
+        }
+
 
     }
 
@@ -85,5 +108,24 @@ class ContactListFragment : BaseFragment<ContactListViewModel, FragmentContactLi
 
     }
 
+    private fun showPop() {
+        if (!this::moreActionPop.isInitialized) {
+            moreActionPop = XPopup.Builder(context).hasShadowBg(false).popupAnimation(PopupAnimation.ScrollAlphaFromTop).atView(rightIv).setPopupCallback(object : SimpleCallback() {
+
+                override fun beforeDismiss(popupView: BasePopupView?) {
+                    super.beforeDismiss(popupView)
+                    animatorRecover.start()
+                }
+            }).asAttachList(arrayOf(resources.getString(R.string.add_friend), resources.getString(R.string.create_group_chat)), intArrayOf(R.drawable.home_add_friend, R.drawable.home_group_chat), { position, text ->
+                if (position == ADD_FRIEND) {
+                    startActivity(SearchContactActivity::class.java)
+                } else {
+                    startActivity(GroupChatCreateActivity::class.java)
+                }
+            }, 0, 0)
+
+        }
+        moreActionPop.show()
+    }
 
 }

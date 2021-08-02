@@ -25,7 +25,7 @@ class EditContactActivity : BaseActivity<EditContactViewModel, ActivityEditConta
 
     override fun initData() {
         mViewModel.contact = intent.getParcelableExtra(IntentKey.CONTACT)
-        mViewModel.address.value = intent.getStringExtra(IntentKey.UID)
+        mViewModel.address.value = intent.getStringExtra(IntentKey.ID)
         if (mViewModel.contact != null) {
             mViewModel.nickName.value = mViewModel.contact!!.nickName
             mViewModel.remark.value = mViewModel.contact!!.remark

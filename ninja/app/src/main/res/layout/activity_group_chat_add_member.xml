@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="com.ninjahome.ninja.viewmodel.CreateGroupChatViewModel" />
+            type="com.ninjahome.ninja.viewmodel.GroupChatAddMemberViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,10 +23,10 @@
             android:id="@+id/selectedContactRv"
             android:layout_width="0dp"
             android:layout_height="46dp"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="19dp"
-            android:layout_marginEnd="16dp"
             android:layout_marginBottom="19dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:clipChildren="false"
             android:overScrollMode="never"
             app:itemBinding="@{viewModel.itemBinding}"

@@ -13,6 +13,13 @@ interface GroupDao {
     @Query("SELECT * FROM groupchat where groupId = :groupId")
     fun queryByGroupId(groupId: String): GroupChat?
 
+    @Query("SELECT * FROM groupchat where groupId = :groupId")
+    fun queryLiveDataByGroupId(groupId: String): LiveData<GroupChat?>
+
+
+    @Query("SELECT groupName FROM groupchat where groupId = :groupId")
+    fun queryGroupName(groupId: String): LiveData<String?>
+
     @Insert
     fun insert(group: GroupChat)
 

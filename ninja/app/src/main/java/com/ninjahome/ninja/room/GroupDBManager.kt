@@ -21,7 +21,18 @@ object GroupDBManager {
         return withContext(Dispatchers.IO) {
             return@withContext groupDao.queryByGroupId(groupId)
         }
+    }
 
+    suspend fun queryLiveDataByGroupId(groupId: String): LiveData<GroupChat?> {
+        return withContext(Dispatchers.IO) {
+            return@withContext groupDao.queryLiveDataByGroupId(groupId)
+        }
+    }
+
+    suspend fun queryGroupName(groupId: String): LiveData<String?> {
+        return withContext(Dispatchers.IO) {
+            return@withContext groupDao.queryGroupName(groupId)
+        }
     }
 
 

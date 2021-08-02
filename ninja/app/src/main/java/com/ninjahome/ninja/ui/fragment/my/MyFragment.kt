@@ -49,7 +49,6 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>(R.layout.fragmen
     override val mViewModel: MyViewModel by viewModel()
     override fun initView() {
         versionTv.text = String.format(getString(R.string.version), UIUtils.getVersion(mActivity))
-        Log.d(TAG, "initView: -----------------------------MyFragment")
     }
 
     override fun initData() {

@@ -1,10 +1,10 @@
 package com.ninjahome.ninja.viewmodel
 
-import androidlib.Androidlib
 import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableList
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.rxLifeScope
+import chatLib.ChatLib
 import com.ninja.android.lib.base.BaseViewModel
 import com.ninja.android.lib.command.BindingAction
 import com.ninja.android.lib.command.BindingCommand
@@ -49,8 +49,8 @@ class ConversationListViewModel : BaseViewModel() {
         override fun call() {
             rxLifeScope.launch {
                 withContext(Dispatchers.IO) {
-                    if (!Androidlib.wsIsOnline()) {
-                        Androidlib.wsOnline()
+                    if (!ChatLib.wsIsOnline()) {
+                        ChatLib.wsOnline()
                     }
                 }
             }

@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.net.Uri
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
@@ -12,8 +13,8 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
-import androidlib.Androidlib
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.rxLifeScope
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout
 import com.gyf.immersionbar.ImmersionBar
@@ -38,11 +39,13 @@ import com.ninjahome.ninja.imagepicker.WechatImagePicker
 import com.ninjahome.ninja.model.bean.*
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.room.ConversationDBManager
+import com.ninjahome.ninja.room.GroupDBManager
 import com.ninjahome.ninja.room.MessageDBManager
+import com.ninjahome.ninja.ui.activity.contact.ContactDetailActivity
+import com.ninjahome.ninja.ui.activity.contact.ScanContactSuccessActivity
 import com.ninjahome.ninja.ui.adapter.ConversationAdapter
 import com.ninjahome.ninja.utils.DialogUtils
 import com.ninjahome.ninja.view.ConversationMoreActionPop
-import com.ninjahome.ninja.view.contacts.ColorUtil
 import com.ninjahome.ninja.viewmodel.ConversationViewModel
 import com.qingmei2.rximagepicker.core.RxImagePicker.create
 import com.qingmei2.rximagepicker_extension.MimeType
@@ -66,12 +69,14 @@ import java.util.*
  *Description:
  */
 @KoinApiExtension
-class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConversationBinding>(R.layout.activity_conversation), BGARefreshLayout.BGARefreshLayoutDelegate, EasyPermissions.PermissionCallbacks, OnItemClickListener {
+class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConversationBinding>(R.layout.activity_conversation), BGARefreshLayout.BGARefreshLayoutDelegate, EasyPermissions.PermissionCallbacks, OnItemClickListener, ConversationAdapter.ClickListener {
 
     private val REQUEST_TAKE_PHOTO = 1001
     private val REQUEST_LOCATION = 1002
     lateinit var imagePicker: WechatImagePicker
     private var isFirstObserv = true
+    var isObservable = false
+    lateinit var messages: LiveData<List<Message>?>
 
     private lateinit var conversationAdapter: ConversationAdapter
 
@@ -87,7 +92,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     override fun initView() {
         imagePicker = create(WechatImagePicker::class.java)
-        initAdapter()
+
         ImmersionBar.with(this).statusBarColor(com.ninja.android.lib.R.color.white).barEnable(true).keyboardEnable(true).statusBarDarkFont(true).fitsSystemWindows(true).init()
         initEmotionKeyboard()
         moreActionDialog = DialogUtils.showMoreActionDialog(this, object : ConversationMoreActionPop.ConversationMoreActionListener {
@@ -101,47 +106,62 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             }
 
         })
-
+        getIntentData()
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        MainScope().launch {
+            if (this@ConversationActivity::messages.isInitialized) {
+                messages.removeObservers(this@ConversationActivity)
+            }
+        }
+        mViewModel.id = intent?.getStringExtra(IntentKey.ID)!!
+        mViewModel.isGroup = intent.getBooleanExtra(IntentKey.IS_GROUP, false)
+        initData()
+        initObserve()
+    }
+
+    fun getIntentData() {
+        mViewModel.id = intent.getStringExtra(IntentKey.ID)!!
+        mViewModel.isGroup = intent.getBooleanExtra(IntentKey.IS_GROUP, false)
+    }
 
     override fun initData() {
-        mViewModel.id = intent.getStringExtra(IntentKey.UID)!!
-        mViewModel.isGroup = intent.getBooleanExtra(IntentKey.IS_GROUP,false)
-        if( mViewModel.isGroup){
-            mViewModel.queryGroup()
-        }
         setTitle()
         initAudioRecordManager()
+        initAdapter()
     }
 
     private fun initAdapter() {
-        conversationAdapter = ConversationAdapter(this, mData, mViewModel)
+        conversationAdapter = ConversationAdapter(this, mData, mViewModel.isGroup, mViewModel.id, this)
         rvMsg.adapter = conversationAdapter
         conversationAdapter.onItemClickListener = this
     }
 
     private fun setTitle() {
-        rxLifeScope.launch {
-            ContactDBManager.observeNickNameByUID(mViewModel.id).observe(this@ConversationActivity) {
-                if (TextUtils.isEmpty(it)) {
-                    mViewModel.title.set(mViewModel.id)
-                } else {
-                    mViewModel.title.set(it)
-                }
-                val subName = if (mViewModel.title.get()!!.toString().length >= 2) mViewModel.title.get()!!.substring(0, 2) else mViewModel.title.get()!!
-                MainScope().launch {
-                    var receiverIconColor = R.color.color_d8d8d8
-                    val contact = ContactDBManager.queryByID(mViewModel.id)
-                    if (contact != null) {
-                        val receiverIconIndex = Androidlib.iconIndex(mViewModel.id, ColorUtil.colorSize)
-                        receiverIconColor = ColorUtil.colors[receiverIconIndex]
+        if (mViewModel.isGroup) {
+            rxLifeScope.launch {
+                GroupDBManager.queryGroupName(mViewModel.id).observe(this@ConversationActivity) {
+                    if (it != null) {
+                        mViewModel.title.set(it)
                     }
-                    conversationAdapter.setReceiverNameIcon(subName, receiverIconColor)
                 }
+            }
+        } else {
+            rxLifeScope.launch {
+                ContactDBManager.observeNickNameByUID(mViewModel.id).observe(this@ConversationActivity) {
+                    if (TextUtils.isEmpty(it)) {
+                        mViewModel.title.set(mViewModel.id)
+                    } else {
+                        mViewModel.title.set(it)
+                    }
 
+                }
             }
         }
+
+
 
         mViewModel.rightIv.set(R.drawable.contact_more)
         mViewModel.showRightIv.set(true)
@@ -199,7 +219,9 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         }
 
         mViewModel.observableConversationEvent.observe(this) {
-            observeConversation()
+            if (!isObservable) {
+                observeConversation()
+            }
         }
 
         mViewModel.touchAudioEvent.observe(this) {
@@ -221,6 +243,17 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             swipeRefreshLayout.isRefreshing = false
 
         }
+
+        MainScope().launch {
+            if(!mViewModel.isGroup){
+                return@launch
+            }
+            GroupDBManager.queryLiveDataByGroupId(mViewModel.id).observe(this@ConversationActivity){
+                if(it !=null){
+                    mViewModel.groupChat = it
+                }
+            }
+        }
     }
 
 
@@ -228,7 +261,9 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         MainScope().launch {
             conversation = mViewModel.queryConversation()
             if (conversation != null) {
-                MessageDBManager.queryByConversationId(conversation!!.id).observe(this@ConversationActivity) {
+                isObservable = true
+                messages = MessageDBManager.queryByConversationId(conversation!!.id)
+                messages.observe(this@ConversationActivity) {
                     mData.clear()
                     if (it != null) {
                         mData.addAll(it)
@@ -241,6 +276,9 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                         rvMsg.smoothScrollToPosition((rvMsg.adapter?.itemCount ?: 1) - 1)
                     }
                 }
+            } else {
+                mData.clear()
+                conversationAdapter.notifyDataSetChanged()
             }
         }
 
@@ -252,9 +290,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             conversation?.let {
                 MessageDBManager.updateMessage2Read(it.id)
                 it.unreadCount = 0
-                if (conversationAdapter.lastItem != null) {
-                    it.msg = conversationAdapter.lastItem.msg
-                }
                 ConversationDBManager.updateConversations(it)
             }
 
@@ -289,7 +324,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     private fun startAlbumActivity() {
         val build = WechatConfigrationBuilder(MimeType.INSTANCE.ofImage(), false).maxSelectable(9).countable(true).spanCount(4).countable(false).build()
-       val observable = imagePicker.openGallery(this, build).subscribe {
+        val observable = imagePicker.openGallery(this, build).subscribe {
             val original = it.getBooleanExtra(WechatImagePickerFragment.EXTRA_ORIGINAL_IMAGE, false)
             var path = PhotoFromPhotoAlbum.getRealPathFromUri(this@ConversationActivity, it.uri)
             if (path == null) {
@@ -577,10 +612,13 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        clearUnreadNumber()
+    }
 
     override fun onDestroy() {
         super.onDestroy()
-        clearUnreadNumber()
         mHandler.removeCallbacksAndMessages(null)
         AudioRecordManager.getInstance(NinjaApp.instance.applicationContext).audioRecordListener = null
     }
@@ -634,4 +672,30 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         }
     }
 
+    override fun clickItemReCommit(item: Message) {
+        mViewModel.updateMessage(item)
+    }
+
+    override fun clickItemAvatar(item: Message) {
+        startConversationDetail(item)
+    }
+
+    override fun clickItemName(item: Message) {
+        startConversationDetail(item)
+    }
+
+    private fun startConversationDetail(item: Message) {
+        rxLifeScope.launch {
+            val contact = ContactDBManager.queryByID(item.from)
+            if (contact == null) {
+                val bundle = Bundle()
+                bundle.putString(IntentKey.ID, item.from)
+                startActivity(ScanContactSuccessActivity::class.java, bundle)
+            } else {
+                val bundle = Bundle()
+                bundle.putString(IntentKey.ID, item.from)
+                startActivity(ContactDetailActivity::class.java, bundle)
+            }
+        }
+    }
 }

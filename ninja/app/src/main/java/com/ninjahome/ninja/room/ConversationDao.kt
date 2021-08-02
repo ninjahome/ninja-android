@@ -13,6 +13,9 @@ interface ConversationDao {
     @Query("SELECT * FROM conversation where `from` = :from")
     fun queryByFrom(from: String): Conversation?
 
+    @Query("SELECT * FROM conversation where  groupId = :groupId")
+    fun queryByGroupId(groupId: String): Conversation?
+
     @Query("SELECT * FROM conversation where id = :id")
     fun queryByID(id: Long): Conversation?
 
