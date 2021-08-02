@@ -8,14 +8,10 @@ import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityGroupChatRemoveMemberBinding
-import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.model.bean.GroupChat
 import com.ninjahome.ninja.model.bean.GroupMember
 import com.ninjahome.ninja.ui.adapter.GroupRemoveMemberAdapter
-import com.ninjahome.ninja.utils.JsonUtils
 import com.ninjahome.ninja.utils.MoshiUtils
-import com.ninjahome.ninja.utils.toJson
-import com.ninjahome.ninja.viewmodel.GroupChatDetailItemViewModel
 import com.ninjahome.ninja.viewmodel.GroupChatRemoveMemberViewModel
 import kotlinx.android.synthetic.main.activity_group_chat_remove_member.*
 import org.koin.androidx.viewmodel.ext.android.viewModel

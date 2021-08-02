@@ -74,7 +74,7 @@ object AccountUtils {
         return withContext(Dispatchers.IO) {
             val accountJson = loadAccountJsonByPath(path)
             Logger.d(accountJson)
-            return@withContext JsonUtils.json2Object(accountJson, Account::class.java)
+            return@withContext MoshiUtils.fromJson(accountJson, Account::class.java)
         }
 
     }

@@ -70,6 +70,7 @@ class CreateGroupChatViewModel : BaseViewModel() {
                     startActivity(ConversationActivity::class.java, bundle)
                     dismissDialog()
                 }
+                finish()
             },{
                 dismissDialog()
                 it.message?.let { errMsg -> toast(errMsg) }

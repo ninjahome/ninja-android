@@ -245,13 +245,11 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         }
 
         MainScope().launch {
-            if(!mViewModel.isGroup){
+            if (!mViewModel.isGroup) {
                 return@launch
             }
-            GroupDBManager.queryLiveDataByGroupId(mViewModel.id).observe(this@ConversationActivity){
-                if(it !=null){
-                    mViewModel.groupChat = it
-                }
+            GroupDBManager.queryLiveDataByGroupId(mViewModel.id).observe(this@ConversationActivity) {
+                mViewModel.groupChat = it
             }
         }
     }

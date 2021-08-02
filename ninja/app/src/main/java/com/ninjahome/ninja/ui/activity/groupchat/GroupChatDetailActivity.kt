@@ -39,11 +39,15 @@ class GroupChatDetailActivity : BaseActivity<GroupChatDetailViewModel, ActivityG
     override fun initObserve() {
         mViewModel.groupDetail.value?.let {
             MainScope().launch {
-                GroupDBManager.queryLiveDataByGroupId(mViewModel.groupDetail.value!!.groupId).observe(this@GroupChatDetailActivity) {
-                    mViewModel.groupDetail.value = it
+                GroupDBManager.queryLiveDataByGroupId(mViewModel.groupDetail.value!!.groupId).observe(this@GroupChatDetailActivity) {groupChat->
+                    mViewModel.groupDetail.value = groupChat
                     mViewModel.memberIconItem.clear()
-                    val ids = JSONArray(it!!.memberIdList)
-                    val nickNames = JSONArray(it.memberNickNameList)
+                    if(groupChat ==null){
+                        finish()
+                        return@observe
+                    }
+                    val ids = JSONArray(groupChat!!.memberIdList)
+                    val nickNames = JSONArray(groupChat.memberNickNameList)
                     var groupMember: GroupMember
                     for (i: Int in 0 until ids.length()) {
                         if (i < nickNames.length()) {

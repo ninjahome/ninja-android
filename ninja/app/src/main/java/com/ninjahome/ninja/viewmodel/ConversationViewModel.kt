@@ -24,7 +24,6 @@ import com.ninjahome.ninja.model.bean.GroupChat
 import com.ninjahome.ninja.model.bean.Message
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.room.ConversationDBManager
-import com.ninjahome.ninja.room.GroupDBManager
 import com.ninjahome.ninja.room.MessageDBManager
 import com.ninjahome.ninja.ui.activity.contact.ContactDetailActivity
 import com.ninjahome.ninja.ui.activity.contact.ScanContactSuccessActivity
@@ -47,7 +46,7 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
     var userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "", commit = true)
     val model: ConversationModel by inject()
     var id: String = ""
-    lateinit var groupChat: GroupChat
+    var groupChat: GroupChat? = null
     var isGroup: Boolean = false
     val textData = MutableLiveData("")
     val clickAudioEvent = SingleLiveEvent<Any>()
@@ -78,11 +77,15 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
 
     override fun clickRightIv() {
         super.clickRightIv()
+        if(!groupIsExist()){
+            return
+        }
+
         rxLifeScope.launch {
-            if(isGroup){
-                val bundle=Bundle()
-                bundle.putParcelable(IntentKey.GROUPCHAT,groupChat)
-                startActivity(GroupChatDetailActivity::class.java,bundle)
+            if (isGroup) {
+                val bundle = Bundle()
+                bundle.putParcelable(IntentKey.GROUPCHAT, groupChat)
+                startActivity(GroupChatDetailActivity::class.java, bundle)
                 return@launch
             }
 
@@ -150,14 +153,18 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
     })
 
     fun sendText(data: String) {
-        val message = Message(0, 0,NinjaApp.instance.account.address,id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.TEXT, unRead = false, msg = data)
+
+        if(!groupIsExist()){
+            return
+        }
+        val message = Message(0, 0, NinjaApp.instance.account.address, id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.TEXT, unRead = false, msg = data)
         rxLifeScope.launch({
             val conversationId = getConversationId(data)
             message.conversationId = conversationId
             message.id = MessageDBManager.insert(message)
-            if(isGroup){
-                model.sendGroupTextMessage(id, data,groupChat.memberIdList)
-            }else{
+            if (isGroup) {
+                model.sendGroupTextMessage(id, data, groupChat!!.memberIdList)
+            } else {
                 model.sendTextMessage(id, data)
             }
             message.sentStatus = Message.SentStatus.SENT
@@ -173,14 +180,17 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
     }
 
     fun sendImage(path: String, compress: Boolean) {
-        val message = Message(0, 0,NinjaApp.instance.account.address,id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.IMAGE, unRead = false, uri = path, msg = context().getString(R.string.message_type_image))
+        if(!groupIsExist()){
+            return
+        }
+        val message = Message(0, 0, NinjaApp.instance.account.address, id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.IMAGE, unRead = false, uri = path, msg = context().getString(R.string.message_type_image))
         rxLifeScope.launch({
             val conversationId = getConversationId(context().getString(R.string.message_type_image))
             message.conversationId = conversationId
             message.id = MessageDBManager.insert(message)
-            if(isGroup){
+            if (isGroup) {
                 model.sendGroupImageMessage(id, path, compress)
-            }else{
+            } else {
 
                 model.sendImageMessage(id, path, compress)
             }
@@ -196,15 +206,18 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
 
 
     fun sendAudio(audioPath: Uri, duration: Int) {
-        val message = Message(0, 0,NinjaApp.instance.account.address,id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.VOICE, unRead = false, uri = audioPath.path.toString(), duration = duration, msg = context().getString(R.string.message_type_voice))
+        if(!groupIsExist()){
+            return
+        }
+        val message = Message(0, 0, NinjaApp.instance.account.address, id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.VOICE, unRead = false, uri = audioPath.path.toString(), duration = duration, msg = context().getString(R.string.message_type_voice))
         rxLifeScope.launch({
             audioPath.path?.let {
                 val conversationId = getConversationId(context().getString(R.string.message_type_voice))
                 message.conversationId = conversationId
                 message.id = MessageDBManager.insert(message)
-                if(isGroup){
+                if (isGroup) {
                     model.sendGroupVoiceMessage(id, it, duration)
-                }else{
+                } else {
 
                     model.sendVoiceMessage(id, it, duration)
                 }
@@ -221,14 +234,17 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
     }
 
     fun sendLocation(lng: Float, lat: Float, poi: String) {
-        val message = Message(0, 0,NinjaApp.instance.account.address,id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.LOCATION, unRead = false, lat = lat, lng = lng, locationAddress = poi, msg = context().getString(R.string.message_type_location))
+        if(!groupIsExist()){
+            return
+        }
+        val message = Message(0, 0, NinjaApp.instance.account.address, id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.LOCATION, unRead = false, lat = lat, lng = lng, locationAddress = poi, msg = context().getString(R.string.message_type_location))
         rxLifeScope.launch({
             val conversationId = getConversationId(context().getString(R.string.message_type_location))
             message.conversationId = conversationId
             message.id = MessageDBManager.insert(message)
-            if (isGroup){
+            if (isGroup) {
                 model.sendGroupLocationMessage(id, lng, lat, poi)
-            }else{
+            } else {
 
                 model.sendLocationMessage(id, lng, lat, poi)
             }
@@ -246,23 +262,23 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
         var id: Long = 0
         var conversation = queryConversation()
         if (conversation == null) {
-            var title:String?
-            if(isGroup){
-                title= groupChat.groupName
-            }else{
+            var title: String?
+            if (isGroup) {
+                title = groupChat?.groupName
+            } else {
                 title = ContactDBManager.queryNickNameByUID(this.id)
                 if (title == null) {
                     title = this.id
                 }
             }
 
-            conversation = Conversation(0, this.id, isGroup, msg, System.currentTimeMillis(), 0, title,groupId = this.id)
+            conversation = Conversation(0, this.id, isGroup, msg, System.currentTimeMillis(), 0, title!!, groupId = this.id)
             id = ConversationDBManager.insert(conversation)
             observableConversationEvent.call()
         } else {
-            if(isGroup){
+            if (isGroup) {
                 conversation.msg = "$userName:$msg"
-            }else{
+            } else {
                 conversation.msg = msg
             }
 
@@ -274,9 +290,9 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
     }
 
     suspend fun queryConversation(): Conversation? {
-        return if(isGroup){
+        return if (isGroup) {
             ConversationDBManager.queryByGroupId(id)
-        }else{
+        } else {
             ConversationDBManager.queryByFrom(id)
         }
     }
@@ -317,6 +333,14 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
         }, {
             it.printStackTrace()
         })
+    }
+
+    fun groupIsExist():Boolean{
+        if (isGroup && groupChat == null) {
+            showToast(R.string.create_group_chat_disbanded)
+            return false
+        }
+        return true
     }
 
 }
