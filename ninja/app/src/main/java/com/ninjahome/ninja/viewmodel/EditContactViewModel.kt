@@ -13,14 +13,12 @@ import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.room.ConversationDBManager
 import com.ninjahome.ninja.utils.AccountUtils
 import com.orhanobut.logger.Logger
-import org.koin.core.component.KoinApiExtension
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
-@KoinApiExtension
 class EditContactViewModel : BaseViewModel() {
 
     val address = MutableLiveData("")

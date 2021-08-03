@@ -25,15 +25,14 @@ import org.koin.core.component.KoinApiExtension
  *Time:2021/8/2
  *Description:
  */
-@KoinApiExtension
 class GroupChatDetailItemViewModel(viewModel: GroupChatDetailViewModel, var groupMember: GroupMember) : ItemViewModel<GroupChatDetailViewModel>(viewModel) {
     private val FONT_SIZE = 30
     var iconDrawable = MutableLiveData<Drawable>()
 
     init {
-        if(TextUtils.isEmpty(groupMember.address)){
-            iconDrawable.value =  ResourcesCompat.getDrawable(context().resources,R.drawable.group_member_add,null)
-        }else{
+        if (TextUtils.isEmpty(groupMember.address)) {
+            iconDrawable.value = ResourcesCompat.getDrawable(context().resources, R.drawable.group_member_add, null)
+        } else {
             val name = if (groupMember.name.length > 2) groupMember.name.subSequence(0, 2).toString() else groupMember.name
             val drawable = ContactIconUtils.getDrawable(FONT_SIZE, groupMember.address, name)
             iconDrawable.value = drawable
@@ -41,13 +40,13 @@ class GroupChatDetailItemViewModel(viewModel: GroupChatDetailViewModel, var grou
 
     }
 
-    val clickMember = BindingCommand<Any>(object:BindingAction{
+    val clickMember = BindingCommand<Any>(object : BindingAction {
         override fun call() {
-            if(TextUtils.isEmpty(groupMember.address)){
+            if (TextUtils.isEmpty(groupMember.address)) {
                 val bundle = Bundle()
                 bundle.putParcelable(IntentKey.GROUPCHAT, viewModel.groupDetail.value)
                 viewModel.startActivity(GroupChatAddMemberActivity::class.java, bundle)
-            }else{
+            } else {
                 rxLifeScope.launch {
                     val contact = ContactDBManager.queryByID(groupMember.address)
                     if (contact == null) {

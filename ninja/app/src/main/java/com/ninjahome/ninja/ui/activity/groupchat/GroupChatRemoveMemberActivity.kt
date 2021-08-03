@@ -8,7 +8,7 @@ import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityGroupChatRemoveMemberBinding
-import com.ninjahome.ninja.model.bean.GroupChat
+import com.ninjahome.ninja.model.bean.GroupInfo
 import com.ninjahome.ninja.model.bean.GroupMember
 import com.ninjahome.ninja.ui.adapter.GroupRemoveMemberAdapter
 import com.ninjahome.ninja.utils.MoshiUtils
@@ -37,7 +37,7 @@ class GroupChatRemoveMemberActivity : BaseActivity<GroupChatRemoveMemberViewMode
 
 
     override fun initData() {
-        val groupDetail = intent.getParcelableExtra<GroupChat>(IntentKey.GROUPCHAT)
+        val groupDetail = intent.getParcelableExtra<GroupInfo>(IntentKey.GROUPCHAT)
         mViewModel.groupChat = groupDetail
         groupDetail?.memberIdList?.let {
             val ids = MoshiUtils.listFromJson<String>(it)
@@ -45,7 +45,7 @@ class GroupChatRemoveMemberActivity : BaseActivity<GroupChatRemoveMemberViewMode
             var groupMember: GroupMember
             val curAddress = NinjaApp.instance.account.address
             for (i: Int in 0 until ids.size) {
-                if (i < nickNames.size&& !ids[i].equals(curAddress)) {
+                if (i < nickNames.size && !ids[i].equals(curAddress)) {
                     groupMember = GroupMember(ids[i], nickNames[i])
                     memberAdapter.add(groupMember)
                 }

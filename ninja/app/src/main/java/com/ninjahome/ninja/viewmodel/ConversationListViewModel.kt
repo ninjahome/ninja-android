@@ -15,14 +15,12 @@ import com.ninjahome.ninja.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.tatarka.bindingcollectionadapter2.ItemBinding
-import org.koin.core.component.KoinApiExtension
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
-@KoinApiExtension
 class ConversationListViewModel : BaseViewModel() {
     var finishRefreshingEvent = SingleLiveEvent<Any>()
     var showPop = SingleLiveEvent<Any>()

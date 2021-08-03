@@ -56,7 +56,6 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import me.xfans.lib.voicewaveview.VoiceWaveView
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinApiExtension
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
@@ -68,7 +67,6 @@ import java.util.*
  *Time:
  *Description:
  */
-@KoinApiExtension
 class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConversationBinding>(R.layout.activity_conversation), BGARefreshLayout.BGARefreshLayoutDelegate, EasyPermissions.PermissionCallbacks, OnItemClickListener, ConversationAdapter.ClickListener {
 
     private val REQUEST_TAKE_PHOTO = 1001

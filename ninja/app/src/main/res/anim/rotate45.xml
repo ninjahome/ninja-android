@@ -7,7 +7,6 @@
         android:repeatCount="0"
         android:pivotX="50%"
         android:pivotY="50%"
-        android:interpolator="@android:anim/overshoot_interpolator"
-        />
+        android:interpolator="@android:anim/overshoot_interpolator" />
 
 </set>

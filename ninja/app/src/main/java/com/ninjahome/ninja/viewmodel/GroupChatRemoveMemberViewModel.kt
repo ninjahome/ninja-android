@@ -6,7 +6,7 @@ import com.ninja.android.lib.base.BaseViewModel
 import com.ninja.android.lib.command.BindingAction
 import com.ninja.android.lib.command.BindingCommand
 import com.ninja.android.lib.utils.toast
-import com.ninjahome.ninja.model.bean.GroupChat
+import com.ninjahome.ninja.model.bean.GroupInfo
 import com.ninjahome.ninja.model.bean.GroupMember
 import com.ninjahome.ninja.room.GroupDBManager
 import com.ninjahome.ninja.utils.MoshiUtils
@@ -18,7 +18,7 @@ import com.ninjahome.ninja.utils.toJson
  *Description:
  */
 class GroupChatRemoveMemberViewModel : BaseViewModel() {
-    var groupChat: GroupChat? = null
+    var groupChat: GroupInfo? = null
     var groupMembers = arrayListOf<GroupMember>()
     val clickComplete = BindingCommand<Any>(object : BindingAction {
         override fun call() {

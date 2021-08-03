@@ -1,9 +1,7 @@
 package com.ninjahome.ninja.ui.activity.conversation
 
-import android.net.Uri
 import android.text.TextUtils
 import androidx.core.app.ActivityCompat
-import com.bumptech.glide.Glide
 import com.ninja.android.lib.base.BaseActivity
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.IntentKey
@@ -13,7 +11,6 @@ import com.ninjahome.ninja.imageloader.ImageLoaderProxy
 import com.ninjahome.ninja.viewmodel.ShowBigImageViewModel
 import kotlinx.android.synthetic.main.activity_show_big_image.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
 
 /**
  *Author:Mr'x
@@ -29,7 +26,7 @@ class ShowBigImageActivity : BaseActivity<ShowBigImageViewModel, ActivityShowBig
             finish()
             return
         }
-            ImageLoaderProxy.loadImage(mUrl!!,pv)
+        ImageLoaderProxy.loadImage(mUrl!!, pv)
 
         pv.setOnClickListener {
             ActivityCompat.finishAfterTransition(this@ShowBigImageActivity)

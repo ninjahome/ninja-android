@@ -18,14 +18,12 @@ import kotlinx.android.synthetic.main.activity_search_contact.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinApiExtension
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
-@KoinApiExtension
 class SearchContactActivity : BaseActivity<SearchContactViewModel, ActivitySearchContactBinding>(R.layout.activity_search_contact) {
     override val mViewModel: SearchContactViewModel by viewModel()
 

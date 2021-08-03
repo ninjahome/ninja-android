@@ -2,7 +2,6 @@ package com.ninjahome.ninja.imageloader
 
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
-import java.io.File
 
 /**
  *Author:Mr'x

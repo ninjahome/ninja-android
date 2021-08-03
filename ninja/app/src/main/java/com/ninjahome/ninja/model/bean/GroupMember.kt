@@ -5,4 +5,4 @@ package com.ninjahome.ninja.model.bean
  *Time:2021/8/2
  *Description:
  */
-class GroupMember(var address: String, var name: String,var isSelected:Boolean = false)
+class GroupMember(var address: String, var name: String, var isSelected: Boolean = false)

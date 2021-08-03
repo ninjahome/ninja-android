@@ -20,14 +20,12 @@ import com.ninjahome.ninja.viewmodel.CreateGroupChatViewModel
 import kotlinx.android.synthetic.main.activity_create_group_chat.*
 import kotlinx.android.synthetic.main.fragment_contact_list.contactsRecyclerView
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinApiExtension
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
-@KoinApiExtension
 class GroupChatCreateActivity : BaseActivity<CreateGroupChatViewModel, ActivityCreateGroupChatBinding>(R.layout.activity_create_group_chat), CreateGroupAdapter.ClickItemListener {
 
     private lateinit var createGroupChatDialog: BasePopupView
@@ -72,7 +70,7 @@ class GroupChatCreateActivity : BaseActivity<CreateGroupChatViewModel, ActivityC
         mViewModel.showCreateGroupChatPop.observe(this) {
             createGroupChatDialog = DialogUtils.showCreateGroupChatDialog(this@GroupChatCreateActivity, object : CreateGroupChatPop.ClickListener {
                 override fun clickSure(name: String) {
-                    mViewModel.createGroupChat(name,contactAdapter.contactBeanList)
+                    mViewModel.createGroupChat(name, contactAdapter.contactBeanList)
                     createGroupChatDialog.dismiss()
                 }
 

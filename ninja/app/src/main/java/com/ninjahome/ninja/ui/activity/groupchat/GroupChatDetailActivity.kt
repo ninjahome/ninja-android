@@ -6,7 +6,7 @@ import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityGroupChatDetailBinding
-import com.ninjahome.ninja.model.bean.GroupChat
+import com.ninjahome.ninja.model.bean.GroupInfo
 import com.ninjahome.ninja.model.bean.GroupMember
 import com.ninjahome.ninja.room.GroupDBManager
 import com.ninjahome.ninja.viewmodel.GroupChatDetailItemViewModel
@@ -22,7 +22,6 @@ import org.koin.core.component.KoinApiExtension
  *Time:
  *Description:
  */
-@KoinApiExtension
 class GroupChatDetailActivity : BaseActivity<GroupChatDetailViewModel, ActivityGroupChatDetailBinding>(R.layout.activity_group_chat_detail) {
     override val mViewModel: GroupChatDetailViewModel by viewModel()
 
@@ -30,7 +29,7 @@ class GroupChatDetailActivity : BaseActivity<GroupChatDetailViewModel, ActivityG
     }
 
     override fun initData() {
-        val groupDetail = intent.getParcelableExtra<GroupChat>(IntentKey.GROUPCHAT)
+        val groupDetail = intent.getParcelableExtra<GroupInfo>(IntentKey.GROUPCHAT)
         mViewModel.groupDetail.value = groupDetail
         mViewModel.title.set(groupDetail?.groupName)
         mViewModel.isLord.value = groupDetail?.owner.equals(NinjaApp.instance.account.address)
@@ -39,10 +38,10 @@ class GroupChatDetailActivity : BaseActivity<GroupChatDetailViewModel, ActivityG
     override fun initObserve() {
         mViewModel.groupDetail.value?.let {
             MainScope().launch {
-                GroupDBManager.queryLiveDataByGroupId(mViewModel.groupDetail.value!!.groupId).observe(this@GroupChatDetailActivity) {groupChat->
+                GroupDBManager.queryLiveDataByGroupId(mViewModel.groupDetail.value!!.groupId).observe(this@GroupChatDetailActivity) { groupChat ->
                     mViewModel.groupDetail.value = groupChat
                     mViewModel.memberIconItem.clear()
-                    if(groupChat ==null){
+                    if (groupChat == null) {
                         finish()
                         return@observe
                     }
@@ -56,7 +55,7 @@ class GroupChatDetailActivity : BaseActivity<GroupChatDetailViewModel, ActivityG
                         }
 
                     }
-                        val addGroupMember = GroupMember("", "")
+                    val addGroupMember = GroupMember("", "")
 
                     mViewModel.memberIconItem.add(GroupChatDetailItemViewModel(mViewModel, addGroupMember))
                 }

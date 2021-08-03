@@ -13,7 +13,7 @@ import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
-import com.ninjahome.ninja.model.bean.GroupChat
+import com.ninjahome.ninja.model.bean.GroupInfo
 import com.ninjahome.ninja.room.GroupDBManager
 import com.ninjahome.ninja.ui.activity.groupchat.GroupChatRemoveMemberActivity
 import me.tatarka.bindingcollectionadapter2.ItemBinding
@@ -24,7 +24,7 @@ import me.tatarka.bindingcollectionadapter2.ItemBinding
  *Description:
  */
 class GroupChatDetailViewModel : BaseViewModel() {
-    val groupDetail = MutableLiveData<GroupChat>()
+    val groupDetail = MutableLiveData<GroupInfo>()
     val isLord = MutableLiveData<Boolean>()
 
     val memberIconItem: ObservableList<GroupChatDetailItemViewModel> = ObservableArrayList()
@@ -43,20 +43,20 @@ class GroupChatDetailViewModel : BaseViewModel() {
 
     val clickRemoveMember = BindingCommand<Any>(object : BindingAction {
         override fun call() {
-            val bundle= Bundle()
-            bundle.putParcelable(IntentKey.GROUPCHAT,groupDetail.value)
-            startActivity(GroupChatRemoveMemberActivity::class.java,bundle)
+            val bundle = Bundle()
+            bundle.putParcelable(IntentKey.GROUPCHAT, groupDetail.value)
+            startActivity(GroupChatRemoveMemberActivity::class.java, bundle)
         }
     })
 
     val clickSignOut = BindingCommand<Any>(object : BindingAction {
         override fun call() {
-            rxLifeScope.launch ({
+            rxLifeScope.launch({
                 showDialog()
-                ChatLib.quitGroup(groupDetail.value?.memberIdList,groupDetail.value?.groupId)
+                ChatLib.quitGroup(groupDetail.value?.memberIdList, groupDetail.value?.groupId)
                 GroupDBManager.delete(groupDetail.value!!)
                 dismissDialog()
-            },{
+            }, {
                 dismissDialog()
                 it.message?.let { it1 -> toast(it1) }
             })

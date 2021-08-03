@@ -1,6 +1,7 @@
 package com.ninjahome.ninja
 
 import android.text.TextUtils
+import chatLib.ChatLib
 import chatLib.MulticastCallBack
 import chatLib.UnicastCallBack
 import coil.load
@@ -34,7 +35,6 @@ import org.json.JSONArray
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.component.KoinApiExtension
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 
@@ -44,7 +44,6 @@ import org.koin.dsl.module
  *Time:
  *Description:
  */
-@KoinApiExtension
 class NinjaApp : BaseApplication(), UnicastCallBack {
     private val mutex = Mutex()
     lateinit var account: Account
@@ -87,7 +86,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
         val appModule = module {
 
             viewModel { SplashViewModel() }
-            viewModel { CreateAccountViewModel() }
+            viewModel { CreateAccountViewModel(get()) }
             viewModel { EditUserInfoViewModel() }
             viewModel { MainViewModel() }
             viewModel { ContactListViewModel() }
@@ -97,11 +96,11 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
             viewModel { SearchContactViewModel() }
             viewModel { ScanViewModel() }
             viewModel { ShowIDQRCodeViewModel() }
-            viewModel { UnLockViewModel() }
+            viewModel { UnLockViewModel(get()) }
             viewModel { EditContactViewModel() }
             viewModel { ContactDetailViewModel() }
             viewModel { AccountManagerViewModel() }
-            viewModel { ConversationViewModel() }
+            viewModel { ConversationViewModel(get()) }
             viewModel { TakePhotoViewModel() }
             viewModel { LocationViewModel() }
             viewModel { ShowBigImageViewModel() }
@@ -134,17 +133,18 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
 
             override fun createGroup(groupId: String, groupName: String, owner: String, memberIdList: String, memberNickNameList: String) {
                 Logger.d("-----------------createGroup-----groupId:${groupId}   groupName: ${groupName}   memberIdList:${memberIdList}   memberNickNameList:${memberNickNameList} ")
-                MainScope().launch {
-                    val group = GroupDBManager.queryByGroupId(groupId)
-                    if (group == null) {
-                        val groupConversation = GroupChat(0, groupId, groupName, owner, memberIdList, memberNickNameList)
-                        GroupDBManager.insert(groupConversation)
-                    }
-                }
+                this@NinjaApp.createGroup(groupId, groupName, owner, memberIdList, memberNickNameList)
+
             }
 
-            override fun dismisGroup(groupId: String?) {
+            override fun dismisGroup(groupId: String) {
                 Logger.d("-----------------dismisGroup-----groupId:${groupId}  ---------")
+                MainScope().launch {
+                    val groupChat = GroupDBManager.queryByGroupId(groupId)
+                    if (groupChat != null) {
+                        GroupDBManager.delete(groupChat)
+                    }
+                }
             }
 
             override fun fileMessage(p0: String, p1: String, p2: ByteArray, p3: Long, p4: String?) {
@@ -159,8 +159,8 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
                         val newNicKName = ArrayList<String>()
                         val oldIdList = MoshiUtils.listFromJson<String>(group.memberIdList)
                         val oldNickNameList = MoshiUtils.listFromJson<String>(group.memberNickNameList)
-                        for (i  in 0 until oldIdList.size) {
-                            if(!oldIdList[i].equals(quitId)){
+                        for (i in 0 until oldIdList.size) {
+                            if (!oldIdList[i].equals(quitId)) {
                                 newIds.add(oldIdList[i])
                                 newNicKName.add(oldNickNameList[i])
                             }
@@ -173,23 +173,34 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
                 }
             }
 
-            override fun syncGroup(groupId: String?): String {
-                Logger.d("-----------------syncGroup-----   groupId:${groupId}---------")
-                return ""
+            override fun syncGroup(groupId: String): String {
+                var syncGroup: SyncGroup? = null
+                MainScope().launch {
+                    val groupInfo = GroupDBManager.queryByGroupId(groupId)
+                    if (groupInfo != null) {
+                        syncGroup = SyncGroup(groupInfo.groupId, groupInfo.groupName, groupInfo.owner, groupInfo.banTalking, MoshiUtils.listFromJson(groupInfo.memberIdList), MoshiUtils.listFromJson(groupInfo.memberNickNameList))
+                    }
+                }
+                return if (syncGroup == null) {
+                    ""
+                } else {
+                    syncGroup!!.toJson()
+                }
             }
 
-            override fun syncGroupAck(groupId: String?, groupName: String?, owner: String?, p3: Boolean, memberIdList: String?, memberNickNameList: String?) {
+            override fun syncGroupAck(groupId: String, groupName: String, owner: String, banTalking: Boolean, memberIdList: String, memberNickNameList: String) {
                 Logger.d("-----------------syncGroupAck-----   groupId:${groupId}---------")
+                this@NinjaApp.createGroup(groupId, groupName, owner, memberIdList, memberNickNameList)
             }
 
             override fun joinGroup(from: String?, groupId: String, groupName: String?, owner: String?, memberIdList: String, memberNickNameList: String, newIdList: String, banTalkding: Boolean) {
                 Logger.d("-----------------joinGroup-----from:${from}   groupId:${groupId}    groupName:${groupName}  owner:${owner}  memberIdList:${memberIdList}   memberNickNameList:${memberNickNameList}    newIdList:${newIdList} ---------")
                 MainScope().launch {
-                    val group = GroupDBManager.queryByGroupId(groupId)
-                    if (group != null) {
-                        group.memberIdList = memberIdList
-                        group.memberNickNameList = memberNickNameList
-                        GroupDBManager.updateGroup(group)
+                    val groupInfo = GroupDBManager.queryByGroupId(groupId)
+                    if (groupInfo != null) {
+                        groupInfo.memberIdList = memberIdList
+                        groupInfo.memberNickNameList = memberNickNameList
+                        GroupDBManager.updateGroup(groupInfo)
                     }
                 }
             }
@@ -265,6 +276,16 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
         })
     }
 
+    private fun createGroup(groupId: String, groupName: String, owner: String, memberIdList: String, memberNickNameList: String) {
+        MainScope().launch {
+            val group = GroupDBManager.queryByGroupId(groupId)
+            if (group == null) {
+                val groupConversation = GroupInfo(0, groupId, groupName, owner, memberIdList, memberNickNameList)
+                GroupDBManager.insert(groupConversation)
+            }
+        }
+    }
+
     private suspend fun insertMessage(message: Message, conversation: Conversation) {
         MessageDBManager.insert(message)
         updateConversationUnreadCount(conversation)
@@ -281,15 +302,17 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
             var nickName: String? = from
             if (isGroup) {
                 conversation = ConversationDBManager.queryByGroupId(groupId)
-                val group = GroupDBManager.queryByGroupId(groupId)
-                group?.let {
-                    val memberIds = JSONArray(it.memberIdList)
-                    val memberNames = JSONArray(it.memberNickNameList)
+                val groupInfo = GroupDBManager.queryByGroupId(groupId)
+                if (groupInfo != null) {
+                    val memberIds = JSONArray(groupInfo.memberIdList)
+                    val memberNames = JSONArray(groupInfo.memberNickNameList)
                     for (index in 0 until memberIds.length()) {
                         if (memberIds[index].equals(from)) {
                             nickName = memberNames[index] as String
                         }
                     }
+                } else {
+                    ChatLib.syncGroup(from, groupId)
                 }
             } else {
                 conversation = ConversationDBManager.queryByFrom(from)
@@ -302,8 +325,8 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
             if (conversation == null) {
                 conversation = Conversation(0, from, isGroup, msg, time * 1000, 1, groupId = groupId)
                 if (isGroup) {
-                    val group = GroupDBManager.queryByGroupId(groupId)
-                    group?.let { conversation.title = it.groupName }
+                    val groupInfo = GroupDBManager.queryByGroupId(groupId)
+                    groupInfo?.let { conversation.title = it.groupName }
                     val msg = if (TextUtils.isEmpty(nickName)) from else "${nickName!!}:$msg"
                     conversation.msg = msg
 

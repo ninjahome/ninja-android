@@ -15,14 +15,12 @@ import com.ninjahome.ninja.utils.BitmapUtils
 import com.ninjahome.ninja.utils.toJson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.koin.core.component.KoinApiExtension
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
-@KoinApiExtension
 class AccountManagerViewModel : BaseViewModel() {
 
 

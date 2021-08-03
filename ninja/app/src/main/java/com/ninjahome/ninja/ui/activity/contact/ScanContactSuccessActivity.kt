@@ -11,14 +11,12 @@ import com.ninjahome.ninja.view.contacts.TextDrawable
 import com.ninjahome.ninja.viewmodel.ScanContactSuccessViewModel
 import kotlinx.android.synthetic.main.activity_contact_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinApiExtension
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
-@KoinApiExtension
 class ScanContactSuccessActivity : BaseActivity<ScanContactSuccessViewModel, ActivityScanContactSuccessBinding>(R.layout.activity_scan_contact_success) {
     private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(40)
     override val mViewModel: ScanContactSuccessViewModel by viewModel()
@@ -31,7 +29,7 @@ class ScanContactSuccessActivity : BaseActivity<ScanContactSuccessViewModel, Act
     override fun initData() {
         val uid = intent.getStringExtra(IntentKey.ID)!!
         mViewModel.uid.value = uid
-        val drawable = mDrawableBuilder.textColor(resources.getColor(R.color.white,null)).endConfig().buildRound(uid.substring(0, 2), resources.getColor(R.color.color_d8d8d8,null))
+        val drawable = mDrawableBuilder.textColor(resources.getColor(R.color.white, null)).endConfig().buildRound(uid.substring(0, 2), resources.getColor(R.color.color_d8d8d8, null))
         nameIv.setImageDrawable(drawable)
     }
 

@@ -9,7 +9,6 @@ import com.ninjahome.ninja.databinding.ActivityAccountManagerBinding
 import com.ninjahome.ninja.utils.PermissionUtils
 import com.ninjahome.ninja.viewmodel.AccountManagerViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinApiExtension
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 
@@ -18,7 +17,6 @@ import pub.devrel.easypermissions.EasyPermissions
  *Time:
  *Description:
  */
-@KoinApiExtension
 class AccountManagerActivity : BaseActivity<AccountManagerViewModel, ActivityAccountManagerBinding>(R.layout.activity_account_manager) {
     override val mViewModel: AccountManagerViewModel by viewModel()
 

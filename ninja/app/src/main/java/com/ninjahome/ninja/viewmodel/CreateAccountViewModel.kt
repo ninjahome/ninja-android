@@ -23,9 +23,6 @@ import com.ninjahome.ninja.utils.AccountUtils
 import com.ninjahome.ninja.utils.fromJson
 import com.orhanobut.logger.Logger
 import org.greenrobot.eventbus.EventBus
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 
 /**
@@ -33,15 +30,13 @@ import org.koin.core.component.inject
  *Time:
  *Description:
  */
-@KoinApiExtension
-class CreateAccountViewModel : BaseViewModel(), KoinComponent {
+class CreateAccountViewModel(val model: CreateAccountModel) : BaseViewModel() {
 
     val password = MutableLiveData("")
     val rePassword = MutableLiveData("")
     val showImportDialog = SingleLiveEvent<Boolean>()
     var userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "", commit = true)
     var openFingerPrint: Boolean by SharedPref(context(), Constants.KEY_OPEN_FINGERPRINT, false)
-    val model: CreateAccountModel by inject()
 
     val clickSure = BindingCommand<Any>(object : BindingAction {
         override fun call() {
@@ -68,7 +63,7 @@ class CreateAccountViewModel : BaseViewModel(), KoinComponent {
             createAccountSuccess(account)
 
         }, {
-           it.printStackTrace()
+            it.printStackTrace()
             dismissDialog()
             showToast(R.string.create_account_error)
         }, {

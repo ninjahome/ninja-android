@@ -31,7 +31,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinApiExtension
 
 
 /**
@@ -39,7 +38,6 @@ import org.koin.core.component.KoinApiExtension
  *Time:
  *Description:
  */
-@KoinApiExtension
 class ConversationListFragment : BaseFragment<ConversationListViewModel, FragmentConversationListBinding>(R.layout.fragment_conversation_list), Handler.Callback {
     val ADD_FRIEND = 0
     lateinit var animator: ObjectAnimator

@@ -23,7 +23,6 @@ import com.ninjahome.ninja.utils.toJson
 import com.ninjahome.ninja.view.contacts.ColorUtil
 import com.ninjahome.ninja.view.contacts.TextDrawable
 import com.orhanobut.logger.Logger
-import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -32,7 +31,6 @@ import org.koin.core.component.inject
  *Time:
  *Description:
  */
-@KoinApiExtension
 class MyViewModel : BaseViewModel(), KoinComponent {
     val model: UnlockModel by inject()
     val name = SingleLiveEvent<String>()

@@ -16,14 +16,12 @@ import com.ninjahome.ninja.room.ConversationDBManager
 import com.ninjahome.ninja.ui.activity.contact.EditContactActivity
 import com.ninjahome.ninja.ui.activity.conversation.ConversationActivity
 import com.ninjahome.ninja.utils.CommonUtils
-import org.koin.core.component.KoinApiExtension
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
-@KoinApiExtension
 class ContactDetailViewModel : BaseViewModel() {
     val name = MutableLiveData<String>()
     val showDeleteDialogEvent = SingleLiveEvent<Any>()

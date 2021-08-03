@@ -80,7 +80,7 @@ class LocationActivity : BaseActivity<LocationViewModel, ActivityLocationBinding
         rightTv.setTextColor(resources.getColor(R.color.white, null))
         rightTv.layoutParams.width = 64.dp.toInt()
         rightTv.layoutParams.height = 32.dp.toInt()
-        rightTv.background = ResourcesCompat.getDrawable(resources,R.drawable.bg_location_send,null)
+        rightTv.background = ResourcesCompat.getDrawable(resources, R.drawable.bg_location_send, null)
         setRlMapHeight(maxHeight)
         mSensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         mOrientationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION)

@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.model.bean.Conversation
-import com.ninjahome.ninja.model.bean.GroupChat
+import com.ninjahome.ninja.model.bean.GroupInfo
 import com.ninjahome.ninja.model.bean.Message
 
 /**
@@ -14,7 +14,7 @@ import com.ninjahome.ninja.model.bean.Message
  *Time:
  *Description:
  */
-@Database(entities = [Contact::class, Message::class, Conversation::class, GroupChat::class], version = 1, exportSchema = false)
+@Database(entities = [Contact::class, Message::class, Conversation::class, GroupInfo::class], version = 1, exportSchema = false)
 abstract class NinjaDB : RoomDatabase() {
     abstract fun contactDao(): ContactDao
     abstract fun messageDao(): MessageDao

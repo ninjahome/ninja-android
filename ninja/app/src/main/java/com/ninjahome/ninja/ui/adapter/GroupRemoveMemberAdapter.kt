@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ninjahome.ninja.R
-import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.model.bean.GroupMember
 import com.ninjahome.ninja.utils.ContactIconUtils
 import java.util.*
@@ -68,7 +67,7 @@ class GroupRemoveMemberAdapter(private val mContext: Context) : RecyclerView.Ada
             clickItemListener?.onSelected(position, member)
 
         }
-        val name = if(member.name.length>2) member.name.substring(0,2) else member.name
+        val name = if (member.name.length > 2) member.name.substring(0, 2) else member.name
         val drawable = ContactIconUtils.getDrawable(FONT_SIZE, member.address, name)
         holder.iconIv.setImageDrawable(drawable)
     }

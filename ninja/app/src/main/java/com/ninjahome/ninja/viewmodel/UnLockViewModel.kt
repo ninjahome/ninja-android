@@ -19,18 +19,13 @@ import com.ninjahome.ninja.utils.fromJson
 import com.ninjahome.ninja.view.contacts.ColorUtil
 import com.ninjahome.ninja.view.contacts.TextDrawable
 import com.orhanobut.logger.Logger
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
-@KoinApiExtension
-class UnLockViewModel : BaseViewModel(), KoinComponent {
-    val model: UnlockModel by inject()
+class UnLockViewModel(val model: UnlockModel) : BaseViewModel() {
     val password = MutableLiveData("")
     val accountJson = MutableLiveData("")
     val iconDrawable = MutableLiveData<TextDrawable>()

@@ -4,21 +4,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lxj.xpopup.core.BasePopupView
 import com.ninja.android.lib.base.BaseActivity
-import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityCreateGroupChatBinding
 import com.ninjahome.ninja.model.bean.Contact
-import com.ninjahome.ninja.model.bean.GroupChat
+import com.ninjahome.ninja.model.bean.GroupInfo
 import com.ninjahome.ninja.ui.adapter.CreateGroupAdapter
-import com.ninjahome.ninja.utils.DialogUtils
 import com.ninjahome.ninja.view.ContactsUtils
-import com.ninjahome.ninja.view.CreateGroupChatPop
 import com.ninjahome.ninja.view.contacts.CustomItemDecoration
 import com.ninjahome.ninja.view.contacts.itemanimator.SlideInOutLeftItemAnimator
-import com.ninjahome.ninja.viewmodel.CreateGroupChatIconItemViewModel
-import com.ninjahome.ninja.viewmodel.CreateGroupChatViewModel
 import com.ninjahome.ninja.viewmodel.GroupChatAddMemberItemViewModel
 import com.ninjahome.ninja.viewmodel.GroupChatAddMemberViewModel
 import kotlinx.android.synthetic.main.activity_create_group_chat.*
@@ -32,10 +27,9 @@ import org.koin.core.component.KoinApiExtension
  *Time:
  *Description:
  */
-@KoinApiExtension
 class GroupChatAddMemberActivity : BaseActivity<GroupChatAddMemberViewModel, ActivityCreateGroupChatBinding>(R.layout.activity_group_chat_add_member), CreateGroupAdapter.ClickItemListener {
 
-    private val ids =ArrayList<String>()
+    private val ids = ArrayList<String>()
     private val contacts = ArrayList<Contact>()
     private lateinit var createGroupChatDialog: BasePopupView
     private var decoration: CustomItemDecoration = CustomItemDecoration(this)
@@ -60,15 +54,15 @@ class GroupChatAddMemberActivity : BaseActivity<GroupChatAddMemberViewModel, Act
     }
 
     override fun initData() {
-        val groupDetail = intent.getParcelableExtra<GroupChat>(IntentKey.GROUPCHAT)
+        val groupDetail = intent.getParcelableExtra<GroupInfo>(IntentKey.GROUPCHAT)
         mViewModel.groupDetail.value = groupDetail
         groupDetail?.let { parseIdsJson(it.memberIdList) }
 
     }
 
-    private fun parseIdsJson(memberIdList:String) {
+    private fun parseIdsJson(memberIdList: String) {
         val idsJsonArray = JSONArray(memberIdList)
-        for(i in 0 until idsJsonArray.length()){
+        for (i in 0 until idsJsonArray.length()) {
             ids.add(idsJsonArray[i].toString())
         }
     }
@@ -77,7 +71,7 @@ class GroupChatAddMemberActivity : BaseActivity<GroupChatAddMemberViewModel, Act
         mViewModel.allContact.observe(this) {
             it?.let {
                 it.forEach { contact ->
-                    if(!ids.contains(contact.uid)){
+                    if (!ids.contains(contact.uid)) {
                         contacts.add(contact)
                     }
                 }

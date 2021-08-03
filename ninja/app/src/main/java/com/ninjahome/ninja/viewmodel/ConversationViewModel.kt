@@ -20,7 +20,7 @@ import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.ConversationModel
 import com.ninjahome.ninja.model.bean.Conversation
-import com.ninjahome.ninja.model.bean.GroupChat
+import com.ninjahome.ninja.model.bean.GroupInfo
 import com.ninjahome.ninja.model.bean.Message
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.room.ConversationDBManager
@@ -32,21 +32,16 @@ import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.functions.Function
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
-@KoinApiExtension
-class ConversationViewModel : BaseViewModel(), KoinComponent {
+class ConversationViewModel(val model: ConversationModel) : BaseViewModel() {
     var userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "", commit = true)
-    val model: ConversationModel by inject()
     var id: String = ""
-    var groupChat: GroupChat? = null
+    var groupChat: GroupInfo? = null
     var isGroup: Boolean = false
     val textData = MutableLiveData("")
     val clickAudioEvent = SingleLiveEvent<Any>()
@@ -77,7 +72,7 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
 
     override fun clickRightIv() {
         super.clickRightIv()
-        if(!groupIsExist()){
+        if (!groupIsExist()) {
             return
         }
 
@@ -154,7 +149,7 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
 
     fun sendText(data: String) {
 
-        if(!groupIsExist()){
+        if (!groupIsExist()) {
             return
         }
         val message = Message(0, 0, NinjaApp.instance.account.address, id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.TEXT, unRead = false, msg = data)
@@ -180,7 +175,7 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
     }
 
     fun sendImage(path: String, compress: Boolean) {
-        if(!groupIsExist()){
+        if (!groupIsExist()) {
             return
         }
         val message = Message(0, 0, NinjaApp.instance.account.address, id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.IMAGE, unRead = false, uri = path, msg = context().getString(R.string.message_type_image))
@@ -206,7 +201,7 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
 
 
     fun sendAudio(audioPath: Uri, duration: Int) {
-        if(!groupIsExist()){
+        if (!groupIsExist()) {
             return
         }
         val message = Message(0, 0, NinjaApp.instance.account.address, id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.VOICE, unRead = false, uri = audioPath.path.toString(), duration = duration, msg = context().getString(R.string.message_type_voice))
@@ -234,7 +229,7 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
     }
 
     fun sendLocation(lng: Float, lat: Float, poi: String) {
-        if(!groupIsExist()){
+        if (!groupIsExist()) {
             return
         }
         val message = Message(0, 0, NinjaApp.instance.account.address, id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.LOCATION, unRead = false, lat = lat, lng = lng, locationAddress = poi, msg = context().getString(R.string.message_type_location))
@@ -335,7 +330,7 @@ class ConversationViewModel : BaseViewModel(), KoinComponent {
         })
     }
 
-    fun groupIsExist():Boolean{
+    fun groupIsExist(): Boolean {
         if (isGroup && groupChat == null) {
             showToast(R.string.create_group_chat_disbanded)
             return false

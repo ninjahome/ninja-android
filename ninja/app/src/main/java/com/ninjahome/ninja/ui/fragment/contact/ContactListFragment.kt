@@ -27,14 +27,12 @@ import com.ninjahome.ninja.viewmodel.ContactListViewModel
 import com.zhy.autolayout.utils.ScreenUtils
 import kotlinx.android.synthetic.main.fragment_contact_list.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinApiExtension
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
-@KoinApiExtension
 class ContactListFragment : BaseFragment<ContactListViewModel, FragmentContactListBinding>(R.layout.fragment_contact_list) {
     val ADD_FRIEND = 0
     lateinit var rightIv: ImageView
@@ -75,7 +73,7 @@ class ContactListFragment : BaseFragment<ContactListViewModel, FragmentContactLi
 
     private fun initMarginTop() {
         val layoutParams = status_bar_view.layoutParams
-        layoutParams.height =  ScreenUtils.getStatusBarHeight(mActivity)
+        layoutParams.height = ScreenUtils.getStatusBarHeight(mActivity)
         status_bar_view.layoutParams = layoutParams
     }
 

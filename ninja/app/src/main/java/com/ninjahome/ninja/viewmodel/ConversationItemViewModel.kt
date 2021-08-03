@@ -15,14 +15,12 @@ import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.ui.activity.conversation.ConversationActivity
 import com.ninjahome.ninja.view.contacts.ColorUtil
 import com.ninjahome.ninja.view.contacts.TextDrawable
-import org.koin.core.component.KoinApiExtension
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
-@KoinApiExtension
 class ConversationItemViewModel(viewModel: ConversationListViewModel, val conversation: Conversation) : ItemViewModel<ConversationListViewModel>(viewModel) {
     val receiverIconIndex = ChatLib.iconIndex(conversation.from, ColorUtil.colorSize)
     var receiverIconColor = ColorUtil.colors[receiverIconIndex]
@@ -36,16 +34,16 @@ class ConversationItemViewModel(viewModel: ConversationListViewModel, val conver
             if (contact == null) {
                 receiverIconColor = R.color.color_d8d8d8
             }
-            receiverIcon.value = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(receiverIconColor,null))
+            receiverIcon.value = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(receiverIconColor, null))
         }
     }
 
     val clickItem = BindingCommand<Any>(object : BindingAction {
         override fun call() {
             val bundle = Bundle()
-            if(conversation.isGroup){
+            if (conversation.isGroup) {
                 bundle.putString(IntentKey.ID, conversation.groupId)
-            }else{
+            } else {
                 bundle.putString(IntentKey.ID, conversation.from)
             }
             bundle.putBoolean(IntentKey.IS_GROUP, conversation.isGroup)

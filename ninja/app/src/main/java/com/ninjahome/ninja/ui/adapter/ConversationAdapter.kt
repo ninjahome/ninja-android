@@ -29,13 +29,11 @@ import com.ninjahome.ninja.view.contacts.TextDrawable
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.json.JSONArray
-import org.koin.core.component.KoinApiExtension
 
 /**
  * @描述 会话界面的消息列表适配器
  */
-@KoinApiExtension
-class ConversationAdapter(private val mContext: Context, private val mData: List<Message>, val isGroup: Boolean, val groupId: String,val clickListener:ClickListener) : LQRAdapterForRecyclerView<Message>(mContext, mData) {
+class ConversationAdapter(private val mContext: Context, private val mData: List<Message>, val isGroup: Boolean, val groupId: String, val clickListener: ClickListener) : LQRAdapterForRecyclerView<Message>(mContext, mData) {
     var receiverIcon: TextDrawable? = null
     private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(30)
     private val userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "")
@@ -43,11 +41,13 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
     private val myIconColor = ColorUtil.colors[myIconIndex]
     val subName = if (userName.length >= 2) userName.substring(0, 2) else userName
     private val myIcon = mDrawableBuilder.textColor(mContext.getColor(R.color.white)).endConfig().buildRound(subName, mContext.resources.getColor(myIconColor, null))
-    interface ClickListener{
+
+    interface ClickListener {
         fun clickItemReCommit(item: Message)
         fun clickItemAvatar(item: Message)
         fun clickItemName(item: Message)
     }
+
     override fun convert(helper: LQRViewHolderForRecyclerView, item: Message, position: Int) {
         setTime(helper, item, position)
         setView(helper, item)
@@ -82,7 +82,7 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
         helper.getView<View>(R.id.llError).setOnClickListener {
             clickListener.clickItemReCommit(item)
         }
-        if(isGroup){
+        if (isGroup) {
             helper.getView<View>(R.id.ivAvatar).setOnClickListener {
                 clickListener.clickItemAvatar(item)
             }

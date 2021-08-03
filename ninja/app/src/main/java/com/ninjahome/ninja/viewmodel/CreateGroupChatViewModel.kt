@@ -14,7 +14,7 @@ import com.ninja.android.lib.utils.SharedPref
 import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.*
 import com.ninjahome.ninja.model.bean.Contact
-import com.ninjahome.ninja.model.bean.GroupChat
+import com.ninjahome.ninja.model.bean.GroupInfo
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.room.GroupDBManager
 import com.ninjahome.ninja.ui.activity.conversation.ConversationActivity
@@ -22,7 +22,6 @@ import com.ninjahome.ninja.utils.toJson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.tatarka.bindingcollectionadapter2.ItemBinding
-import org.koin.core.component.KoinApiExtension
 import java.util.*
 
 /**
@@ -30,7 +29,6 @@ import java.util.*
  *Time:
  *Description:
  */
-@KoinApiExtension
 class CreateGroupChatViewModel : BaseViewModel() {
     var userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "", commit = true)
     val allContact = ContactDBManager.all()
@@ -58,11 +56,11 @@ class CreateGroupChatViewModel : BaseViewModel() {
                 ids.add(contact.uid)
                 names.add(contact.nickName)
             }
-            rxLifeScope.launch ({
+            rxLifeScope.launch({
                 showDialog()
                 withContext(Dispatchers.IO) {
                     ChatLib.createGroup(ids.toJson().toLowerCase(Locale.getDefault()), names.toJson(), groupId, name)
-                    val groupConversation = GroupChat(0, groupId, name, NinjaApp.instance.account.address, ids.toJson(), names.toJson())
+                    val groupConversation = GroupInfo(0, groupId, name, NinjaApp.instance.account.address, ids.toJson(), names.toJson())
                     GroupDBManager.insert(groupConversation)
                     val bundle = Bundle()
                     bundle.putString(IntentKey.ID, groupId)
@@ -71,7 +69,7 @@ class CreateGroupChatViewModel : BaseViewModel() {
                     dismissDialog()
                 }
                 finish()
-            },{
+            }, {
                 dismissDialog()
                 it.message?.let { errMsg -> toast(errMsg) }
             })

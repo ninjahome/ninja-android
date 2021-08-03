@@ -3,10 +3,8 @@ package com.ninjahome.ninja.ui.activity.main
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.ViewPager
 import chatLib.ChatLib
-import com.gyf.immersionbar.ImmersionBar
 import com.ninja.android.lib.base.BaseActivity
 import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.BR
@@ -20,13 +18,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinApiExtension
 
-@KoinApiExtension
 class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.activity_main), ViewPager.OnPageChangeListener {
-    private val HOME = 0
-    private val CONTACT = 1
-    private val MY = 2
     private val tabIcons = arrayListOf(R.drawable.tab_message, R.drawable.tab_contact, R.drawable.tab_my)
     private val tabName = arrayListOf(R.string.message, R.string.contact, R.string.my)
     override val mViewModel: MainViewModel by viewModel()
@@ -37,6 +30,8 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
         tabLayout.setupWithViewPager(viewPager)
         viewPager.addOnPageChangeListener(this)
         initTabLayout()
+
+        println("---------------------"+mViewModel.hashCode())
 
     }
 
@@ -99,14 +94,14 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-//        when (position) {
-//            HOME,CONTACT -> {
-//                ImmersionBar.with(this).titleBar(findViewById<ConstraintLayout>(R.id.title), false).transparentBar().init()
-//            }
-//            MY -> {
-//                ImmersionBar.with(this).transparentStatusBar().barEnable(true).statusBarDarkFont(true).init()
-//            }
-//        }
+        //        when (position) {
+        //            HOME,CONTACT -> {
+        //                ImmersionBar.with(this).titleBar(findViewById<ConstraintLayout>(R.id.title), false).transparentBar().init()
+        //            }
+        //            MY -> {
+        //                ImmersionBar.with(this).transparentStatusBar().barEnable(true).statusBarDarkFont(true).init()
+        //            }
+        //        }
     }
 
     override fun onPageSelected(position: Int) {

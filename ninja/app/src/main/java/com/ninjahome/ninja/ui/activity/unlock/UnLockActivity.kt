@@ -14,14 +14,12 @@ import com.ninjahome.ninja.utils.StringUtils
 import com.ninjahome.ninja.viewmodel.UnLockViewModel
 import com.orhanobut.logger.Logger
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinApiExtension
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
-@KoinApiExtension
 class UnLockActivity : BaseActivity<UnLockViewModel, ActivityUnlockBinding>(R.layout.activity_unlock) {
 
 

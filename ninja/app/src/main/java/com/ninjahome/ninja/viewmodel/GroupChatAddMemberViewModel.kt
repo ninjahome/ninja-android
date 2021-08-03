@@ -12,7 +12,7 @@ import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.bean.Contact
-import com.ninjahome.ninja.model.bean.GroupChat
+import com.ninjahome.ninja.model.bean.GroupInfo
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.room.GroupDBManager
 import com.ninjahome.ninja.utils.MoshiUtils
@@ -20,7 +20,6 @@ import com.ninjahome.ninja.utils.toJson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.tatarka.bindingcollectionadapter2.ItemBinding
-import org.koin.core.component.KoinApiExtension
 import java.util.*
 
 /**
@@ -28,9 +27,8 @@ import java.util.*
  *Time:
  *Description:
  */
-@KoinApiExtension
 class GroupChatAddMemberViewModel : BaseViewModel() {
-    val groupDetail = MutableLiveData<GroupChat>()
+    val groupDetail = MutableLiveData<GroupInfo>()
     val allContact = ContactDBManager.all()
     val contacts = mutableListOf<Contact>()
     val newIds = ArrayList<String>()
@@ -55,7 +53,7 @@ class GroupChatAddMemberViewModel : BaseViewModel() {
                         nickNameJson?.add(it.conversation.nickName)
                     }
 
-                    ChatLib.joinGroup(idsJson?.toJson(), nickNameJson?.toJson(), groupDetail.value?.groupId, groupDetail.value?.groupName, groupDetail.value?.owner, false,newIds.toJson())
+                    ChatLib.joinGroup(idsJson?.toJson(), nickNameJson?.toJson(), groupDetail.value?.groupId, groupDetail.value?.groupName, groupDetail.value?.owner, false, newIds.toJson())
                     groupDetail.value?.memberIdList = idsJson?.toJson()!!
                     groupDetail.value?.memberNickNameList = nickNameJson?.toJson()!!
                     groupDetail.value?.let { GroupDBManager.updateGroup(it) }

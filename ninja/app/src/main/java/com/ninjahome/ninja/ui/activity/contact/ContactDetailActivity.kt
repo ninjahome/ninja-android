@@ -16,14 +16,12 @@ import com.ninjahome.ninja.view.contacts.TextDrawable
 import com.ninjahome.ninja.viewmodel.ContactDetailViewModel
 import kotlinx.android.synthetic.main.activity_contact_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinApiExtension
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
-@KoinApiExtension
 class ContactDetailActivity : BaseActivity<ContactDetailViewModel, ActivityContactDetailBinding>(R.layout.activity_contact_detail), OnConfirmListener {
     private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(40)
     override val mViewModel: ContactDetailViewModel by viewModel()
@@ -51,7 +49,7 @@ class ContactDetailActivity : BaseActivity<ContactDetailViewModel, ActivityConta
             val drawable = mViewModel.contact.value?.let { _ ->
                 val index = ChatLib.iconIndex(mViewModel.uid.value!!, ColorUtil.colorSize)
                 val iconColor = ColorUtil.colors[index]
-                mDrawableBuilder.textColor(resources.getColor(R.color.white,null)).endConfig().buildRound(subName, resources.getColor(iconColor,null))
+                mDrawableBuilder.textColor(resources.getColor(R.color.white, null)).endConfig().buildRound(subName, resources.getColor(iconColor, null))
             }
             nameIv.setImageDrawable(drawable)
         }

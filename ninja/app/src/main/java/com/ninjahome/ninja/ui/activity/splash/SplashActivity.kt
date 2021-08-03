@@ -14,14 +14,12 @@ import com.ninjahome.ninja.ui.activity.edituserinfo.EditUserInfoActivity
 import com.ninjahome.ninja.ui.activity.unlock.UnLockActivity
 import com.ninjahome.ninja.viewmodel.SplashViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinApiExtension
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
-@KoinApiExtension
 class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>(R.layout.activity_splash) {
     private val mHandler: Handler by lazy { Handler(Looper.getMainLooper()) }
     private val userName: String by SharedPref(this, Constants.KEY_USER_NAME, "")

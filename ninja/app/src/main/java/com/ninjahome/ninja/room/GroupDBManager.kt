@@ -2,7 +2,7 @@ package com.ninjahome.ninja.room
 
 import androidx.lifecycle.LiveData
 import com.ninja.android.lib.provider.context
-import com.ninjahome.ninja.model.bean.GroupChat
+import com.ninjahome.ninja.model.bean.GroupInfo
 import kotlinx.coroutines.*
 
 /**
@@ -13,17 +13,17 @@ import kotlinx.coroutines.*
 object GroupDBManager {
     private val groupDao: GroupDao by lazy { NinjaDB.getInstance(context()).groupDao() }
 
-    fun all(): LiveData<List<GroupChat>?> {
+    fun all(): LiveData<List<GroupInfo>?> {
         return groupDao.all()
     }
 
-    suspend fun queryByGroupId(groupId: String): GroupChat? {
+    suspend fun queryByGroupId(groupId: String): GroupInfo? {
         return withContext(Dispatchers.IO) {
             return@withContext groupDao.queryByGroupId(groupId)
         }
     }
 
-    suspend fun queryLiveDataByGroupId(groupId: String): LiveData<GroupChat?> {
+    suspend fun queryLiveDataByGroupId(groupId: String): LiveData<GroupInfo?> {
         return withContext(Dispatchers.IO) {
             return@withContext groupDao.queryLiveDataByGroupId(groupId)
         }
@@ -36,20 +36,20 @@ object GroupDBManager {
     }
 
 
-    suspend fun insert(group: GroupChat) {
+    suspend fun insert(group: GroupInfo) {
         withContext(Dispatchers.IO) {
             groupDao.insert(group)
         }
     }
 
-    suspend fun updateGroup(vararg group: GroupChat) {
+    suspend fun updateGroup(vararg group: GroupInfo) {
         withContext(Dispatchers.IO) {
             groupDao.updateAccounts(*group)
         }
 
     }
 
-    suspend fun delete(vararg group: GroupChat) {
+    suspend fun delete(vararg group: GroupInfo) {
         withContext(Dispatchers.IO) {
             groupDao.delete(*group)
         }
