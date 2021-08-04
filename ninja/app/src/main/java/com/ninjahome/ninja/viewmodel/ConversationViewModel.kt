@@ -171,7 +171,6 @@ class ConversationViewModel(val model: ConversationModel) : BaseViewModel() {
             Logger.e("send error ${it.message}")
         })
 
-
     }
 
     fun sendImage(path: String, compress: Boolean) {

@@ -297,6 +297,9 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
     }
 
     private suspend fun insertOrUpdateConversation(from: String, msg: String, time: Long, isGroup: Boolean, groupId: String = ""): Conversation {
+        println("from:${from}")
+        println("isGroup:${isGroup}")
+        println("groupId:${groupId}")
         mutex.withLock {
             var conversation: Conversation?
             var nickName: String? = from
@@ -325,11 +328,11 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
             if (conversation == null) {
                 conversation = Conversation(0, from, isGroup, msg, time * 1000, 1, groupId = groupId)
                 if (isGroup) {
+                    conversation.from = ""
                     val groupInfo = GroupDBManager.queryByGroupId(groupId)
                     groupInfo?.let { conversation.title = it.groupName }
                     val msg = if (TextUtils.isEmpty(nickName)) from else "${nickName!!}:$msg"
                     conversation.msg = msg
-
                 } else {
                     conversation?.title = if (TextUtils.isEmpty(nickName)) from else nickName!!
                 }
@@ -346,16 +349,18 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
                         conversation.msg = msg
                         conversation.title = it.groupName
                     }
-
                 } else {
                     val nickName = ContactDBManager.queryNickNameByUID(from)
                     conversation.title = if (TextUtils.isEmpty(nickName)) from else nickName!!
+                    conversation.msg = msg
                 }
                 ConversationDBManager.updateConversations(conversation)
             }
+            println("conversation.from:${conversation.from}")
+            println("conversation.isGroup:${conversation.isGroup}")
+            println("conversation.groupId:${conversation.groupId}")
             return conversation
         }
-
 
     }
 

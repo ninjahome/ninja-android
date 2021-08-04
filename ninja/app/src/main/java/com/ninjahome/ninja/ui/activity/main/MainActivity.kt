@@ -31,14 +31,11 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
         viewPager.addOnPageChangeListener(this)
         initTabLayout()
 
-        println("---------------------"+mViewModel.hashCode())
-
     }
 
     private fun initTabLayout() {
         tabIcons.forEachIndexed { index, _ ->
             tabLayout.getTabAt(index)!!.customView = getTabItemView(index)
-
         }
 
     }
@@ -94,14 +91,6 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-        //        when (position) {
-        //            HOME,CONTACT -> {
-        //                ImmersionBar.with(this).titleBar(findViewById<ConstraintLayout>(R.id.title), false).transparentBar().init()
-        //            }
-        //            MY -> {
-        //                ImmersionBar.with(this).transparentStatusBar().barEnable(true).statusBarDarkFont(true).init()
-        //            }
-        //        }
     }
 
     override fun onPageSelected(position: Int) {
