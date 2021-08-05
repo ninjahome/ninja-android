@@ -14,7 +14,7 @@ interface ContactDao {
     fun queryByUID(uid: String): Contact?
 
     @Query("SELECT nickName FROM contact where uid = :uid")
-    fun queryNickNameByUID(uid: String): String?
+    fun queryTitleByUID(uid: String): String?
 
     @Query("SELECT nickName FROM contact where uid = :uid")
     fun observeNickNameByUID(uid: String): LiveData<String?>

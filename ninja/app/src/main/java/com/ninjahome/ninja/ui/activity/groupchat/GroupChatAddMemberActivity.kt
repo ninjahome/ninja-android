@@ -11,6 +11,7 @@ import com.ninjahome.ninja.databinding.ActivityCreateGroupChatBinding
 import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.model.bean.GroupInfo
 import com.ninjahome.ninja.ui.adapter.CreateGroupAdapter
+import com.ninjahome.ninja.utils.fromJson
 import com.ninjahome.ninja.view.ContactsUtils
 import com.ninjahome.ninja.view.contacts.CustomItemDecoration
 import com.ninjahome.ninja.view.contacts.itemanimator.SlideInOutLeftItemAnimator
@@ -56,15 +57,8 @@ class GroupChatAddMemberActivity : BaseActivity<GroupChatAddMemberViewModel, Act
     override fun initData() {
         val groupDetail = intent.getParcelableExtra<GroupInfo>(IntentKey.GROUPCHAT)
         mViewModel.groupDetail.value = groupDetail
-        groupDetail?.let { parseIdsJson(it.memberIdList) }
+        groupDetail?.let { ids.addAll(it.memberIdList.fromJson<ArrayList<String>>()!!)}
 
-    }
-
-    private fun parseIdsJson(memberIdList: String) {
-        val idsJsonArray = JSONArray(memberIdList)
-        for (i in 0 until idsJsonArray.length()) {
-            ids.add(idsJsonArray[i].toString())
-        }
     }
 
     override fun initObserve() {

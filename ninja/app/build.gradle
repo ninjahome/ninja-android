@@ -75,8 +75,10 @@ dependencies {
     implementation rootProject.ext.androidx["lifecycle-viewmodel-ktx"]
     implementation rootProject.ext.dependencies["immersionbar-components"]
     api rootProject.ext.dependencies['moshi']
-    implementation project(path: ':audiolib')
-    implementation project(path: ':cameralib')
+    implementation project(path: ':lib')
+    implementation project(path: ':lib-audio')
+    implementation project(path: ':lib-camera')
+    implementation project(path: ':lib-go')
     kapt rootProject.ext.dependencies['moshi-kotlin-codegen']
 
     implementation "androidx.room:room-runtime:2.3.0-alpha03"
@@ -91,8 +93,7 @@ dependencies {
 
     implementation 'com.google.zxing:core:3.3.2'
     implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
-    implementation project(path: ':lib')
-    implementation project(path: ':golib')
+
     implementation 'androidx.security:security-crypto:1.1.0-alpha02'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

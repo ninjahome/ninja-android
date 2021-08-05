@@ -22,6 +22,7 @@ import com.ninjahome.ninja.room.GroupDBManager
 import com.ninjahome.ninja.room.MessageDBManager
 import com.ninjahome.ninja.utils.FileUtils
 import com.ninjahome.ninja.utils.MoshiUtils
+import com.ninjahome.ninja.utils.fromJson
 import com.ninjahome.ninja.utils.toJson
 import com.ninjahome.ninja.viewmodel.*
 import com.orhanobut.logger.*
@@ -31,7 +32,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.greenrobot.eventbus.EventBus
-import org.json.JSONArray
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -129,6 +129,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
         chatLib.ChatLib.configApp("", this, object : MulticastCallBack {
             override fun banTalking(groupId: String?) {
                 Logger.d("-----------------banTalking-----groupId:${groupId}")
+
             }
 
             override fun createGroup(groupId: String, groupName: String, owner: String, memberIdList: String, memberNickNameList: String) {
@@ -297,9 +298,6 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
     }
 
     private suspend fun insertOrUpdateConversation(from: String, msg: String, time: Long, isGroup: Boolean, groupId: String = ""): Conversation {
-        println("from:${from}")
-        println("isGroup:${isGroup}")
-        println("groupId:${groupId}")
         mutex.withLock {
             var conversation: Conversation?
             var nickName: String? = from
@@ -307,11 +305,11 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
                 conversation = ConversationDBManager.queryByGroupId(groupId)
                 val groupInfo = GroupDBManager.queryByGroupId(groupId)
                 if (groupInfo != null) {
-                    val memberIds = JSONArray(groupInfo.memberIdList)
-                    val memberNames = JSONArray(groupInfo.memberNickNameList)
-                    for (index in 0 until memberIds.length()) {
+                    val memberIds = groupInfo.memberIdList.fromJson<ArrayList<String>>()
+                    val memberNames = groupInfo.memberNickNameList.fromJson<ArrayList<String>>()
+                    for (index in 0 until memberIds!!.size) {
                         if (memberIds[index].equals(from)) {
-                            nickName = memberNames[index] as String
+                            nickName = memberNames!![index] as String
                         }
                     }
                 } else {
@@ -320,7 +318,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
             } else {
                 conversation = ConversationDBManager.queryByFrom(from)
             }
-            val contactNickName = ContactDBManager.queryNickNameByUID(from)
+            val contactNickName = ContactDBManager.queryTitleByUID(from)
             contactNickName?.let {
                 nickName = it
             }
@@ -350,18 +348,21 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
                         conversation.title = it.groupName
                     }
                 } else {
-                    val nickName = ContactDBManager.queryNickNameByUID(from)
+                    val nickName = ContactDBManager.queryTitleByUID(from)
                     conversation.title = if (TextUtils.isEmpty(nickName)) from else nickName!!
                     conversation.msg = msg
                 }
                 ConversationDBManager.updateConversations(conversation)
             }
-            println("conversation.from:${conversation.from}")
-            println("conversation.isGroup:${conversation.isGroup}")
-            println("conversation.groupId:${conversation.groupId}")
             return conversation
         }
 
+    }
+
+
+    private suspend fun getGroupName(groupId: String): String {
+        val group = GroupDBManager.queryByGroupId(groupId) ?: return ""
+        return group.groupName
     }
 
     suspend fun updateConversationUnreadCount(conversation: Conversation) {

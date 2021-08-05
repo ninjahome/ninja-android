@@ -16,6 +16,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.rxLifeScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout
 import com.gyf.immersionbar.ImmersionBar
 import com.lqr.adapter.LQRViewHolder
@@ -52,6 +53,8 @@ import com.qingmei2.rximagepicker_extension.MimeType
 import com.qingmei2.rximagepicker_extension_wechat.WechatConfigrationBuilder
 import com.qingmei2.rximagepicker_extension_wechat.ui.WechatImagePickerFragment
 import kotlinx.android.synthetic.main.activity_conversation.*
+import kotlinx.android.synthetic.main.activity_conversation.swipeRefreshLayout
+import kotlinx.android.synthetic.main.fragment_conversation_list.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import me.xfans.lib.voicewaveview.VoiceWaveView
@@ -90,7 +93,9 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     override fun initView() {
         imagePicker = create(WechatImagePicker::class.java)
-
+        val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        linearLayoutManager.stackFromEnd = true
+        recycler.layoutManager = linearLayoutManager
         ImmersionBar.with(this).statusBarColor(com.ninja.android.lib.R.color.white).barEnable(true).keyboardEnable(true).statusBarDarkFont(true).fitsSystemWindows(true).init()
         initEmotionKeyboard()
         moreActionDialog = DialogUtils.showMoreActionDialog(this, object : ConversationMoreActionPop.ConversationMoreActionListener {
@@ -133,7 +138,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     private fun initAdapter() {
         conversationAdapter = ConversationAdapter(this, mData, mViewModel.isGroup, mViewModel.id, this)
-        rvMsg.adapter = conversationAdapter
+        recycler.adapter = conversationAdapter
         conversationAdapter.onItemClickListener = this
     }
 
@@ -181,7 +186,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                 hideEmotionLayout()
                 hideMoreLayout()
             }
-            scrollToBottom()
         }
 
         mViewModel.textChangeEvent.observe(this) {
@@ -196,7 +200,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         }
         mViewModel.clickSendEvent.observe(this) {
             mViewModel.sendText(etContent.text.toString().trim())
-            scrollToBottom()
             mViewModel.textData.value = ""
         }
 
@@ -267,9 +270,9 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                     conversationAdapter.notifyDataSetChanged()
                     if (isFirstObserv) {
                         isFirstObserv = false
-                        rvMsg.scrollToPosition((rvMsg.adapter?.itemCount ?: 1) - 1)
+                        recycler.scrollToPosition((recycler.adapter?.itemCount ?: 1) - 1)
                     } else {
-                        rvMsg.smoothScrollToPosition((rvMsg.adapter?.itemCount ?: 1) - 1)
+                        recycler.smoothScrollToPosition((recycler.adapter?.itemCount ?: 1) - 1)
                     }
                 }
             } else {
@@ -293,11 +296,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     }
 
-    fun scrollToBottom() {
-        mHandler.postDelayed({
-            rvMsg.smoothMoveToPosition((rvMsg.adapter?.itemCount ?: 0) - 1)
-        }, 50)
-    }
+
 
     fun checkPermissions(): Boolean {
         if (!EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO)) {
@@ -327,7 +326,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                 path = it.uri.toString()
             }
             mViewModel.sendImage(path, !original)
-            scrollToBottom()
         }
     }
 
@@ -379,7 +377,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         mEmotionKeyboard.setOnEmotionButtonOnClickListener { view: View ->
             when (view.id) {
                 R.id.ivEmo -> {
-                    scrollToBottom()
                     etContent.clearFocus()
                     if (!elEmotion.isShown) {
                         if (moreActionDialog.isShown) {
@@ -470,7 +467,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                 if (data.getBooleanExtra("take_photo", true)) {
                     path?.let { mViewModel.sendImage(it, true) }
                 }
-                scrollToBottom()
             }
             REQUEST_LOCATION -> if (resultCode == RESULT_OK) {
                 val locationData: LocationData = data!!.getSerializableExtra("location") as LocationData
@@ -574,7 +570,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                 val file = File(audioPath.path)
                 if (file.exists()) {
                     mViewModel.sendAudio(audioPath, duration)
-                    scrollToBottom()
                 }
             }
 

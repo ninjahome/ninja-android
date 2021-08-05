@@ -36,12 +36,11 @@
                 android:layout_weight="1"
                 app:onRefreshCommand="@{viewModel.refreshCommand}">
 
-                <com.lqr.recyclerview.LQRRecyclerView
-                    android:id="@+id/rvMsg"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler"
                     onTouchCommand="@{viewModel.touchRecycler}"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
                     android:overScrollMode="never" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

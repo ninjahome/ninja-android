@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator
 import android.os.Handler
 import android.os.Looper
 import android.widget.ImageView
+import androidx.recyclerview.widget.LinearLayoutManager
 import chatLib.ChatLib
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
@@ -50,10 +51,10 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
     private val handler: Handler by lazy { Handler(Looper.getMainLooper(), this@ConversationListFragment) }
     override fun initView() {
         EventBus.getDefault().register(this)
-        rightIv = mDatabinding.root.findViewById<ImageView>(R.id.title_right_iv)
+        rightIv = mDatabinding.root.findViewById(R.id.title_right_iv)
         animator = ObjectAnimator.ofFloat(rightIv, "rotation", 0.0F, 45.0F)
         animatorRecover = ObjectAnimator.ofFloat(rightIv, "rotation", -45.0F, 0.0F)
-        recyclerView.itemAnimator = null
+
         initMarginTop()
     }
 

@@ -260,7 +260,7 @@ class ConversationViewModel(val model: ConversationModel) : BaseViewModel() {
             if (isGroup) {
                 title = groupChat?.groupName
             } else {
-                title = ContactDBManager.queryNickNameByUID(this.id)
+                title = ContactDBManager.queryTitleByUID(this.id)
                 if (title == null) {
                     title = this.id
                 }

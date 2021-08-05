@@ -1,2 +1,2 @@
-include ':golib',':app',':lib','audiolib','cameralib'
+include ':lib-go',':app',':lib','lib-audio','lib-camera'
 rootProject.name = "Ninja"

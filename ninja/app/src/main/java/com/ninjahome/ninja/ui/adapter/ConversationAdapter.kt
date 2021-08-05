@@ -2,12 +2,14 @@ package com.ninjahome.ninja.ui.adapter
 
 import android.content.Context
 import android.text.style.ImageSpan
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import chatLib.ChatLib
-import com.lqr.adapter.LQRAdapterForRecyclerView
 import com.lqr.adapter.LQRViewHolderForRecyclerView
 import com.lqr.emoji.MoonUtils
 import com.ninja.android.lib.provider.context
@@ -21,14 +23,16 @@ import com.ninjahome.ninja.model.bean.Message
 import com.ninjahome.ninja.model.bean.Message.SentStatus
 import com.ninjahome.ninja.room.ContactDBManager
 import com.ninjahome.ninja.room.GroupDBManager
+import com.ninjahome.ninja.ui.adapter.lqr.LQRAdapterForRecyclerView
 import com.ninjahome.ninja.utils.TimeUtils
 import com.ninjahome.ninja.utils.UIUtils
+import com.ninjahome.ninja.utils.fromJson
 import com.ninjahome.ninja.view.BubbleImageView
 import com.ninjahome.ninja.view.contacts.ColorUtil
 import com.ninjahome.ninja.view.contacts.TextDrawable
+import com.zhy.autolayout.utils.ScreenUtils
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import org.json.JSONArray
 
 /**
  * @描述 会话界面的消息列表适配器
@@ -37,10 +41,10 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
     var receiverIcon: TextDrawable? = null
     private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(30)
     private val userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "")
-    private val myIconIndex = ChatLib.iconIndex(NinjaApp.instance.account.address, ColorUtil.colorSize)
-    private val myIconColor = ColorUtil.colors[myIconIndex]
+    private val conversationIconIndex = ChatLib.iconIndex(NinjaApp.instance.account.address, ColorUtil.colorSize)
+    private val conversationIconColor = ColorUtil.colors[conversationIconIndex]
     val subName = if (userName.length >= 2) userName.substring(0, 2) else userName
-    private val myIcon = mDrawableBuilder.textColor(mContext.getColor(R.color.white)).endConfig().buildRound(subName, mContext.resources.getColor(myIconColor, null))
+    private val myIcon = mDrawableBuilder.textColor(mContext.getColor(R.color.white)).endConfig().buildRound(subName, mContext.resources.getColor(conversationIconColor, null))
 
     interface ClickListener {
         fun clickItemReCommit(item: Message)
@@ -58,6 +62,7 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
     }
 
     private fun setView(helper: LQRViewHolderForRecyclerView, item: Message) {
+        println("=====================convertView.width:"+helper.convertView.width)
         //根据消息类型设置消息显示内容
         if (item.type == Message.Type.TEXT) {
             MoonUtils.identifyFaceExpression(mContext, helper.getView(R.id.tvText), item.msg, ImageSpan.ALIGN_BOTTOM)
@@ -150,11 +155,11 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
             if (isGroup) {
                 val group = GroupDBManager.queryByGroupId(groupId)
                 group?.let {
-                    val memberIds = JSONArray(it.memberIdList)
-                    val memberNames = JSONArray(it.memberNickNameList)
-                    for (index in 0 until memberIds.length()) {
+                    val memberIds = it.memberIdList.fromJson<ArrayList<String>>()
+                    val memberNames = it.memberNickNameList.fromJson<ArrayList<String>>()
+                    for (index in 0 until memberIds!!.size) {
                         if (memberIds[index].equals(item.from)) {
-                            name = memberNames[index] as String
+                            name = memberNames!![index] as String
                         }
                     }
                 }

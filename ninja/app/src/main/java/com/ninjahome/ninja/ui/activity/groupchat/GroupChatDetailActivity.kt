@@ -9,6 +9,7 @@ import com.ninjahome.ninja.databinding.ActivityGroupChatDetailBinding
 import com.ninjahome.ninja.model.bean.GroupInfo
 import com.ninjahome.ninja.model.bean.GroupMember
 import com.ninjahome.ninja.room.GroupDBManager
+import com.ninjahome.ninja.utils.fromJson
 import com.ninjahome.ninja.viewmodel.GroupChatDetailItemViewModel
 import com.ninjahome.ninja.viewmodel.GroupChatDetailViewModel
 import kotlinx.coroutines.MainScope
@@ -45,12 +46,12 @@ class GroupChatDetailActivity : BaseActivity<GroupChatDetailViewModel, ActivityG
                         finish()
                         return@observe
                     }
-                    val ids = JSONArray(groupChat!!.memberIdList)
-                    val nickNames = JSONArray(groupChat.memberNickNameList)
+                    val ids = groupChat.memberIdList.fromJson<ArrayList<String>>()
+                    val nickNames = groupChat.memberNickNameList.fromJson<ArrayList<String>>()
                     var groupMember: GroupMember
-                    for (i: Int in 0 until ids.length()) {
-                        if (i < nickNames.length()) {
-                            groupMember = GroupMember(ids[i].toString(), nickNames[i].toString())
+                    for (i: Int in 0 until ids!!.size) {
+                        if (i < nickNames!!.size) {
+                            groupMember = GroupMember(ids[i], nickNames[i])
                             mViewModel.memberIconItem.add(GroupChatDetailItemViewModel(mViewModel, groupMember))
                         }
 

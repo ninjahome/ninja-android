@@ -24,9 +24,9 @@ object ContactDBManager {
 
     }
 
-    suspend fun queryNickNameByUID(uid: String): String? {
+    suspend fun queryTitleByUID(uid: String): String? {
         return withContext(Dispatchers.IO) {
-            return@withContext contactDao.queryNickNameByUID(uid)
+            return@withContext contactDao.queryTitleByUID(uid)
         }
 
     }
