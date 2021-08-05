@@ -98,6 +98,11 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         recycler.layoutManager = linearLayoutManager
         ImmersionBar.with(this).statusBarColor(com.ninja.android.lib.R.color.white).barEnable(true).keyboardEnable(true).statusBarDarkFont(true).fitsSystemWindows(true).init()
         initEmotionKeyboard()
+        initDialog()
+        getIntentData()
+    }
+
+    private fun initDialog() {
         moreActionDialog = DialogUtils.showMoreActionDialog(this, object : ConversationMoreActionPop.ConversationMoreActionListener {
             override fun action(index: Int) {
                 when (index) {
@@ -109,7 +114,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             }
 
         })
-        getIntentData()
     }
 
     override fun onNewIntent(intent: Intent?) {

@@ -28,10 +28,12 @@ import com.ninjahome.ninja.room.MessageDBManager
 import com.ninjahome.ninja.ui.activity.contact.ContactDetailActivity
 import com.ninjahome.ninja.ui.activity.contact.ScanContactSuccessActivity
 import com.ninjahome.ninja.ui.activity.groupchat.GroupChatDetailActivity
+import com.ninjahome.ninja.utils.ImageUtils
 import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.functions.Function
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
 
 /**
  *Author:Mr'x
@@ -182,11 +184,16 @@ class ConversationViewModel(val model: ConversationModel) : BaseViewModel() {
             val conversationId = getConversationId(context().getString(R.string.message_type_image))
             message.conversationId = conversationId
             message.id = MessageDBManager.insert(message)
+            var imageFileSource: File? = null
+            if (compress) {
+                imageFileSource = ImageUtils.compressImage(path)
+            }
+            imageFileSource = imageFileSource ?: File(path)
+            message.data = File(imageFileSource.path).readBytes()
             if (isGroup) {
-                model.sendGroupImageMessage(id, path, compress)
+                model.sendGroupImageMessage(id, message.data)
             } else {
-
-                model.sendImageMessage(id, path, compress)
+                model.sendImageMessage(id, message.data)
             }
             message.sentStatus = Message.SentStatus.SENT
             MessageDBManager.updateMessage(message)
@@ -209,11 +216,11 @@ class ConversationViewModel(val model: ConversationModel) : BaseViewModel() {
                 val conversationId = getConversationId(context().getString(R.string.message_type_voice))
                 message.conversationId = conversationId
                 message.id = MessageDBManager.insert(message)
+                message.data = File(it).readBytes()
                 if (isGroup) {
-                    model.sendGroupVoiceMessage(id, it, duration)
+                    model.sendGroupVoiceMessage(id, message.data, duration)
                 } else {
-
-                    model.sendVoiceMessage(id, it, duration)
+                    model.sendVoiceMessage(id, message.data, duration)
                 }
                 message.sentStatus = Message.SentStatus.SENT
                 MessageDBManager.updateMessage(message)
@@ -298,16 +305,32 @@ class ConversationViewModel(val model: ConversationModel) : BaseViewModel() {
             MessageDBManager.updateMessage(message)
             when (message.type) {
                 Message.Type.TEXT -> {
-                    model.sendTextMessage(id, message.msg)
+                    if (isGroup) {
+                        model.sendGroupTextMessage(id, message.msg, groupChat!!.memberIdList)
+                    } else {
+                        model.sendTextMessage(id, message.msg)
+                    }
                 }
                 Message.Type.IMAGE -> {
-                    model.sendImageMessage(id, message.uri, true)
+                    if (isGroup) {
+                        model.sendGroupImageMessage(id, message.data)
+                    } else {
+                        model.sendImageMessage(id, message.data)
+                    }
                 }
                 Message.Type.VOICE -> {
-                    model.sendVoiceMessage(id, message.uri, message.duration)
+                    if (isGroup) {
+                        model.sendGroupVoiceMessage(id, message.data, message.duration)
+                    } else {
+                        model.sendVoiceMessage(id, message.data, message.duration)
+                    }
                 }
                 Message.Type.LOCATION -> {
-                    model.sendLocationMessage(id, message.lng, message.lat, message.locationAddress)
+                    if (isGroup) {
+                        model.sendGroupLocationMessage(id, message.lng, message.lat, message.locationAddress)
+                    } else {
+                        model.sendLocationMessage(id, message.lng, message.lat, message.locationAddress)
+                    }
                 }
             }
             message.sentStatus = Message.SentStatus.SENT

@@ -54,7 +54,7 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
         rightIv = mDatabinding.root.findViewById(R.id.title_right_iv)
         animator = ObjectAnimator.ofFloat(rightIv, "rotation", 0.0F, 45.0F)
         animatorRecover = ObjectAnimator.ofFloat(rightIv, "rotation", -45.0F, 0.0F)
-
+        recyclerView.itemAnimator = null
         initMarginTop()
     }
 

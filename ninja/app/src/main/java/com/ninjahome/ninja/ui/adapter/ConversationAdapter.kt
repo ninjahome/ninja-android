@@ -1,6 +1,7 @@
 package com.ninjahome.ninja.ui.adapter
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.text.style.ImageSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -62,13 +63,13 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
     }
 
     private fun setView(helper: LQRViewHolderForRecyclerView, item: Message) {
-        println("=====================convertView.width:"+helper.convertView.width)
         //根据消息类型设置消息显示内容
         if (item.type == Message.Type.TEXT) {
             MoonUtils.identifyFaceExpression(mContext, helper.getView(R.id.tvText), item.msg, ImageSpan.ALIGN_BOTTOM)
         } else if (item.type == Message.Type.IMAGE) {
             val bivPic = helper.getView<BubbleImageView>(R.id.bivPic)
-            ImageLoaderProxy.loadImage(item.uri, bivPic, R.drawable.default_img_failed)
+            bivPic.setImageBitmap(BitmapFactory.decodeByteArray(item.data,0,item.data.size))
+//            ImageLoaderProxy.loadImage(item.uri, bivPic, R.drawable.default_img_failed)
         } else if (item.type == Message.Type.LOCATION) {
             helper.setText(R.id.tvTitle, item.locationAddress)
             val ivLocation = helper.getView<ImageView>(R.id.ivLocation)

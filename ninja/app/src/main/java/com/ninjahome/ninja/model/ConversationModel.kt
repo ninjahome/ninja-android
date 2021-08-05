@@ -23,27 +23,22 @@ class ConversationModel {
         }
     }
 
-    suspend fun sendImageMessage(uid: String, path: String, compress: Boolean) {
+    suspend fun sendImageMessage(uid: String, data: ByteArray) {
         withContext(Dispatchers.IO) {
             if (!ChatLib.wsIsOnline()) {
                 ChatLib.wsOnline()
             }
-            var imageFileSource: File? = null
-            if (compress) {
-                imageFileSource = ImageUtils.compressImage(path)
-            }
-            imageFileSource = imageFileSource ?: File(path)
-            ChatLib.writeImageMessage(uid, File(imageFileSource.path).readBytes())
+            ChatLib.writeImageMessage(uid, data)
         }
     }
 
-    suspend fun sendVoiceMessage(uid: String, audioPath: String, duration: Int) {
+    suspend fun sendVoiceMessage(uid: String, data: ByteArray, duration: Int) {
         withContext(Dispatchers.IO) {
             if (!ChatLib.wsIsOnline()) {
                 ChatLib.wsOnline()
             }
 
-            ChatLib.writeVoiceMessage(uid, File(audioPath).readBytes(), duration.toLong())
+            ChatLib.writeVoiceMessage(uid, data, duration.toLong())
         }
     }
 
@@ -68,33 +63,28 @@ class ConversationModel {
     }
 
 
-    suspend fun sendGroupImageMessage(id: String, path: String, compress: Boolean) {
+    suspend fun sendGroupImageMessage(id: String, data: ByteArray) {
         withContext(Dispatchers.IO) {
             if (!ChatLib.wsIsOnline()) {
                 ChatLib.wsOnline()
             }
-            var imageFileSource: File? = null
-            if (compress) {
-                imageFileSource = ImageUtils.compressImage(path)
-            }
-            imageFileSource = imageFileSource ?: File(path)
+
             val groupChat = GroupDBManager.queryByGroupId(id)
             groupChat?.let {
-                ChatLib.writeImageGroupMessage(it.memberIdList, File(imageFileSource.path).readBytes(), id)
+                ChatLib.writeImageGroupMessage(it.memberIdList, data, id)
             }
         }
 
     }
 
-    suspend fun sendGroupVoiceMessage(id: String, audioPath: String, duration: Int) {
+    suspend fun sendGroupVoiceMessage(id: String, data: ByteArray, duration: Int) {
         withContext(Dispatchers.IO) {
             if (!ChatLib.wsIsOnline()) {
                 ChatLib.wsOnline()
             }
             val groupChat = GroupDBManager.queryByGroupId(id)
             groupChat?.let {
-
-                ChatLib.writeVoiceGroupMessage(it.memberIdList, File(audioPath).readBytes(), duration.toLong(), id)
+                ChatLib.writeVoiceGroupMessage(it.memberIdList, data, duration.toLong(), id)
             }
         }
     }

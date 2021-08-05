@@ -389,7 +389,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
         println("-----------------------------图片------------------------------")
         MainScope().launch {
             val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_image), time, false)
-            val message = Message(0, conversation.id, from, to, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.IMAGE, msg = context().getString(R.string.message_type_image))
+            val message = Message(0, conversation.id, from, to, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.IMAGE,data = payload, msg = context().getString(R.string.message_type_image))
             message.uri = FileUtils.saveImageToPath(Constants.PHOTO_SAVE_DIR, payload)
             insertMessage(message, conversation)
 
