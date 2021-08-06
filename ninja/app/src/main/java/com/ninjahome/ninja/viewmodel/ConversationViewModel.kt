@@ -184,16 +184,11 @@ class ConversationViewModel(val model: ConversationModel) : BaseViewModel() {
             val conversationId = getConversationId(context().getString(R.string.message_type_image))
             message.conversationId = conversationId
             message.id = MessageDBManager.insert(message)
-            var imageFileSource: File? = null
-            if (compress) {
-                imageFileSource = ImageUtils.compressImage(path)
-            }
-            imageFileSource = imageFileSource ?: File(path)
-            message.data = File(imageFileSource.path).readBytes()
             if (isGroup) {
-                model.sendGroupImageMessage(id, message.data)
+                model.sendGroupImageMessage(id, path, compress)
             } else {
-                model.sendImageMessage(id, message.data)
+
+                model.sendImageMessage(id, path, compress)
             }
             message.sentStatus = Message.SentStatus.SENT
             MessageDBManager.updateMessage(message)
@@ -216,11 +211,11 @@ class ConversationViewModel(val model: ConversationModel) : BaseViewModel() {
                 val conversationId = getConversationId(context().getString(R.string.message_type_voice))
                 message.conversationId = conversationId
                 message.id = MessageDBManager.insert(message)
-                message.data = File(it).readBytes()
                 if (isGroup) {
-                    model.sendGroupVoiceMessage(id, message.data, duration)
+                    model.sendGroupVoiceMessage(id, it, duration)
                 } else {
-                    model.sendVoiceMessage(id, message.data, duration)
+
+                    model.sendVoiceMessage(id, it, duration)
                 }
                 message.sentStatus = Message.SentStatus.SENT
                 MessageDBManager.updateMessage(message)
@@ -313,16 +308,16 @@ class ConversationViewModel(val model: ConversationModel) : BaseViewModel() {
                 }
                 Message.Type.IMAGE -> {
                     if (isGroup) {
-                        model.sendGroupImageMessage(id, message.data)
+                        model.sendGroupImageMessage(id, message.uri,true)
                     } else {
-                        model.sendImageMessage(id, message.data)
+                        model.sendImageMessage(id, message.uri,true)
                     }
                 }
                 Message.Type.VOICE -> {
                     if (isGroup) {
-                        model.sendGroupVoiceMessage(id, message.data, message.duration)
+                        model.sendGroupVoiceMessage(id, message.uri, message.duration)
                     } else {
-                        model.sendVoiceMessage(id, message.data, message.duration)
+                        model.sendVoiceMessage(id, message.uri, message.duration)
                     }
                 }
                 Message.Type.LOCATION -> {

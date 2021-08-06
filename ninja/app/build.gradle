@@ -75,10 +75,10 @@ dependencies {
     implementation rootProject.ext.androidx["lifecycle-viewmodel-ktx"]
     implementation rootProject.ext.dependencies["immersionbar-components"]
     api rootProject.ext.dependencies['moshi']
-    implementation project(path: ':lib')
-    implementation project(path: ':lib-audio')
-    implementation project(path: ':lib-camera')
-    implementation project(path: ':lib-go')
+    implementation project(path: ':lib_common')
+    implementation project(path: ':lib_audio')
+    implementation project(path: ':lib_camera')
+    implementation project(path: ':lib_go')
     kapt rootProject.ext.dependencies['moshi-kotlin-codegen']
 
     implementation "androidx.room:room-runtime:2.3.0-alpha03"

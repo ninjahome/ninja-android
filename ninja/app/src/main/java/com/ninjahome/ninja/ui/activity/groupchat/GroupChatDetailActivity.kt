@@ -46,8 +46,8 @@ class GroupChatDetailActivity : BaseActivity<GroupChatDetailViewModel, ActivityG
                         finish()
                         return@observe
                     }
-                    val ids = groupChat.memberIdList.fromJson<ArrayList<String>>()
-                    val nickNames = groupChat.memberNickNameList.fromJson<ArrayList<String>>()
+                    val ids = groupChat.memberIdList.fromJson<List<String>>()
+                    val nickNames = groupChat.memberNickNameList.fromJson<List<String>>()
                     var groupMember: GroupMember
                     for (i: Int in 0 until ids!!.size) {
                         if (i < nickNames!!.size) {

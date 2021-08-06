@@ -68,8 +68,7 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
             MoonUtils.identifyFaceExpression(mContext, helper.getView(R.id.tvText), item.msg, ImageSpan.ALIGN_BOTTOM)
         } else if (item.type == Message.Type.IMAGE) {
             val bivPic = helper.getView<BubbleImageView>(R.id.bivPic)
-            bivPic.setImageBitmap(BitmapFactory.decodeByteArray(item.data,0,item.data.size))
-//            ImageLoaderProxy.loadImage(item.uri, bivPic, R.drawable.default_img_failed)
+            ImageLoaderProxy.loadImage(item.uri, bivPic, R.drawable.default_img_failed)
         } else if (item.type == Message.Type.LOCATION) {
             helper.setText(R.id.tvTitle, item.locationAddress)
             val ivLocation = helper.getView<ImageView>(R.id.ivLocation)
@@ -156,11 +155,11 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
             if (isGroup) {
                 val group = GroupDBManager.queryByGroupId(groupId)
                 group?.let {
-                    val memberIds = it.memberIdList.fromJson<ArrayList<String>>()
-                    val memberNames = it.memberNickNameList.fromJson<ArrayList<String>>()
-                    for (index in 0 until memberIds!!.size) {
-                        if (memberIds[index].equals(item.from)) {
-                            name = memberNames!![index] as String
+                    val memberIds = it.memberIdList.fromJson<List<String>>()
+                    val memberNames = it.memberNickNameList.fromJson<List<String>>()
+                    for (index in memberIds!!.indices) {
+                        if (memberIds[index] == item.from) {
+                            name = memberNames!![index]
                         }
                     }
                 }

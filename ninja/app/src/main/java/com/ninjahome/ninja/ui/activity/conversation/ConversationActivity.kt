@@ -77,6 +77,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     lateinit var imagePicker: WechatImagePicker
     private var isFirstObserv = true
     var isObservable = false
+    val linearLayoutManager:LinearLayoutManager by lazy { LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false) }
     lateinit var messages: LiveData<List<Message>?>
 
     private lateinit var conversationAdapter: ConversationAdapter
@@ -93,7 +94,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     override fun initView() {
         imagePicker = create(WechatImagePicker::class.java)
-        val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         linearLayoutManager.stackFromEnd = true
         recycler.layoutManager = linearLayoutManager
         ImmersionBar.with(this).statusBarColor(com.ninja.android.lib.R.color.white).barEnable(true).keyboardEnable(true).statusBarDarkFont(true).fitsSystemWindows(true).init()

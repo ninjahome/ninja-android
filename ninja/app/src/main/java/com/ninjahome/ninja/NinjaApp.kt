@@ -305,8 +305,10 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
                 conversation = ConversationDBManager.queryByGroupId(groupId)
                 val groupInfo = GroupDBManager.queryByGroupId(groupId)
                 if (groupInfo != null) {
-                    val memberIds = groupInfo.memberIdList.fromJson<ArrayList<String>>()
-                    val memberNames = groupInfo.memberNickNameList.fromJson<ArrayList<String>>()
+                    println("================"+groupInfo.memberIdList)
+                    println("================"+groupInfo.memberNickNameList)
+                    val memberIds = groupInfo.memberIdList.fromJson<List<String>>()
+                    val memberNames = groupInfo.memberNickNameList.fromJson<List<String>>()
                     for (index in 0 until memberIds!!.size) {
                         if (memberIds[index].equals(from)) {
                             nickName = memberNames!![index] as String
