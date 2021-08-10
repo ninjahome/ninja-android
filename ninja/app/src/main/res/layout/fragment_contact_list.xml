@@ -41,6 +41,7 @@
             android:drawablePadding="5dp"
             android:gravity="center_vertical"
             android:text="@string/contact_group_chat"
+            android:visibility="gone"
             android:textColor="@color/color_0c123d"
             android:textSize="16sp"
             app:drawableEndCompat="@drawable/next_icon"

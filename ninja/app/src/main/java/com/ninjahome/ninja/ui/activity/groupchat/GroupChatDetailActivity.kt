@@ -1,5 +1,6 @@
 package com.ninjahome.ninja.ui.activity.groupchat
 
+import androidx.lifecycle.rxLifeScope
 import com.ninja.android.lib.base.BaseActivity
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.IntentKey
@@ -38,7 +39,7 @@ class GroupChatDetailActivity : BaseActivity<GroupChatDetailViewModel, ActivityG
 
     override fun initObserve() {
         mViewModel.groupDetail.value?.let {
-            MainScope().launch {
+            rxLifeScope.launch {
                 GroupDBManager.queryLiveDataByGroupId(mViewModel.groupDetail.value!!.groupId).observe(this@GroupChatDetailActivity) { groupChat ->
                     mViewModel.groupDetail.value = groupChat
                     mViewModel.memberIconItem.clear()

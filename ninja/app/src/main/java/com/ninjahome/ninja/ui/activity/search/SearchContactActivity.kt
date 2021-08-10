@@ -1,6 +1,7 @@
 package com.ninjahome.ninja.ui.activity.search
 
 import android.content.Intent
+import androidx.lifecycle.rxLifeScope
 import chatLib.ChatLib
 import com.google.zxing.integration.android.IntentIntegrator
 import com.ninja.android.lib.base.BaseActivity
@@ -40,7 +41,7 @@ class SearchContactActivity : BaseActivity<SearchContactViewModel, ActivitySearc
     }
 
     private fun nextStep() {
-        MainScope().launch {
+        rxLifeScope.launch {
             val contact = mViewModel.inputID.value?.let { ContactDBManager.queryByID(it) }
             if (contact == null) {
                 startScanContactSuccessActivity()

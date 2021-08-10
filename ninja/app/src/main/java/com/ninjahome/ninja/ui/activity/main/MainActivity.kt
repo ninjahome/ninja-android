@@ -3,6 +3,7 @@ package com.ninjahome.ninja.ui.activity.main
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.rxLifeScope
 import androidx.viewpager.widget.ViewPager
 import chatLib.ChatLib
 import com.ninja.android.lib.base.BaseActivity
@@ -78,7 +79,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
     }
 
     private fun deleteReadMessage() {
-        MainScope().launch {
+        rxLifeScope.launch {
             MessageDBManager.deleteAllReadMessage()
             ConversationDBManager.deleteReadConversation()
         }

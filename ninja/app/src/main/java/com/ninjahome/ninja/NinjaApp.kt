@@ -26,9 +26,8 @@ import com.ninjahome.ninja.utils.fromJson
 import com.ninjahome.ninja.utils.toJson
 import com.ninjahome.ninja.viewmodel.*
 import com.orhanobut.logger.*
+import com.rxlife.coroutine.RxLifeScope
 import com.umeng.commonsdk.UMConfigure
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.greenrobot.eventbus.EventBus
@@ -46,6 +45,7 @@ import org.koin.dsl.module
  */
 class NinjaApp : BaseApplication(), UnicastCallBack {
     private val mutex = Mutex()
+    val rxLifeScope = RxLifeScope()
     lateinit var account: Account
 
     companion object {
@@ -57,6 +57,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
         instance = this
         initLogger()
         initKoin()
+
         initPush()
         initImagePicker()
         ImageLoaderProxy.initLoader(GlideImageLoader())
@@ -140,7 +141,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
 
             override fun dismisGroup(groupId: String) {
                 Logger.d("-----------------dismisGroup-----groupId:${groupId}  ---------")
-                MainScope().launch {
+                RxLifeScope().launch {
                     val groupChat = GroupDBManager.queryByGroupId(groupId)
                     if (groupChat != null) {
                         GroupDBManager.delete(groupChat)
@@ -153,7 +154,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
 
             override fun quitGroup(from: String, groupId: String, quitId: String) {
                 Logger.d("-----------------quitGroup-----from:${from}   groupId:${groupId}   quitId:${quitId}---------")
-                MainScope().launch {
+                rxLifeScope.launch {
                     val group = GroupDBManager.queryByGroupId(groupId)
                     if (group != null) {
                         val newIds = ArrayList<String>()
@@ -176,7 +177,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
 
             override fun syncGroup(groupId: String): String {
                 var syncGroup: SyncGroup? = null
-                MainScope().launch {
+                rxLifeScope.launch {
                     val groupInfo = GroupDBManager.queryByGroupId(groupId)
                     if (groupInfo != null) {
                         syncGroup = SyncGroup(groupInfo.groupId, groupInfo.groupName, groupInfo.owner, groupInfo.banTalking, MoshiUtils.listFromJson(groupInfo.memberIdList), MoshiUtils.listFromJson(groupInfo.memberNickNameList))
@@ -196,7 +197,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
 
             override fun joinGroup(from: String?, groupId: String, groupName: String?, owner: String?, memberIdList: String, memberNickNameList: String, newIdList: String, banTalkding: Boolean) {
                 Logger.d("-----------------joinGroup-----from:${from}   groupId:${groupId}    groupName:${groupName}  owner:${owner}  memberIdList:${memberIdList}   memberNickNameList:${memberNickNameList}    newIdList:${newIdList} ---------")
-                MainScope().launch {
+                rxLifeScope.launch {
                     val groupInfo = GroupDBManager.queryByGroupId(groupId)
                     if (groupInfo != null) {
                         groupInfo.memberIdList = memberIdList
@@ -208,7 +209,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
 
             override fun kickOutUser(from: String, groupId: String, kickIds: String) {
                 Logger.d("-----------------kickOutUser-----from:${from}   groupId:${groupId}   kickId:${kickIds} ")
-                MainScope().launch {
+                rxLifeScope.launch {
                     val group = GroupDBManager.queryByGroupId(groupId)
                     if (group != null) {
                         val newIds = ArrayList<String>()
@@ -237,7 +238,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
 
 
             override fun textMessage(from: String, groupId: String, payload: String, time: Long) {
-                MainScope().launch {
+                rxLifeScope.launch {
                     val conversation = insertOrUpdateConversation(from, payload, time, true, groupId)
                     val message = Message(0, conversation.id, from, instance.account.address, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.TEXT, msg = payload)
                     insertMessage(message, conversation)
@@ -246,7 +247,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
 
 
             override fun imageMessage(from: String, groupId: String, payload: ByteArray, time: Long) {
-                MainScope().launch {
+                rxLifeScope.launch {
                     val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_image), time, true, groupId)
                     val message = Message(0, conversation.id, from, instance.account.address, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.IMAGE, msg = context().getString(R.string.message_type_image))
                     message.uri = FileUtils.saveImageToPath(Constants.PHOTO_SAVE_DIR, payload)
@@ -256,7 +257,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
             }
 
             override fun voiceMessage(from: String, groupId: String, payload: ByteArray, length: Long, time: Long) {
-                MainScope().launch {
+                rxLifeScope.launch {
                     val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_voice), time, true, groupId)
                     val message = Message(0, conversation.id, from, account.address, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.VOICE, msg = context().getString(R.string.message_type_voice), duration = length.toInt())
                     message.uri = FileUtils.saveVoiceToPath(Constants.AUDIO_SAVE_DIR, payload)
@@ -265,7 +266,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
             }
 
             override fun locationMessage(from: String, groupId: String, lng: Float, lat: Float, name: String, time: Long) {
-                MainScope().launch {
+                rxLifeScope.launch {
                     val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_location), time, true, groupId)
                     val message = Message(0, conversation.id, from, account.address, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.LOCATION, lat = lat, lng = lng, locationAddress = name, msg = context().getString(R.string.message_type_location))
                     insertMessage(message, conversation)
@@ -278,7 +279,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
     }
 
     private fun createGroup(groupId: String, groupName: String, owner: String, memberIdList: String, memberNickNameList: String) {
-        MainScope().launch {
+        rxLifeScope.launch {
             val group = GroupDBManager.queryByGroupId(groupId)
             if (group == null) {
                 val groupConversation = GroupInfo(0, groupId, groupName, owner, memberIdList, memberNickNameList)
@@ -305,8 +306,8 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
                 conversation = ConversationDBManager.queryByGroupId(groupId)
                 val groupInfo = GroupDBManager.queryByGroupId(groupId)
                 if (groupInfo != null) {
-                    println("================"+groupInfo.memberIdList)
-                    println("================"+groupInfo.memberNickNameList)
+                    println("================" + groupInfo.memberIdList)
+                    println("================" + groupInfo.memberNickNameList)
                     val memberIds = groupInfo.memberIdList.fromJson<List<String>>()
                     val memberNames = groupInfo.memberNickNameList.fromJson<List<String>>()
                     for (index in 0 until memberIds!!.size) {
@@ -376,7 +377,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
 
     override fun locationMessage(from: String, to: String, lng: Float, lat: Float, locationAddress: String, time: Long) {
         println("-----------------------------位置------------------------------")
-        MainScope().launch {
+        rxLifeScope.launch {
             val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_location), time, false)
             val message = Message(0, conversation.id, from, to, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.LOCATION, lat = lat, lng = lng, locationAddress = locationAddress, msg = context().getString(R.string.message_type_location))
             insertMessage(message, conversation)
@@ -389,9 +390,9 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
 
     override fun imageMessage(from: String, to: String, payload: ByteArray, time: Long) {
         println("-----------------------------图片------------------------------")
-        MainScope().launch {
+        rxLifeScope.launch {
             val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_image), time, false)
-            val message = Message(0, conversation.id, from, to, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.IMAGE,data = payload, msg = context().getString(R.string.message_type_image))
+            val message = Message(0, conversation.id, from, to, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.IMAGE, data = payload, msg = context().getString(R.string.message_type_image))
             message.uri = FileUtils.saveImageToPath(Constants.PHOTO_SAVE_DIR, payload)
             insertMessage(message, conversation)
 
@@ -401,7 +402,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
 
     override fun textMessage(from: String, to: String, data: String, time: Long) {
         println("-----------------------------${data}------------------------------")
-        MainScope().launch {
+        rxLifeScope.launch {
             val conversation = insertOrUpdateConversation(from, data, time, false)
             val message = Message(0, conversation.id, from, to, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.TEXT, msg = data)
             insertMessage(message, conversation)
@@ -411,7 +412,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
 
     override fun voiceMessage(from: String, to: String, payload: ByteArray, length: Long, time: Long) {
         println("-----------------------------语音${length}------------------------------")
-        MainScope().launch {
+        rxLifeScope.launch {
             val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_voice), time, false)
             val message = Message(0, conversation.id, from, to, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.VOICE, msg = context().getString(R.string.message_type_voice), duration = length.toInt())
             message.uri = FileUtils.saveVoiceToPath(Constants.AUDIO_SAVE_DIR, payload)
@@ -424,4 +425,5 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
         Logger.d("webSocketClosed")
         EventBus.getDefault().post(EventOffline())
     }
+
 }

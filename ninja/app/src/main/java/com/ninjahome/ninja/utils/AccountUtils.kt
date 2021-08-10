@@ -16,10 +16,7 @@ import com.google.zxing.common.HybridBinarizer
 import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.model.bean.Account
 import com.orhanobut.logger.Logger
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
@@ -43,7 +40,7 @@ object AccountUtils {
         if (file.exists()) {
             file.delete()
         }
-        MainScope().launch {
+        CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.IO) {
                 val encryptedFile = getEncryptedFile(path)
                 saveAccountToFile(encryptedFile, data)

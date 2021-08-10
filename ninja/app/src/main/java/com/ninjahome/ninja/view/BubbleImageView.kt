@@ -7,12 +7,13 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.TypedValue
+import android.widget.ImageView
 import com.ninjahome.ninja.R
 
 /**
  * @描述 气泡型ImageView
  */
-class BubbleImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : androidx.appcompat.widget.AppCompatImageView(context, attrs, defStyle) {
+class BubbleImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : ImageView(context, attrs, defStyle) {
     private var mAngle = dp2px(10)
     private var mArrowTop = dp2px(40)
     private var mArrowWidth = dp2px(20)

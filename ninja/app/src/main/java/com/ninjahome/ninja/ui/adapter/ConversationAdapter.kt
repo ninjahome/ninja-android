@@ -32,8 +32,11 @@ import com.ninjahome.ninja.view.BubbleImageView
 import com.ninjahome.ninja.view.contacts.ColorUtil
 import com.ninjahome.ninja.view.contacts.TextDrawable
 import com.zhy.autolayout.utils.ScreenUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @描述 会话界面的消息列表适配器
@@ -150,7 +153,7 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
     }
 
     private fun setReceiverAvatar(helper: LQRViewHolderForRecyclerView, item: Message) {
-        MainScope().launch {
+        CoroutineScope(Dispatchers.IO).launch {
             var name = item.from
             if (isGroup) {
                 val group = GroupDBManager.queryByGroupId(groupId)

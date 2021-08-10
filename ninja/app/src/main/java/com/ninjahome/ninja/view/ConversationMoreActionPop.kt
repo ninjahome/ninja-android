@@ -17,7 +17,8 @@ class ConversationMoreActionPop(context: Context, val listener: ConversationMore
         const val ALBUM = 0
         const val TAKE_PHOTO = 1
         const val LOCATION = 2
-        const val CANCEL = 3
+        const val FILE = 3
+        const val CANCEL = 4
     }
 
     interface ConversationMoreActionListener {
@@ -33,6 +34,7 @@ class ConversationMoreActionPop(context: Context, val listener: ConversationMore
         findViewById<TextView>(R.id.albumTv).setOnClickListener(this)
         findViewById<TextView>(R.id.takePhotoTv).setOnClickListener(this)
         findViewById<TextView>(R.id.locationTv).setOnClickListener(this)
+        findViewById<TextView>(R.id.fileTv).setOnClickListener(this)
         findViewById<TextView>(R.id.cancelTv).setOnClickListener(this)
     }
 
@@ -41,6 +43,7 @@ class ConversationMoreActionPop(context: Context, val listener: ConversationMore
             R.id.albumTv -> listener.action(ALBUM)
             R.id.takePhotoTv -> listener.action(TAKE_PHOTO)
             R.id.locationTv -> listener.action(LOCATION)
+            R.id.fileTv -> listener.action(FILE)
             R.id.cancelTv -> listener.action(CANCEL)
 
         }

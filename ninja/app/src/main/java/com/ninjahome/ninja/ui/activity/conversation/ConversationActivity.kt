@@ -55,8 +55,6 @@ import com.qingmei2.rximagepicker_extension_wechat.ui.WechatImagePickerFragment
 import kotlinx.android.synthetic.main.activity_conversation.*
 import kotlinx.android.synthetic.main.activity_conversation.swipeRefreshLayout
 import kotlinx.android.synthetic.main.fragment_conversation_list.*
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import me.xfans.lib.voicewaveview.VoiceWaveView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -75,9 +73,9 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     private val REQUEST_TAKE_PHOTO = 1001
     private val REQUEST_LOCATION = 1002
     lateinit var imagePicker: WechatImagePicker
-    private var isFirstObserv = true
+    private var isFirstObserve = true
     var isObservable = false
-    val linearLayoutManager:LinearLayoutManager by lazy { LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false) }
+    private val linearLayoutManager:LinearLayoutManager by lazy { LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false) }
     lateinit var messages: LiveData<List<Message>?>
 
     private lateinit var conversationAdapter: ConversationAdapter
@@ -106,7 +104,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         moreActionDialog = DialogUtils.showMoreActionDialog(this, object : ConversationMoreActionPop.ConversationMoreActionListener {
             override fun action(index: Int) {
                 when (index) {
-                    ConversationMoreActionPop.ALBUM -> startAlbumActivity()
+                    ConversationMoreActionPop.ALBUM, ConversationMoreActionPop.FILE-> startAlbumActivity()
                     ConversationMoreActionPop.TAKE_PHOTO -> startTakePhotoActivity()
                     ConversationMoreActionPop.LOCATION -> startLocationActivity()
                 }
@@ -118,7 +116,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        MainScope().launch {
+        rxLifeScope.launch {
             if (this@ConversationActivity::messages.isInitialized) {
                 messages.removeObservers(this@ConversationActivity)
             }
@@ -129,7 +127,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         initObserve()
     }
 
-    fun getIntentData() {
+    private fun getIntentData() {
         mViewModel.id = intent.getStringExtra(IntentKey.ID)!!
         mViewModel.isGroup = intent.getBooleanExtra(IntentKey.IS_GROUP, false)
     }
@@ -141,6 +139,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     }
 
     private fun initAdapter() {
+        println("----------initAdapter执行了")
         conversationAdapter = ConversationAdapter(this, mData, mViewModel.isGroup, mViewModel.id, this)
         recycler.adapter = conversationAdapter
         conversationAdapter.onItemClickListener = this
@@ -249,7 +248,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
         }
 
-        MainScope().launch {
+        rxLifeScope.launch {
             if (!mViewModel.isGroup) {
                 return@launch
             }
@@ -261,7 +260,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
 
     private fun observeConversation() {
-        MainScope().launch {
+        rxLifeScope.launch {
             conversation = mViewModel.queryConversation()
             if (conversation != null) {
                 isObservable = true
@@ -272,8 +271,8 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
                         mData.addAll(it)
                     }
                     conversationAdapter.notifyDataSetChanged()
-                    if (isFirstObserv) {
-                        isFirstObserv = false
+                    if (isFirstObserve) {
+                        isFirstObserve = false
                         recycler.scrollToPosition((recycler.adapter?.itemCount ?: 1) - 1)
                     } else {
                         recycler.smoothScrollToPosition((recycler.adapter?.itemCount ?: 1) - 1)
@@ -288,15 +287,18 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     }
 
     private fun clearUnreadNumber() {
-        MainScope().launch {
+        rxLifeScope.launch ({
             val conversation = mViewModel.queryConversation()
+            println("-------------"+conversation?.id)
             conversation?.let {
                 MessageDBManager.updateMessage2Read(it.id)
                 it.unreadCount = 0
                 ConversationDBManager.updateConversations(it)
             }
 
-        }
+        },{
+            println("-------------"+it.message)
+        })
 
     }
 

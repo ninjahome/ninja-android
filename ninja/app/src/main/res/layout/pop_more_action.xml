@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="230dp"
+    android:layout_height="310dp"
     android:background="@drawable/bg_more_action"
     app:cardBackgroundColor="@android:color/transparent">
 
@@ -21,7 +21,6 @@
         style="@style/MoreActionTextViewStyle"
         android:text="@string/shot"
         app:drawableTopCompat="@drawable/ic_func_shot"
-
         app:layout_constraintEnd_toStartOf="@+id/locationTv"
         app:layout_constraintStart_toEndOf="@+id/albumTv"
         app:layout_constraintTop_toTopOf="@+id/albumTv" />
@@ -34,7 +33,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/takePhotoTv"
         app:layout_constraintTop_toTopOf="@+id/albumTv" />
-
+    <TextView
+        android:id="@+id/fileTv"
+        style="@style/MoreActionTextViewStyle"
+        android:layout_marginTop="29dp"
+        android:text="@string/file"
+        app:drawableTopCompat="@drawable/file_icon"
+        app:layout_constraintEnd_toStartOf="@+id/takePhotoTv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/albumTv" />
     <TextView
         android:id="@+id/cancelTv"
         android:layout_width="0dp"
@@ -49,5 +56,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/takePhotoTv" />
+        app:layout_constraintTop_toBottomOf="@+id/fileTv" />
 </androidx.constraintlayout.widget.ConstraintLayout>

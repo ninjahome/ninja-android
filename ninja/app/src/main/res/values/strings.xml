@@ -50,6 +50,7 @@
     <string name="SET_TEXT_TYPING_TITLE">对方正在输入</string>
     <string name="SET_VOICE_TYPING_TITLE">对方正在讲话</string>
     <string name="album">相册</string>
+    <string name="file">文件</string>
     <string name="search">search</string>
 
     <string name="voice_rec">手指上滑，取消发送</string>
