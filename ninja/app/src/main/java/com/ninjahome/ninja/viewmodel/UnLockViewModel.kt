@@ -35,7 +35,7 @@ class UnLockViewModel(val model: UnlockModel) : BaseViewModel() {
     var openFingerPrint: Boolean by SharedPref(context(), Constants.KEY_OPEN_FINGERPRINT, false)
 
     fun loadAccount() {
-        rxLifeScope.launch({
+       val job= rxLifeScope.launch({
             accountJson.value = model.loadAccount(AccountUtils.getAccountPath(context()))
             NinjaApp.instance.account = accountJson.value!!.fromJson()!!
             val iconIndex = ChatLib.iconIndex(NinjaApp.instance.account.address, ColorUtil.colorSize)
@@ -46,6 +46,7 @@ class UnLockViewModel(val model: UnlockModel) : BaseViewModel() {
             showToast(R.string.load_account_error)
         })
 
+        jobs.add(job)
     }
 
     val clickUnlock = BindingCommand<Any>(object : BindingAction {
@@ -54,12 +55,10 @@ class UnLockViewModel(val model: UnlockModel) : BaseViewModel() {
                 showToast(R.string.create_account_input_password)
                 return
             }
-            rxLifeScope.launch({
+            val job=rxLifeScope.launch({
                 NinjaApp.instance.configApp()
                 model.openAccount(accountJson.value!!, password.value!!)
                 startActivityAndFinish(MainActivity::class.java)
-                //                delay(1000)
-                //                showToast(Androidlib.wsIsOnline().toString())
                 dismissDialog()
             }, {
                 dismissDialog()
@@ -68,7 +67,7 @@ class UnLockViewModel(val model: UnlockModel) : BaseViewModel() {
             }, {
                 showDialog()
             })
-
+            jobs.add(job)
 
         }
     })

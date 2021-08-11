@@ -31,7 +31,6 @@ class UnLockActivity : BaseActivity<UnLockViewModel, ActivityUnlockBinding>(R.la
 
 
     override fun initView() {
-
     }
 
     override fun initData() {
@@ -99,4 +98,8 @@ class UnLockActivity : BaseActivity<UnLockViewModel, ActivityUnlockBinding>(R.la
         mViewModel.clickUnlock.execute()
     }
 
+    override fun cancelJob() {
+        super.cancelJob()
+        mViewModel.jobs.forEach { it.cancel() }
+    }
 }

@@ -12,7 +12,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.gyf.immersionbar.ImmersionBar
 import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.impl.LoadingPopupView
+import com.lxj.xpopup.interfaces.SimpleCallback
+import com.lxj.xpopup.interfaces.XPopupCallback
 import com.ninja.android.lib.R
 import com.ninja.android.lib.utils.AppManager
 import com.ninja.android.lib.utils.toast
@@ -111,7 +114,15 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding>(@LayoutRes
             loadingDialog.setTitle(title)
             return
         }
-        loadingDialog = XPopup.Builder(this).dismissOnBackPressed(cancelable).asLoading(title).show() as LoadingPopupView
+        loadingDialog = XPopup.Builder(this).dismissOnBackPressed(cancelable).setPopupCallback(object : SimpleCallback() {
+            override fun onBackPressed(popupView: BasePopupView?): Boolean {
+                cancelJob()
+                return super.onBackPressed(popupView)
+            }
+        }).asLoading(title).show() as LoadingPopupView
+    }
+
+    open fun cancelJob() {
     }
 
     open fun dismissDialog() {
