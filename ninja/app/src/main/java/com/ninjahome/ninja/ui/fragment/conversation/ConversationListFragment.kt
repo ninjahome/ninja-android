@@ -4,6 +4,8 @@ import android.animation.ObjectAnimator
 import android.os.Handler
 import android.os.Looper
 import android.widget.ImageView
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import chatLib.ChatLib
 import com.lxj.xpopup.XPopup
@@ -43,9 +45,10 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
     val ADD_FRIEND = 0
     lateinit var animator: ObjectAnimator
     lateinit var animatorRecover: ObjectAnimator
-    var isRotate = false
     lateinit var rightIv: ImageView
     lateinit var moreActionPop: AttachListPopupView
+    val conversationObserve = ConversationObserve()
+    var  liveDataConversations: LiveData<List<Conversation>?> =ConversationDBManager.all()
 
     override val mViewModel: ConversationListViewModel by viewModel()
     private val handler: Handler by lazy { Handler(Looper.getMainLooper(), this@ConversationListFragment) }
@@ -82,16 +85,21 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
 
         }
 
-        ConversationDBManager.all().observe(this) {
-            mViewModel.items.clear()
-            it?.forEach {
-                mViewModel.items.add(ConversationItemViewModel(mViewModel, it))
-            }
-        }
+        liveDataConversations.observeForever(conversationObserve)
 
 
     }
 
+   inner class ConversationObserve : Observer<List<Conversation>?> {
+        override fun onChanged(conversations: List<Conversation>?) {
+            mViewModel.items.clear()
+            println("--------------------------执行了消息刷新-----------")
+            conversations?.forEach {
+                mViewModel.items.add(ConversationItemViewModel(mViewModel, it))
+            }
+        }
+
+    }
     private fun showPop() {
         if (!this::moreActionPop.isInitialized) {
             moreActionPop = XPopup.Builder(context).hasShadowBg(false).popupAnimation(PopupAnimation.ScrollAlphaFromTop).atView(rightIv).setPopupCallback(object : SimpleCallback() {
@@ -142,6 +150,7 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
 
     override fun onDestroy() {
         super.onDestroy()
+        liveDataConversations.removeObserver(conversationObserve)
         EventBus.getDefault().unregister(this)
     }
 }

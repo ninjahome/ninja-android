@@ -14,7 +14,7 @@ import java.io.*
 import java.util.*
 
 object ImageUtils {
-    private val THUMB_IMG_DIR_PATH = UIUtils.getContext().cacheDir.absolutePath
+    private val THUMB_IMG_DIR_PATH = UIUtils.context.cacheDir.absolutePath
     private const val IMG_WIDTH = 480 //超過此寬、高則會 resize圖片
 
     private const val IMG_HIGHT = 800

@@ -45,6 +45,7 @@ import com.ninjahome.ninja.room.MessageDBManager
 import com.ninjahome.ninja.ui.activity.contact.ContactDetailActivity
 import com.ninjahome.ninja.ui.activity.contact.ScanContactSuccessActivity
 import com.ninjahome.ninja.ui.adapter.ConversationAdapter
+import com.ninjahome.ninja.utils.ConversationManager
 import com.ninjahome.ninja.utils.DialogUtils
 import com.ninjahome.ninja.view.ConversationMoreActionPop
 import com.ninjahome.ninja.viewmodel.ConversationViewModel
@@ -285,23 +286,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         }
 
     }
-
-    private fun clearUnreadNumber() {
-        rxLifeScope.launch ({
-            val conversation = mViewModel.queryConversation()
-            println("-------------"+conversation?.id)
-            conversation?.let {
-                MessageDBManager.updateMessage2Read(it.id)
-                it.unreadCount = 0
-                ConversationDBManager.updateConversations(it)
-            }
-
-        },{
-            println("-------------"+it.message)
-        })
-
-    }
-
 
 
     fun checkPermissions(): Boolean {
@@ -611,7 +595,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     override fun onStop() {
         super.onStop()
-        clearUnreadNumber()
+        ConversationManager.clearUnreadNumber(mViewModel.id,mViewModel.isGroup)
     }
 
     override fun onDestroy() {

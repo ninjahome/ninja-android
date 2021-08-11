@@ -14,6 +14,7 @@ import com.ninjahome.ninja.databinding.ActivityMainBinding
 import com.ninjahome.ninja.room.ConversationDBManager
 import com.ninjahome.ninja.room.MessageDBManager
 import com.ninjahome.ninja.ui.adapter.MainFragmentPagerAdapter
+import com.ninjahome.ninja.utils.ConversationManager
 import com.ninjahome.ninja.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.MainScope
@@ -31,6 +32,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
         tabLayout.setupWithViewPager(viewPager)
         viewPager.addOnPageChangeListener(this)
         initTabLayout()
+        lifecycle.addObserver(ConversationManager)
 
     }
 
@@ -88,6 +90,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
     override fun onDestroy() {
         super.onDestroy()
         ChatLib.wsOffline()
+
 
     }
 

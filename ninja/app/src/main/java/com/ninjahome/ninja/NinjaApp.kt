@@ -1,13 +1,10 @@
 package com.ninjahome.ninja
 
-import android.text.TextUtils
-import chatLib.ChatLib
 import chatLib.MulticastCallBack
 import chatLib.UnicastCallBack
 import coil.load
 import com.lqr.emoji.LQREmotionKit
 import com.ninja.android.lib.base.BaseApplication
-import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.event.*
 import com.ninjahome.ninja.imageloader.GlideImageLoader
 import com.ninjahome.ninja.imageloader.ImageLoaderProxy
@@ -16,20 +13,12 @@ import com.ninjahome.ninja.model.CreateAccountModel
 import com.ninjahome.ninja.model.UnlockModel
 import com.ninjahome.ninja.model.bean.*
 import com.ninjahome.ninja.push.PushHelper
-import com.ninjahome.ninja.room.ContactDBManager
-import com.ninjahome.ninja.room.ConversationDBManager
 import com.ninjahome.ninja.room.GroupDBManager
-import com.ninjahome.ninja.room.MessageDBManager
-import com.ninjahome.ninja.utils.FileUtils
-import com.ninjahome.ninja.utils.MoshiUtils
-import com.ninjahome.ninja.utils.fromJson
-import com.ninjahome.ninja.utils.toJson
+import com.ninjahome.ninja.utils.*
 import com.ninjahome.ninja.viewmodel.*
 import com.orhanobut.logger.*
 import com.rxlife.coroutine.RxLifeScope
 import com.umeng.commonsdk.UMConfigure
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import org.greenrobot.eventbus.EventBus
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -44,7 +33,6 @@ import org.koin.dsl.module
  *Description:
  */
 class NinjaApp : BaseApplication(), UnicastCallBack {
-    private val mutex = Mutex()
     val rxLifeScope = RxLifeScope()
     lateinit var account: Account
 
@@ -59,7 +47,6 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
         initKoin()
 
         initPush()
-        initImagePicker()
         ImageLoaderProxy.initLoader(GlideImageLoader())
         UMConfigure.setLogEnabled(true)
         UMConfigure.init(this, "609ce659c9aacd3bd4d3f092", "Umeng", UMConfigure.DEVICE_TYPE_PHONE, "")
@@ -129,19 +116,16 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
     fun configApp() {
         chatLib.ChatLib.configApp("", this, object : MulticastCallBack {
             override fun banTalking(groupId: String?) {
-                Logger.d("-----------------banTalking-----groupId:${groupId}")
 
             }
 
             override fun createGroup(groupId: String, groupName: String, owner: String, memberIdList: String, memberNickNameList: String) {
-                Logger.d("-----------------createGroup-----groupId:${groupId}   groupName: ${groupName}   memberIdList:${memberIdList}   memberNickNameList:${memberNickNameList} ")
                 this@NinjaApp.createGroup(groupId, groupName, owner, memberIdList, memberNickNameList)
 
             }
 
             override fun dismisGroup(groupId: String) {
-                Logger.d("-----------------dismisGroup-----groupId:${groupId}  ---------")
-                RxLifeScope().launch {
+                rxLifeScope.launch {
                     val groupChat = GroupDBManager.queryByGroupId(groupId)
                     if (groupChat != null) {
                         GroupDBManager.delete(groupChat)
@@ -153,7 +137,6 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
             }
 
             override fun quitGroup(from: String, groupId: String, quitId: String) {
-                Logger.d("-----------------quitGroup-----from:${from}   groupId:${groupId}   quitId:${quitId}---------")
                 rxLifeScope.launch {
                     val group = GroupDBManager.queryByGroupId(groupId)
                     if (group != null) {
@@ -162,7 +145,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
                         val oldIdList = MoshiUtils.listFromJson<String>(group.memberIdList)
                         val oldNickNameList = MoshiUtils.listFromJson<String>(group.memberNickNameList)
                         for (i in 0 until oldIdList.size) {
-                            if (!oldIdList[i].equals(quitId)) {
+                            if (oldIdList[i] != quitId) {
                                 newIds.add(oldIdList[i])
                                 newNicKName.add(oldNickNameList[i])
                             }
@@ -191,12 +174,10 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
             }
 
             override fun syncGroupAck(groupId: String, groupName: String, owner: String, banTalking: Boolean, memberIdList: String, memberNickNameList: String) {
-                Logger.d("-----------------syncGroupAck-----   groupId:${groupId}---------")
                 this@NinjaApp.createGroup(groupId, groupName, owner, memberIdList, memberNickNameList)
             }
 
             override fun joinGroup(from: String?, groupId: String, groupName: String?, owner: String?, memberIdList: String, memberNickNameList: String, newIdList: String, banTalkding: Boolean) {
-                Logger.d("-----------------joinGroup-----from:${from}   groupId:${groupId}    groupName:${groupName}  owner:${owner}  memberIdList:${memberIdList}   memberNickNameList:${memberNickNameList}    newIdList:${newIdList} ---------")
                 rxLifeScope.launch {
                     val groupInfo = GroupDBManager.queryByGroupId(groupId)
                     if (groupInfo != null) {
@@ -208,7 +189,6 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
             }
 
             override fun kickOutUser(from: String, groupId: String, kickIds: String) {
-                Logger.d("-----------------kickOutUser-----from:${from}   groupId:${groupId}   kickId:${kickIds} ")
                 rxLifeScope.launch {
                     val group = GroupDBManager.queryByGroupId(groupId)
                     if (group != null) {
@@ -238,39 +218,20 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
 
 
             override fun textMessage(from: String, groupId: String, payload: String, time: Long) {
-                rxLifeScope.launch {
-                    val conversation = insertOrUpdateConversation(from, payload, time, true, groupId)
-                    val message = Message(0, conversation.id, from, instance.account.address, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.TEXT, msg = payload)
-                    insertMessage(message, conversation)
-                }
+                ConversationManager.receiveGroupTextMessage(from, groupId, payload, time)
             }
 
 
             override fun imageMessage(from: String, groupId: String, payload: ByteArray, time: Long) {
-                rxLifeScope.launch {
-                    val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_image), time, true, groupId)
-                    val message = Message(0, conversation.id, from, instance.account.address, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.IMAGE, msg = context().getString(R.string.message_type_image))
-                    message.uri = FileUtils.saveImageToPath(Constants.PHOTO_SAVE_DIR, payload)
-                    insertMessage(message, conversation)
-
-                }
+                ConversationManager.receiveGroupImageMessage(from, groupId, payload, time)
             }
 
             override fun voiceMessage(from: String, groupId: String, payload: ByteArray, length: Long, time: Long) {
-                rxLifeScope.launch {
-                    val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_voice), time, true, groupId)
-                    val message = Message(0, conversation.id, from, account.address, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.VOICE, msg = context().getString(R.string.message_type_voice), duration = length.toInt())
-                    message.uri = FileUtils.saveVoiceToPath(Constants.AUDIO_SAVE_DIR, payload)
-                    insertMessage(message, conversation)
-                }
+                ConversationManager.receiveGroupVoiceMessage(from, groupId, payload, length, time)
             }
 
             override fun locationMessage(from: String, groupId: String, lng: Float, lat: Float, name: String, time: Long) {
-                rxLifeScope.launch {
-                    val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_location), time, true, groupId)
-                    val message = Message(0, conversation.id, from, account.address, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.LOCATION, lat = lat, lng = lng, locationAddress = name, msg = context().getString(R.string.message_type_location))
-                    insertMessage(message, conversation)
-                }
+                ConversationManager.receiverGroupLocationMessage(from, groupId, lng, lat, name, time)
 
             }
 
@@ -288,136 +249,25 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
         }
     }
 
-    private suspend fun insertMessage(message: Message, conversation: Conversation) {
-        MessageDBManager.insert(message)
-        updateConversationUnreadCount(conversation)
-    }
-
-
-    private fun initImagePicker() {
-
-    }
-
-    private suspend fun insertOrUpdateConversation(from: String, msg: String, time: Long, isGroup: Boolean, groupId: String = ""): Conversation {
-        mutex.withLock {
-            var conversation: Conversation?
-            var nickName: String? = from
-            if (isGroup) {
-                conversation = ConversationDBManager.queryByGroupId(groupId)
-                val groupInfo = GroupDBManager.queryByGroupId(groupId)
-                if (groupInfo != null) {
-                    println("================" + groupInfo.memberIdList)
-                    println("================" + groupInfo.memberNickNameList)
-                    val memberIds = groupInfo.memberIdList.fromJson<List<String>>()
-                    val memberNames = groupInfo.memberNickNameList.fromJson<List<String>>()
-                    for (index in 0 until memberIds!!.size) {
-                        if (memberIds[index].equals(from)) {
-                            nickName = memberNames!![index] as String
-                        }
-                    }
-                } else {
-                    ChatLib.syncGroup(from, groupId)
-                }
-            } else {
-                conversation = ConversationDBManager.queryByFrom(from)
-            }
-            val contactNickName = ContactDBManager.queryTitleByUID(from)
-            contactNickName?.let {
-                nickName = it
-            }
-
-            if (conversation == null) {
-                conversation = Conversation(0, from, isGroup, msg, time * 1000, 1, groupId = groupId)
-                if (isGroup) {
-                    conversation.from = ""
-                    val groupInfo = GroupDBManager.queryByGroupId(groupId)
-                    groupInfo?.let { conversation.title = it.groupName }
-                    val msg = if (TextUtils.isEmpty(nickName)) from else "${nickName!!}:$msg"
-                    conversation.msg = msg
-                } else {
-                    conversation?.title = if (TextUtils.isEmpty(nickName)) from else nickName!!
-                }
-
-                conversation.id = ConversationDBManager.insert(conversation)
-            } else {
-
-                conversation.time = time * 1000
-                if (isGroup) {
-                    val msg = if (TextUtils.isEmpty(nickName)) from else "${nickName!!}:$msg"
-                    conversation.msg = msg
-                    val group = GroupDBManager.queryByGroupId(groupId)
-                    group?.let {
-                        conversation.msg = msg
-                        conversation.title = it.groupName
-                    }
-                } else {
-                    val nickName = ContactDBManager.queryTitleByUID(from)
-                    conversation.title = if (TextUtils.isEmpty(nickName)) from else nickName!!
-                    conversation.msg = msg
-                }
-                ConversationDBManager.updateConversations(conversation)
-            }
-            return conversation
-        }
-
-    }
-
-
-    private suspend fun getGroupName(groupId: String): String {
-        val group = GroupDBManager.queryByGroupId(groupId) ?: return ""
-        return group.groupName
-    }
-
-    suspend fun updateConversationUnreadCount(conversation: Conversation) {
-        val unreadCount = MessageDBManager.queryUnReadCount(conversation.id)
-        conversation.unreadCount = unreadCount
-        ConversationDBManager.updateConversations(conversation)
-    }
-
 
     override fun locationMessage(from: String, to: String, lng: Float, lat: Float, locationAddress: String, time: Long) {
-        println("-----------------------------位置------------------------------")
-        rxLifeScope.launch {
-            val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_location), time, false)
-            val message = Message(0, conversation.id, from, to, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.LOCATION, lat = lat, lng = lng, locationAddress = locationAddress, msg = context().getString(R.string.message_type_location))
-            insertMessage(message, conversation)
-        }
-
+        ConversationManager.receiverLocationMessage(from, to, lng, lat, locationAddress, time)
     }
 
     override fun fileMessage(from: String?, to: String?, payload: ByteArray?, size: Long, name: String?) {
     }
 
     override fun imageMessage(from: String, to: String, payload: ByteArray, time: Long) {
-        println("-----------------------------图片------------------------------")
-        rxLifeScope.launch {
-            val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_image), time, false)
-            val message = Message(0, conversation.id, from, to, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.IMAGE, data = payload, msg = context().getString(R.string.message_type_image))
-            message.uri = FileUtils.saveImageToPath(Constants.PHOTO_SAVE_DIR, payload)
-            insertMessage(message, conversation)
-
-        }
+        ConversationManager.receiveImageMessage(from, to, payload, time)
     }
 
 
     override fun textMessage(from: String, to: String, data: String, time: Long) {
-        println("-----------------------------${data}------------------------------")
-        rxLifeScope.launch {
-            val conversation = insertOrUpdateConversation(from, data, time, false)
-            val message = Message(0, conversation.id, from, to, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.TEXT, msg = data)
-            insertMessage(message, conversation)
-        }
-
+        ConversationManager.receiveTextMessage(from, to, data, time)
     }
 
     override fun voiceMessage(from: String, to: String, payload: ByteArray, length: Long, time: Long) {
-        println("-----------------------------语音${length}------------------------------")
-        rxLifeScope.launch {
-            val conversation = insertOrUpdateConversation(from, context().getString(R.string.message_type_voice), time, false)
-            val message = Message(0, conversation.id, from, to, Message.MessageDirection.RECEIVE, Message.SentStatus.RECEIVED, time * 1000, Message.Type.VOICE, msg = context().getString(R.string.message_type_voice), duration = length.toInt())
-            message.uri = FileUtils.saveVoiceToPath(Constants.AUDIO_SAVE_DIR, payload)
-            insertMessage(message, conversation)
-        }
+        ConversationManager.receiveVoiceMessage(from, to, payload, length, time)
     }
 
 
