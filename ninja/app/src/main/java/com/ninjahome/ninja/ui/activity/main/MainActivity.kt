@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.rxLifeScope
-import androidx.viewpager.widget.ViewPager
 import chatLib.ChatLib
 import com.ninja.android.lib.base.BaseActivity
 import com.ninja.android.lib.utils.toast
@@ -14,25 +13,26 @@ import com.ninjahome.ninja.databinding.ActivityMainBinding
 import com.ninjahome.ninja.room.ConversationDBManager
 import com.ninjahome.ninja.room.MessageDBManager
 import com.ninjahome.ninja.ui.adapter.MainFragmentPagerAdapter
+import com.ninjahome.ninja.utils.ConnectionStateMonitor
 import com.ninjahome.ninja.utils.ConversationManager
 import com.ninjahome.ninja.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.activity_main), ViewPager.OnPageChangeListener {
+class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.activity_main){
     private val tabIcons = arrayListOf(R.drawable.tab_message, R.drawable.tab_contact, R.drawable.tab_my)
     private val tabName = arrayListOf(R.string.message, R.string.contact, R.string.my)
+    val connectionStateMonitor = ConnectionStateMonitor()
     override val mViewModel: MainViewModel by viewModel()
+
 
     override fun initView() {
         viewPager.adapter = MainFragmentPagerAdapter(supportFragmentManager)
         viewPager.offscreenPageLimit = 2
         tabLayout.setupWithViewPager(viewPager)
-        viewPager.addOnPageChangeListener(this)
         initTabLayout()
         lifecycle.addObserver(ConversationManager)
+        connectionStateMonitor.enable(this)
 
     }
 
@@ -94,14 +94,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
 
     }
 
-    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-    }
 
-    override fun onPageSelected(position: Int) {
-    }
-
-    override fun onPageScrollStateChanged(state: Int) {
-    }
 
 
 }

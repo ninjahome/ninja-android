@@ -93,7 +93,6 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
    inner class ConversationObserve : Observer<List<Conversation>?> {
         override fun onChanged(conversations: List<Conversation>?) {
             mViewModel.items.clear()
-            println("--------------------------执行了消息刷新-----------")
             conversations?.forEach {
                 mViewModel.items.add(ConversationItemViewModel(mViewModel, it))
             }
@@ -134,13 +133,18 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
     fun setLineState() {
         handler.postDelayed({
             mViewModel.unline.value = !ChatLib.wsIsOnline()
-        }, 1000)
+        }, 500)
 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun offline(eventOffline: EventOffline) {
         setLineState()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun netWorkChange(eventNetWorkChange: EventNetWorkChange) {
+        mViewModel.refreshCommand.execute()
     }
 
     override fun handleMessage(msg: android.os.Message): Boolean {
