@@ -14,7 +14,6 @@ import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.rxLifeScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout
@@ -38,10 +37,9 @@ import com.ninjahome.ninja.event.*
 import com.ninjahome.ninja.imagepicker.PhotoFromPhotoAlbum
 import com.ninjahome.ninja.imagepicker.WechatImagePicker
 import com.ninjahome.ninja.model.bean.*
-import com.ninjahome.ninja.room.ContactDBManager
-import com.ninjahome.ninja.room.ConversationDBManager
-import com.ninjahome.ninja.room.GroupDBManager
-import com.ninjahome.ninja.room.MessageDBManager
+import com.ninjahome.ninja.db.ContactDBManager
+import com.ninjahome.ninja.db.GroupDBManager
+import com.ninjahome.ninja.db.MessageDBManager
 import com.ninjahome.ninja.ui.activity.contact.ContactDetailActivity
 import com.ninjahome.ninja.ui.activity.contact.ScanContactSuccessActivity
 import com.ninjahome.ninja.ui.adapter.ConversationAdapter
@@ -56,6 +54,7 @@ import com.qingmei2.rximagepicker_extension_wechat.ui.WechatImagePickerFragment
 import kotlinx.android.synthetic.main.activity_conversation.*
 import kotlinx.android.synthetic.main.activity_conversation.swipeRefreshLayout
 import kotlinx.android.synthetic.main.fragment_conversation_list.*
+import kotlinx.coroutines.flow.collect
 import me.xfans.lib.voicewaveview.VoiceWaveView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -77,7 +76,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     private var isFirstObserve = true
     var isObservable = false
     private val linearLayoutManager:LinearLayoutManager by lazy { LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false) }
-    lateinit var messages: LiveData<List<Message>?>
 
     private lateinit var conversationAdapter: ConversationAdapter
 
@@ -117,11 +115,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        rxLifeScope.launch {
-            if (this@ConversationActivity::messages.isInitialized) {
-                messages.removeObservers(this@ConversationActivity)
-            }
-        }
         mViewModel.id = intent?.getStringExtra(IntentKey.ID)!!
         mViewModel.isGroup = intent.getBooleanExtra(IntentKey.IS_GROUP, false)
         initData()
@@ -265,8 +258,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
             conversation = mViewModel.queryConversation()
             if (conversation != null) {
                 isObservable = true
-                messages = MessageDBManager.queryByConversationId(conversation!!.id)
-                messages.observe(this@ConversationActivity) {
+                MessageDBManager.queryByConversationId(conversation!!.id).collect {
                     mData.clear()
                     if (it != null) {
                         mData.addAll(it)
@@ -593,14 +585,11 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        ConversationManager.clearUnreadNumber(mViewModel.id,mViewModel.isGroup)
-    }
 
     override fun onDestroy() {
         super.onDestroy()
         mHandler.removeCallbacksAndMessages(null)
+        ConversationManager.clearUnreadNumber(mViewModel.id,mViewModel.isGroup)
         AudioRecordManager.getInstance(NinjaApp.instance.applicationContext).audioRecordListener = null
     }
 

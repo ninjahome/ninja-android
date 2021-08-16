@@ -40,7 +40,7 @@
 -keep class kotlin.reflect.jvm.ReflectJvmMapping { *; }
 -keep class kotlin.reflect.jvm.KCallablesJvm
 
--keep class com.ninjahome.ninja.room.Converters{*;}
+-keep class com.ninjahome.ninja.db.Converters{*;}
 -keep class com.ninjahome.ninja.ui.adapter.ConversationAdapter{*;}
 -keep class com.ninjahome.ninja.view.contacts.TextDrawable{*;}
 

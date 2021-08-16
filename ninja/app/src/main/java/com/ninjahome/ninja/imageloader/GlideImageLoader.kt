@@ -10,8 +10,9 @@ import com.bumptech.glide.Glide
  *Description:
  */
 class GlideImageLoader : IImageLoader {
-    override fun loadImage(url: String, imageView: ImageView, @DrawableRes errImageId: Int, @DrawableRes placeholderImageId: Int) {
-        Glide.with(imageView).load(url).placeholder(placeholderImageId).error(errImageId).error(errImageId).fitCenter().into(imageView)
+    override fun loadImage(url: String, imageView: ImageView, @DrawableRes errImageId: Int, @DrawableRes placeholderImageId: Int,width:Int,height:Int) {
+
+        Glide.with(imageView).load(url).placeholder(placeholderImageId).error(errImageId).override(width, height).fitCenter().into(imageView)
 
     }
 }

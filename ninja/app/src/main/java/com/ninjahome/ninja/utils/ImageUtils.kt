@@ -44,7 +44,6 @@ object ImageUtils {
     }
 
     fun compressImage(srcImgPath: String): File? {
-        //先取得原始照片的旋轉角度
         var rotate = 0
         try {
             val exif = ExifInterface(srcImgPath)
@@ -58,7 +57,6 @@ object ImageUtils {
             e.printStackTrace()
         }
 
-        //計算取 Bitmap時的參數"inSampleSize"
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = true
         BitmapFactory.decodeFile(srcImgPath, options)
@@ -78,7 +76,6 @@ object ImageUtils {
         options.inJustDecodeBounds = false
         options.inSampleSize = inSampleSize
 
-        //取出原檔的 Bitmap(若寬高超過會 resize)並設定原始的旋轉角度
         val srcBitmap = BitmapFactory.decodeFile(srcImgPath, options)
         if (srcBitmap == null) {
             Log.e("ImageUtils", "decode file error $srcImgPath")
@@ -88,7 +85,6 @@ object ImageUtils {
         matrix.postRotate(rotate.toFloat())
         val outBitmap = Bitmap.createBitmap(srcBitmap, 0, 0, srcBitmap.width, srcBitmap.height, matrix, false)
 
-        //壓縮並存檔至 cache路徑下的 File
         val tempImgDir = File(THUMB_IMG_DIR_PATH)
         if (!tempImgDir.exists()) {
             tempImgDir.mkdirs()

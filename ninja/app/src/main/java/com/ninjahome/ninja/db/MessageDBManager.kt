@@ -1,9 +1,10 @@
-package com.ninjahome.ninja.room
+package com.ninjahome.ninja.db
 
 import androidx.lifecycle.LiveData
 import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.model.bean.Message
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 /**
@@ -30,7 +31,7 @@ object MessageDBManager {
         }
     }
 
-    suspend fun queryByConversationId(conversationId: Long): LiveData<List<Message>?> {
+    suspend fun queryByConversationId(conversationId: Long): Flow<List<Message>?> {
         return withContext(Dispatchers.IO) {
             return@withContext msgDao.queryByConversationId(conversationId)
         }
@@ -39,6 +40,12 @@ object MessageDBManager {
     suspend fun queryUnReadCount(conversationId: Long): Int {
         return withContext(Dispatchers.IO) {
             return@withContext msgDao.queryUnReadCount(conversationId)
+        }
+    }
+
+    suspend fun queryReadMessage(): List<Message> {
+        return withContext(Dispatchers.IO) {
+            return@withContext msgDao.queryReadMessage()
         }
     }
 

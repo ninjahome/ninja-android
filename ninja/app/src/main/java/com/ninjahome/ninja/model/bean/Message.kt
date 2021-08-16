@@ -3,7 +3,7 @@ package com.ninjahome.ninja.model.bean
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
-import com.ninjahome.ninja.room.Converters
+import com.ninjahome.ninja.db.Converters
 
 /**
  *Author:Mr'x

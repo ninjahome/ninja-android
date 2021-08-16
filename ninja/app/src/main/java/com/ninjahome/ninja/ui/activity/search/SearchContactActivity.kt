@@ -10,14 +10,12 @@ import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivitySearchContactBinding
-import com.ninjahome.ninja.room.ContactDBManager
+import com.ninjahome.ninja.db.ContactDBManager
 import com.ninjahome.ninja.ui.activity.contact.ContactDetailActivity
 import com.ninjahome.ninja.ui.activity.contact.ScanContactSuccessActivity
 import com.ninjahome.ninja.ui.activity.scan.ScanActivity
 import com.ninjahome.ninja.viewmodel.SearchContactViewModel
 import kotlinx.android.synthetic.main.activity_search_contact.*
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**

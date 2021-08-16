@@ -1,4 +1,4 @@
-package com.ninjahome.ninja.room
+package com.ninjahome.ninja.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*

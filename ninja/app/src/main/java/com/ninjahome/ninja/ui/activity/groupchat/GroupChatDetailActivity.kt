@@ -9,15 +9,11 @@ import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityGroupChatDetailBinding
 import com.ninjahome.ninja.model.bean.GroupInfo
 import com.ninjahome.ninja.model.bean.GroupMember
-import com.ninjahome.ninja.room.GroupDBManager
+import com.ninjahome.ninja.db.GroupDBManager
 import com.ninjahome.ninja.utils.fromJson
 import com.ninjahome.ninja.viewmodel.GroupChatDetailItemViewModel
 import com.ninjahome.ninja.viewmodel.GroupChatDetailViewModel
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import org.json.JSONArray
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinApiExtension
 
 /**
  *Author:Mr'x

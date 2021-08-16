@@ -15,8 +15,8 @@ object ImageLoaderProxy : IImageLoader {
         this.mImageLoader = imageLoader
     }
 
-    override fun loadImage(url: String, imageView: ImageView, @DrawableRes errImageId: Int, @DrawableRes placeholderImageId: Int) {
-        mImageLoader.loadImage(url, imageView, errImageId, placeholderImageId)
+    override fun loadImage(url: String, imageView: ImageView, @DrawableRes errImageId: Int, @DrawableRes placeholderImageId: Int,width:Int,height:Int) {
+        mImageLoader.loadImage(url, imageView, errImageId, placeholderImageId,width,height)
     }
 
 }

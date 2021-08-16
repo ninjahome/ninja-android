@@ -11,10 +11,10 @@ import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.bean.Conversation
 import com.ninjahome.ninja.model.bean.Message
-import com.ninjahome.ninja.room.ContactDBManager
-import com.ninjahome.ninja.room.ConversationDBManager
-import com.ninjahome.ninja.room.GroupDBManager
-import com.ninjahome.ninja.room.MessageDBManager
+import com.ninjahome.ninja.db.ContactDBManager
+import com.ninjahome.ninja.db.ConversationDBManager
+import com.ninjahome.ninja.db.GroupDBManager
+import com.ninjahome.ninja.db.MessageDBManager
 import com.rxlife.coroutine.RxLifeScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.sync.Mutex
@@ -186,8 +186,11 @@ object ConversationManager: LifecycleObserver {
             }
             conversation?.let {
                 MessageDBManager.updateMessage2Read(it.id)
-                it.unreadCount = 0
-                ConversationDBManager.updateConversations(it)
+                if(it.unreadCount!=0){
+                    it.unreadCount = 0
+                    ConversationDBManager.updateConversations(it)
+                }
+
             }
 
         }

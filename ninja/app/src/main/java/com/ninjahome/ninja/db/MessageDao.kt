@@ -1,8 +1,9 @@
-package com.ninjahome.ninja.room
+package com.ninjahome.ninja.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.ninjahome.ninja.model.bean.Message
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MessageDao {
@@ -11,10 +12,13 @@ interface MessageDao {
     fun all(): LiveData<List<Message>?>
 
     @Query("SELECT * FROM message where conversationId = :conversationId order by time")
-    fun queryByConversationId(conversationId: Long): LiveData<List<Message>?>
+    fun queryByConversationId(conversationId: Long): Flow<List<Message>?>
 
     @Query("SELECT count(*) FROM message where conversationId = :conversationId and unRead = 1")
     fun queryUnReadCount(conversationId: Long): Int
+
+    @Query("SELECT * FROM message where unRead = 0")
+    fun queryReadMessage(): List<Message>
 
     @Query("UPDATE message SET unRead = 0 where conversationId = :conversationId ")
     fun updateMessage2Read(conversationId: Long)

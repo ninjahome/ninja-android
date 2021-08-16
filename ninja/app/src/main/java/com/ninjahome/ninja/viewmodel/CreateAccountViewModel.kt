@@ -15,9 +15,9 @@ import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.event.EventChangeAccount
 import com.ninjahome.ninja.model.CreateAccountModel
-import com.ninjahome.ninja.room.ContactDBManager
-import com.ninjahome.ninja.room.ConversationDBManager
-import com.ninjahome.ninja.room.MessageDBManager
+import com.ninjahome.ninja.db.ContactDBManager
+import com.ninjahome.ninja.db.ConversationDBManager
+import com.ninjahome.ninja.db.MessageDBManager
 import com.ninjahome.ninja.ui.activity.edituserinfo.EditUserInfoActivity
 import com.ninjahome.ninja.utils.AccountUtils
 import com.ninjahome.ninja.utils.fromJson

@@ -11,8 +11,8 @@ import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.bean.Contact
-import com.ninjahome.ninja.room.ContactDBManager
-import com.ninjahome.ninja.room.ConversationDBManager
+import com.ninjahome.ninja.db.ContactDBManager
+import com.ninjahome.ninja.db.ConversationDBManager
 import com.ninjahome.ninja.ui.activity.contact.EditContactActivity
 import com.ninjahome.ninja.ui.activity.conversation.ConversationActivity
 import com.ninjahome.ninja.utils.CommonUtils

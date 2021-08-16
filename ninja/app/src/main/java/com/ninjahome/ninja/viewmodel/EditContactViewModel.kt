@@ -9,8 +9,8 @@ import com.ninja.android.lib.command.BindingCommand
 import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.bean.Contact
-import com.ninjahome.ninja.room.ContactDBManager
-import com.ninjahome.ninja.room.ConversationDBManager
+import com.ninjahome.ninja.db.ContactDBManager
+import com.ninjahome.ninja.db.ConversationDBManager
 import com.ninjahome.ninja.utils.AccountUtils
 import com.orhanobut.logger.Logger
 

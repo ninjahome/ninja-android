@@ -8,7 +8,7 @@ import com.ninja.android.lib.command.BindingCommand
 import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.model.bean.GroupInfo
 import com.ninjahome.ninja.model.bean.GroupMember
-import com.ninjahome.ninja.room.GroupDBManager
+import com.ninjahome.ninja.db.GroupDBManager
 import com.ninjahome.ninja.utils.MoshiUtils
 import com.ninjahome.ninja.utils.toJson
 

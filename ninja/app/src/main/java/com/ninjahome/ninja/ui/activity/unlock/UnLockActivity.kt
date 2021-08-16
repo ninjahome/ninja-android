@@ -1,19 +1,24 @@
 package com.ninjahome.ninja.ui.activity.unlock
 
+import android.text.TextUtils
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.rxLifeScope
 import com.ninja.android.lib.base.BaseActivity
 import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.Constants
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityUnlockBinding
+import com.ninjahome.ninja.db.ConversationDBManager
+import com.ninjahome.ninja.db.MessageDBManager
 import com.ninjahome.ninja.utils.CryptographyManager
 import com.ninjahome.ninja.utils.EncryptedPreferencesUtils
 import com.ninjahome.ninja.utils.StringUtils
 import com.ninjahome.ninja.viewmodel.UnLockViewModel
 import com.orhanobut.logger.Logger
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
 
 /**
  *Author:Mr'x
@@ -31,9 +36,11 @@ class UnLockActivity : BaseActivity<UnLockViewModel, ActivityUnlockBinding>(R.la
 
 
     override fun initView() {
+
     }
 
     override fun initData() {
+        clearReadMessage()
         mViewModel.loadAccount()
         if (mViewModel.openFingerPrint) {
             cryptographyManager = CryptographyManager()
@@ -51,6 +58,23 @@ class UnLockActivity : BaseActivity<UnLockViewModel, ActivityUnlockBinding>(R.la
 
             }
 
+        }
+    }
+    private fun clearReadMessage() {
+        rxLifeScope.launch{
+
+            val readMessages = MessageDBManager.queryReadMessage()
+            var file: File
+            readMessages.forEach {
+                if(!TextUtils.isEmpty(it.uri)){
+                    file = File(it.uri)
+                    if(file.exists()){
+                        file.delete()
+                    }
+                }
+            }
+            MessageDBManager.deleteAllReadMessage()
+            ConversationDBManager.deleteReadConversation()
         }
     }
 

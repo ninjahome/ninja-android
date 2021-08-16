@@ -13,7 +13,7 @@ import com.ninjahome.ninja.model.CreateAccountModel
 import com.ninjahome.ninja.model.UnlockModel
 import com.ninjahome.ninja.model.bean.*
 import com.ninjahome.ninja.push.PushHelper
-import com.ninjahome.ninja.room.GroupDBManager
+import com.ninjahome.ninja.db.GroupDBManager
 import com.ninjahome.ninja.utils.*
 import com.ninjahome.ninja.viewmodel.*
 import com.orhanobut.logger.*
@@ -45,13 +45,14 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
         instance = this
         initLogger()
         initKoin()
-
         initPush()
         ImageLoaderProxy.initLoader(GlideImageLoader())
         UMConfigure.setLogEnabled(true)
         UMConfigure.init(this, "609ce659c9aacd3bd4d3f092", "Umeng", UMConfigure.DEVICE_TYPE_PHONE, "")
         LQREmotionKit.init(this) { _, path, imageView -> imageView.load(path) }
     }
+
+
 
     private fun initPush() {
         PushHelper.preInit(this)
@@ -79,7 +80,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
             viewModel { MainViewModel() }
             viewModel { ContactListViewModel() }
             viewModel { ConversationListViewModel() }
-            viewModel { MyViewModel() }
+            viewModel { MyViewModel(get()) }
             viewModel { ApplyListViewModel() }
             viewModel { SearchContactViewModel() }
             viewModel { ScanViewModel() }
@@ -99,6 +100,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
             viewModel { GroupChatDetailViewModel() }
             viewModel { GroupChatRemoveMemberViewModel() }
             viewModel { GroupChatAddMemberViewModel() }
+            viewModel { ActivationViewModel() }
 
             single { UnlockModel() }
             single { CreateAccountModel() }

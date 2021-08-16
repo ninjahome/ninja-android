@@ -1,9 +1,10 @@
-package com.ninjahome.ninja.room
+package com.ninjahome.ninja.db
 
 import androidx.lifecycle.LiveData
 import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.model.bean.Conversation
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 
 /**
  *Author:Mr'x
@@ -13,7 +14,7 @@ import kotlinx.coroutines.*
 object ConversationDBManager {
     private val conversationDao: ConversationDao by lazy { NinjaDB.getInstance(context()).conversationDao() }
 
-    fun all(): LiveData<List<Conversation>?> {
+    fun all(): Flow<List<Conversation>?> {
         return conversationDao.all()
     }
 

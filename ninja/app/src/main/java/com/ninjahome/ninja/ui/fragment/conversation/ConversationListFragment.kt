@@ -6,7 +6,7 @@ import android.os.Looper
 import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.lifecycle.rxLifeScope
 import chatLib.ChatLib
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
@@ -19,7 +19,7 @@ import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.FragmentConversationListBinding
 import com.ninjahome.ninja.event.*
 import com.ninjahome.ninja.model.bean.*
-import com.ninjahome.ninja.room.ConversationDBManager
+import com.ninjahome.ninja.db.ConversationDBManager
 import com.ninjahome.ninja.ui.activity.groupchat.GroupChatCreateActivity
 import com.ninjahome.ninja.ui.activity.search.SearchContactActivity
 import com.ninjahome.ninja.viewmodel.ConversationItemViewModel
@@ -30,6 +30,8 @@ import kotlinx.android.synthetic.main.fragment_contact_list.*
 import kotlinx.android.synthetic.main.fragment_conversation_list.*
 import kotlinx.android.synthetic.main.fragment_conversation_list.status_bar_view
 import kotlinx.android.synthetic.main.fragment_conversation_list.swipeRefreshLayout
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -47,8 +49,6 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
     lateinit var animatorRecover: ObjectAnimator
     lateinit var rightIv: ImageView
     lateinit var moreActionPop: AttachListPopupView
-    val conversationObserve = ConversationObserve()
-    var  liveDataConversations: LiveData<List<Conversation>?> =ConversationDBManager.all()
 
     override val mViewModel: ConversationListViewModel by viewModel()
     private val handler: Handler by lazy { Handler(Looper.getMainLooper(), this@ConversationListFragment) }
@@ -69,6 +69,17 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
 
     override fun initData() {
 
+        rxLifeScope.launch {
+            ConversationDBManager.all().collect {
+                println("========ConversationDBManager.all()")
+                mViewModel.items.clear()
+                it?.forEach {
+                    mViewModel.items.add(ConversationItemViewModel(mViewModel, it))
+                }
+            }
+
+        }
+
     }
 
     override fun initVariableId(): Int = BR.viewModel
@@ -85,20 +96,9 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
 
         }
 
-        liveDataConversations.observeForever(conversationObserve)
-
 
     }
 
-   inner class ConversationObserve : Observer<List<Conversation>?> {
-        override fun onChanged(conversations: List<Conversation>?) {
-            mViewModel.items.clear()
-            conversations?.forEach {
-                mViewModel.items.add(ConversationItemViewModel(mViewModel, it))
-            }
-        }
-
-    }
     private fun showPop() {
         if (!this::moreActionPop.isInitialized) {
             moreActionPop = XPopup.Builder(context).hasShadowBg(false).popupAnimation(PopupAnimation.ScrollAlphaFromTop).atView(rightIv).setPopupCallback(object : SimpleCallback() {
@@ -154,7 +154,6 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
 
     override fun onDestroy() {
         super.onDestroy()
-        liveDataConversations.removeObserver(conversationObserve)
         EventBus.getDefault().unregister(this)
     }
 }

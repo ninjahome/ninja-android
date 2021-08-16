@@ -1,8 +1,7 @@
 package com.ninjahome.ninja.model
 
 import chatLib.ChatLib
-import com.ninjahome.ninja.room.GroupDBManager
-import com.ninjahome.ninja.utils.ImageUtils
+import com.ninjahome.ninja.db.GroupDBManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -23,17 +22,13 @@ class ConversationModel {
         }
     }
 
-    suspend fun sendImageMessage(uid: String, path: String, compress: Boolean) {
+    suspend fun sendImageMessage(uid: String, path: String) {
         withContext(Dispatchers.IO) {
             if (!ChatLib.wsIsOnline()) {
                 ChatLib.wsOnline()
             }
-            var imageFileSource: File? = null
-            if (compress) {
-                imageFileSource = ImageUtils.compressImage(path)
-            }
-            imageFileSource = imageFileSource ?: File(path)
-            ChatLib.writeImageMessage(uid, File(imageFileSource.path).readBytes())
+
+            ChatLib.writeImageMessage(uid, File(path).readBytes())
         }
     }
 
@@ -68,19 +63,14 @@ class ConversationModel {
     }
 
 
-    suspend fun sendGroupImageMessage(id: String, path: String, compress: Boolean) {
+    suspend fun sendGroupImageMessage(id: String, path: String) {
         withContext(Dispatchers.IO) {
             if (!ChatLib.wsIsOnline()) {
                 ChatLib.wsOnline()
             }
-            var imageFileSource: File? = null
-            if (compress) {
-                imageFileSource = ImageUtils.compressImage(path)
-            }
-            imageFileSource = imageFileSource ?: File(path)
             val groupChat = GroupDBManager.queryByGroupId(id)
             groupChat?.let {
-                ChatLib.writeImageGroupMessage(it.memberIdList, File(imageFileSource.path).readBytes(), id)
+                ChatLib.writeImageGroupMessage(it.memberIdList, File(path).readBytes(), id)
             }
         }
 

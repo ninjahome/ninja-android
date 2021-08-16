@@ -1,14 +1,14 @@
-package com.ninjahome.ninja.room
+package com.ninjahome.ninja.db
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.ninjahome.ninja.model.bean.Conversation
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ConversationDao {
     //查询user表中所有数据
     @Query("SELECT * FROM conversation order by time desc")
-    fun all(): LiveData<List<Conversation>?>
+    fun all(): Flow<List<Conversation>?>
 
     @Query("SELECT * FROM conversation where `from` = :from")
     fun queryByFrom(from: String): Conversation?

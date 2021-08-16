@@ -1,13 +1,9 @@
 package com.ninjahome.ninja.ui.adapter
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.text.style.ImageSpan
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import chatLib.ChatLib
@@ -22,8 +18,8 @@ import com.ninjahome.ninja.R
 import com.ninjahome.ninja.imageloader.ImageLoaderProxy
 import com.ninjahome.ninja.model.bean.Message
 import com.ninjahome.ninja.model.bean.Message.SentStatus
-import com.ninjahome.ninja.room.ContactDBManager
-import com.ninjahome.ninja.room.GroupDBManager
+import com.ninjahome.ninja.db.ContactDBManager
+import com.ninjahome.ninja.db.GroupDBManager
 import com.ninjahome.ninja.ui.adapter.lqr.LQRAdapterForRecyclerView
 import com.ninjahome.ninja.utils.TimeUtils
 import com.ninjahome.ninja.utils.UIUtils
@@ -31,12 +27,9 @@ import com.ninjahome.ninja.utils.fromJson
 import com.ninjahome.ninja.view.BubbleImageView
 import com.ninjahome.ninja.view.contacts.ColorUtil
 import com.ninjahome.ninja.view.contacts.TextDrawable
-import com.zhy.autolayout.utils.ScreenUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 /**
  * @描述 会话界面的消息列表适配器
@@ -71,12 +64,12 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
             MoonUtils.identifyFaceExpression(mContext, helper.getView(R.id.tvText), item.msg, ImageSpan.ALIGN_BOTTOM)
         } else if (item.type == Message.Type.IMAGE) {
             val bivPic = helper.getView<BubbleImageView>(R.id.bivPic)
-            ImageLoaderProxy.loadImage(item.uri, bivPic, R.drawable.default_img_failed)
+            ImageLoaderProxy.loadImage(item.uri, bivPic, R.drawable.default_img_failed,width = bivPic.maxWidth,height = bivPic.maxHeight)
         } else if (item.type == Message.Type.LOCATION) {
             helper.setText(R.id.tvTitle, item.locationAddress)
             val ivLocation = helper.getView<ImageView>(R.id.ivLocation)
             val url = "http://st.map.qq.com/api?size=708*270&center=${item.lng},${item.lat}&zoom=16&referer=weixin"
-            ImageLoaderProxy.loadImage(url, ivLocation)
+            ImageLoaderProxy.loadImage(url, ivLocation,width = ivLocation.width,height = ivLocation.height)
         } else if (item.type == Message.Type.VOICE) {
             val increment = (UIUtils.displayWidth / 2 / Constants.DEFAULT_MAX_AUDIO_RECORD_TIME_SECOND * item.duration)
             val rlAudio = helper.setText(R.id.tvDuration, item.duration.toString() + "''").getView<RelativeLayout>(R.id.rlAudio)

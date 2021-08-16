@@ -26,7 +26,7 @@ class ShowBigImageActivity : BaseActivity<ShowBigImageViewModel, ActivityShowBig
             finish()
             return
         }
-        ImageLoaderProxy.loadImage(mUrl!!, pv)
+        ImageLoaderProxy.loadImage(mUrl!!, pv,width = pv.width,height = pv.height)
 
         pv.setOnClickListener {
             ActivityCompat.finishAfterTransition(this@ShowBigImageActivity)

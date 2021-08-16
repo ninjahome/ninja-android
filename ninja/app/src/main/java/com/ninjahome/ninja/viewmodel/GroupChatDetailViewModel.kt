@@ -14,7 +14,7 @@ import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.bean.GroupInfo
-import com.ninjahome.ninja.room.GroupDBManager
+import com.ninjahome.ninja.db.GroupDBManager
 import com.ninjahome.ninja.ui.activity.groupchat.GroupChatRemoveMemberActivity
 import me.tatarka.bindingcollectionadapter2.ItemBinding
 

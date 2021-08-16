@@ -22,9 +22,9 @@ import com.ninjahome.ninja.model.ConversationModel
 import com.ninjahome.ninja.model.bean.Conversation
 import com.ninjahome.ninja.model.bean.GroupInfo
 import com.ninjahome.ninja.model.bean.Message
-import com.ninjahome.ninja.room.ContactDBManager
-import com.ninjahome.ninja.room.ConversationDBManager
-import com.ninjahome.ninja.room.MessageDBManager
+import com.ninjahome.ninja.db.ContactDBManager
+import com.ninjahome.ninja.db.ConversationDBManager
+import com.ninjahome.ninja.db.MessageDBManager
 import com.ninjahome.ninja.ui.activity.contact.ContactDetailActivity
 import com.ninjahome.ninja.ui.activity.contact.ScanContactSuccessActivity
 import com.ninjahome.ninja.ui.activity.groupchat.GroupChatDetailActivity
@@ -179,16 +179,23 @@ class ConversationViewModel(val model: ConversationModel) : BaseViewModel() {
         if (!groupIsExist()) {
             return
         }
-        val message = Message(0, 0, NinjaApp.instance.account.address, id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.IMAGE, unRead = false, uri = path, msg = context().getString(R.string.message_type_image))
+        val message =Message(0, 0, NinjaApp.instance.account.address, id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.IMAGE, unRead = false, uri = path, msg = context().getString(R.string.message_type_image))
         rxLifeScope.launch({
+
+            var imageFileSource: File? = null
+            if (compress) {
+                imageFileSource = ImageUtils.compressImage(path)
+            }
+            imageFileSource = imageFileSource ?: File(path)
+            message.uri = imageFileSource.path
             val conversationId = getConversationId(context().getString(R.string.message_type_image))
             message.conversationId = conversationId
             message.id = MessageDBManager.insert(message)
             if (isGroup) {
-                model.sendGroupImageMessage(id, path, compress)
+                model.sendGroupImageMessage(id, imageFileSource.path)
             } else {
 
-                model.sendImageMessage(id, path, compress)
+                model.sendImageMessage(id, imageFileSource.path)
             }
             message.sentStatus = Message.SentStatus.SENT
             MessageDBManager.updateMessage(message)
@@ -308,9 +315,9 @@ class ConversationViewModel(val model: ConversationModel) : BaseViewModel() {
                 }
                 Message.Type.IMAGE -> {
                     if (isGroup) {
-                        model.sendGroupImageMessage(id, message.uri,true)
+                        model.sendGroupImageMessage(id, message.uri)
                     } else {
-                        model.sendImageMessage(id, message.uri,true)
+                        model.sendImageMessage(id, message.uri)
                     }
                 }
                 Message.Type.VOICE -> {

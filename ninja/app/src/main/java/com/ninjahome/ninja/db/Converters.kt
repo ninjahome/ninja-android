@@ -1,4 +1,4 @@
-package com.ninjahome.ninja.room
+package com.ninjahome.ninja.db
 
 import androidx.room.TypeConverter
 import com.ninjahome.ninja.model.bean.Message

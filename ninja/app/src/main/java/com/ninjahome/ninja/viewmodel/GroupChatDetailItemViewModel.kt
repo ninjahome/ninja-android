@@ -13,12 +13,11 @@ import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.bean.GroupMember
-import com.ninjahome.ninja.room.ContactDBManager
+import com.ninjahome.ninja.db.ContactDBManager
 import com.ninjahome.ninja.ui.activity.contact.ContactDetailActivity
 import com.ninjahome.ninja.ui.activity.contact.ScanContactSuccessActivity
 import com.ninjahome.ninja.ui.activity.groupchat.GroupChatAddMemberActivity
 import com.ninjahome.ninja.utils.ContactIconUtils
-import org.koin.core.component.KoinApiExtension
 
 /**
  *Author:Mr'x

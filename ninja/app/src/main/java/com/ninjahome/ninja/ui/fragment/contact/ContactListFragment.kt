@@ -15,7 +15,7 @@ import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.FragmentContactListBinding
 import com.ninjahome.ninja.model.bean.Contact
-import com.ninjahome.ninja.room.ContactDBManager
+import com.ninjahome.ninja.db.ContactDBManager
 import com.ninjahome.ninja.ui.activity.contact.ContactDetailActivity
 import com.ninjahome.ninja.ui.activity.groupchat.GroupChatCreateActivity
 import com.ninjahome.ninja.ui.activity.search.SearchContactActivity

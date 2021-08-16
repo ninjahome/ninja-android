@@ -13,8 +13,8 @@ import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.model.bean.GroupInfo
-import com.ninjahome.ninja.room.ContactDBManager
-import com.ninjahome.ninja.room.GroupDBManager
+import com.ninjahome.ninja.db.ContactDBManager
+import com.ninjahome.ninja.db.GroupDBManager
 import com.ninjahome.ninja.utils.MoshiUtils
 import com.ninjahome.ninja.utils.toJson
 import kotlinx.coroutines.Dispatchers

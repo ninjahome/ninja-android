@@ -15,8 +15,8 @@ import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.*
 import com.ninjahome.ninja.model.bean.Contact
 import com.ninjahome.ninja.model.bean.GroupInfo
-import com.ninjahome.ninja.room.ContactDBManager
-import com.ninjahome.ninja.room.GroupDBManager
+import com.ninjahome.ninja.db.ContactDBManager
+import com.ninjahome.ninja.db.GroupDBManager
 import com.ninjahome.ninja.ui.activity.conversation.ConversationActivity
 import com.ninjahome.ninja.utils.toJson
 import kotlinx.coroutines.Dispatchers

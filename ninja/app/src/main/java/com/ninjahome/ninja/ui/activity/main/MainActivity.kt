@@ -3,15 +3,12 @@ package com.ninjahome.ninja.ui.activity.main
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.lifecycle.rxLifeScope
 import chatLib.ChatLib
 import com.ninja.android.lib.base.BaseActivity
 import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityMainBinding
-import com.ninjahome.ninja.room.ConversationDBManager
-import com.ninjahome.ninja.room.MessageDBManager
 import com.ninjahome.ninja.ui.adapter.MainFragmentPagerAdapter
 import com.ninjahome.ninja.utils.ConnectionStateMonitor
 import com.ninjahome.ninja.utils.ConversationManager
@@ -71,7 +68,6 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
         } else {
             val doubleClickDifference = 2000
             if (now - last < doubleClickDifference) {
-                deleteReadMessage()
                 finish()
             } else {
                 last = now
@@ -80,12 +76,6 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
         }
     }
 
-    private fun deleteReadMessage() {
-        rxLifeScope.launch {
-            MessageDBManager.deleteAllReadMessage()
-            ConversationDBManager.deleteReadConversation()
-        }
-    }
 
     override fun onDestroy() {
         super.onDestroy()
