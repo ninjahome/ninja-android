@@ -18,7 +18,7 @@ class LocationViewModel : BaseViewModel() {
     val startLocationSearchEvent = SingleLiveEvent<Any>()
 
     init {
-        title.set(context().getString(R.string.location))
+        title.set(context().getString(R.string.conversation_location))
         showRightText.set(true)
         rightText.set(context().getString(R.string.send))
     }

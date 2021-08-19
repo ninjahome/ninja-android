@@ -12,4 +12,4 @@ import kotlinx.android.parcel.Parcelize
  */
 @Entity
 @Parcelize
-data class GroupInfo(@PrimaryKey(autoGenerate = true) var id: Int = 0, var groupId: String, var groupName: String, var owner: String, var memberIdList: String, var memberNickNameList: String, val banTalking: Boolean = false) : Parcelable
+data class GroupInfo(@PrimaryKey(autoGenerate = true) var id: Int = 0, var groupId: String, var groupName: String, var owner: String, var memberIdList: String, var memberNickNameList: String, var isBanned: Boolean = false) : Parcelable

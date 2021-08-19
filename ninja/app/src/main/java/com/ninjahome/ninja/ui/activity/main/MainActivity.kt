@@ -1,5 +1,6 @@
 package com.ninjahome.ninja.ui.activity.main
 
+import android.content.Intent
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -9,17 +10,22 @@ import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityMainBinding
+import com.ninjahome.ninja.ui.activity.activation.ActivationActivity
 import com.ninjahome.ninja.ui.adapter.MainFragmentPagerAdapter
 import com.ninjahome.ninja.utils.ConnectionStateMonitor
 import com.ninjahome.ninja.utils.ConversationManager
+import com.ninjahome.ninja.utils.DialogUtils
+import com.ninjahome.ninja.view.RechargePop
 import com.ninjahome.ninja.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.activity_main){
+class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.activity_main) {
     private val tabIcons = arrayListOf(R.drawable.tab_message, R.drawable.tab_contact, R.drawable.tab_my)
     private val tabName = arrayListOf(R.string.message, R.string.contact, R.string.my)
     val connectionStateMonitor = ConnectionStateMonitor()
+
+
     override val mViewModel: MainViewModel by viewModel()
 
 
@@ -48,11 +54,30 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
     }
 
     override fun initData() {
+        mViewModel.getExpireTime()
     }
 
     override fun initObserve() {
+        mViewModel.expireTime.observe(this) {
+            if (it * 1000 < System.currentTimeMillis()) {
+                DialogUtils.showRechargeDialog(this@MainActivity, object : RechargePop.ClickListener {
+                    override fun clickSure() {
+                        startActivationActivity()
+                    }
+
+                    override fun clickCancel() {
+                    }
+
+                })
+            }
+        }
 
     }
+
+    private fun startActivationActivity() {
+        startActivity(Intent(this, ActivationActivity::class.java))
+    }
+
 
     override fun statusBarStyle(): Int = STATUSBAR_STYLE_TRANSPARENT
 
@@ -83,8 +108,6 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
 
 
     }
-
-
 
 
 }

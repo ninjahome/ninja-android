@@ -3,6 +3,8 @@ package com.ninjahome.ninja.utils
 import org.joda.time.DateTime
 import org.joda.time.DateTimeConstants
 import org.joda.time.Days
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 
 /**
  * @描述 时间工具（需要joda-time）
@@ -60,5 +62,9 @@ object TimeUtils {
             "凌晨"
         }
         return `when` + " " + msgTime.toString("hh:mm")
+    }
+
+    fun formatData(time:Long):String{
+       return SimpleDateFormat("yyyy-MM-dd").format(time)
     }
 }

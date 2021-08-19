@@ -2,6 +2,7 @@ package com.ninjahome.ninja.viewmodel
 
 import android.os.Bundle
 import androidx.databinding.ObservableBoolean
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.rxLifeScope
 import chatLib.ChatLib
 import com.ninja.android.lib.base.BaseViewModel
@@ -17,26 +18,29 @@ import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.UnlockModel
 import com.ninjahome.ninja.ui.activity.accountmanager.AccountManagerActivity
+import com.ninjahome.ninja.ui.activity.activation.ActivationActivity
 import com.ninjahome.ninja.ui.activity.edituserinfo.EditUserInfoActivity
 import com.ninjahome.ninja.utils.AccountUtils
 import com.ninjahome.ninja.utils.toJson
 import com.ninjahome.ninja.view.contacts.ColorUtil
 import com.ninjahome.ninja.view.contacts.TextDrawable
 import com.orhanobut.logger.Logger
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  *Author:Mr'x
  *Time:
  *Description:
  */
-class MyViewModel : BaseViewModel(), KoinComponent {
-    val model: UnlockModel by inject()
+class MyViewModel(val model: UnlockModel) : BaseViewModel() {
     val name = SingleLiveEvent<String>()
     val id = SingleLiveEvent<String>()
     val showIDQR = SingleLiveEvent<Any>()
-    val iconDrawable = SingleLiveEvent<TextDrawable>()
+    val expireTime = SingleLiveEvent<Long>()
+
+
+    val iconDrawable = MutableLiveData<TextDrawable>()
     val fingerPrintEvent = SingleLiveEvent<Boolean>()
     val showFingerPrintDialogEvent = SingleLiveEvent<String>()
     val dismissPasswordDialogEvent = SingleLiveEvent<Boolean>()
@@ -50,23 +54,35 @@ class MyViewModel : BaseViewModel(), KoinComponent {
         setValue()
     }
 
+    fun getExpireTime() {
+        rxLifeScope.launch {
+            withContext(Dispatchers.IO) {
+                expireTime.postValue(ChatLib.getExpireTime())
+            }
+        }
+    }
+
     fun setValue() {
         name.value = userName
-        rxLifeScope.launch({
-            id.value = AccountUtils.getAddress(context())
+        rxLifeScope.launch {
+            id.postValue(AccountUtils.getAddress(context()))
             val iconIndex = ChatLib.iconIndex(id.value!!, ColorUtil.colorSize)
             val iconColor = ColorUtil.colors[iconIndex]
             val subName: String = if (userName.length >= 2) userName.substring(0, 2) else userName
-            iconDrawable.value = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(iconColor))
-        }, {
-            Logger.e(it.message!!)
-        })
+            iconDrawable.postValue(mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(iconColor, null)))
+        }
     }
 
 
     val clickShowIDQR = BindingCommand<Any>(object : BindingAction {
         override fun call() {
             showIDQR.call()
+        }
+    })
+
+    val clickStartActivation = BindingCommand<Any>(object : BindingAction {
+        override fun call() {
+            startActivity(ActivationActivity::class.java)
         }
     })
 
@@ -85,10 +101,10 @@ class MyViewModel : BaseViewModel(), KoinComponent {
     })
 
     val onCheckedFingerprint = BindingCommand(bindConsumer = object : BindingConsumer<Boolean> {
-        override fun call(isChecked: Boolean) {
-            openFingerPrintObservable.set(isChecked)
-            if (isChecked) {
-                fingerPrintEvent.postValue(isChecked)
+        override fun call(t: Boolean) {
+            openFingerPrintObservable.set(t)
+            if (t) {
+                fingerPrintEvent.postValue(t)
             }
         }
 

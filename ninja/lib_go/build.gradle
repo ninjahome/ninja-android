@@ -1,2 +1,2 @@
 configurations.maybeCreate("default")
-artifacts.add("default", file('ninja.aar'))
+artifacts.add("default", file('chatLib.aar'))

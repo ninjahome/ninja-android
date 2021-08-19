@@ -2,6 +2,13 @@ package com.ninjahome.ninja.ui.fragment.my
 
 import android.content.ComponentName
 import android.content.Intent
+import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.StyleSpan
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.app.ActivityOptionsCompat
@@ -16,12 +23,15 @@ import com.ninjahome.ninja.Constants
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.FragmentMyBinding
+import com.ninjahome.ninja.event.EventActivationSuccess
 import com.ninjahome.ninja.ui.activity.showidqrcode.ShowIDQRCodeActivity
 import com.ninjahome.ninja.utils.*
 import com.ninjahome.ninja.view.PasswordPop
 import com.ninjahome.ninja.viewmodel.MyViewModel
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.main.fragment_my.*
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -31,7 +41,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  *Description:
  */
 class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>(R.layout.fragment_my) {
-
+    val SECOND = 1000
+    val DAY = 86400000
+    val WEEK = 604800000
     private lateinit var passwordDialog: BasePopupView
     val biometricManager: BiometricManager by lazy { BiometricManager.from(mActivity) }
     private lateinit var biometricPrompt: BiometricPrompt
@@ -41,9 +53,11 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>(R.layout.fragmen
     override val mViewModel: MyViewModel by viewModel()
     override fun initView() {
         versionTv.text = String.format(getString(R.string.version), UIUtils.getVersion(mActivity))
+
     }
 
     override fun initData() {
+        mViewModel.getExpireTime()
     }
 
     override fun initVariableId(): Int = BR.viewModel
@@ -90,6 +104,48 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>(R.layout.fragmen
             }
         })
 
+        mViewModel.expireTime.observe(this) {
+
+            if (it * SECOND < System.currentTimeMillis()) {
+                //已过期
+                expired()
+            } else if (it * SECOND < System.currentTimeMillis() + WEEK) {
+                //一周内过期
+                notExpiredLongTime(it * SECOND)
+            } else {
+                //过期时间超过一周
+                notExpired(it * SECOND)
+            }
+        }
+
+    }
+
+
+    private fun expired() {
+        (bgMemberIv.background as GradientDrawable).setColor(resources.getColor(R.color.color_7ae7e7e7c, null))
+        (memberActivateTv.background as GradientDrawable).setColor(resources.getColor(R.color.color_ee674c, null))
+        expireDateTv.text = getString(R.string.my_account_unused)
+        expireTitleTv.text =getString(R.string.my_inactivated)
+    }
+
+    private fun notExpired(time: Long) {
+        (bgMemberIv.background as GradientDrawable).setColor(resources.getColor(R.color.color_1a3b877f, null))
+        (memberActivateTv.background as GradientDrawable).setColor(resources.getColor(R.color.color_3b877f, null))
+        memberActivateTv.text = resources.getString(R.string.my_renew)
+        expireDateTv.text = String.format(resources.getString(R.string.my_account_expiration), TimeUtils.formatData(time))
+        expireTitleTv.text = resources.getString(R.string.my_account_activated)
+    }
+
+    private fun notExpiredLongTime(time: Long) {
+        (bgMemberIv.background as GradientDrawable).setColor(resources.getColor(R.color.color_1a3b877f, null))
+        (memberActivateTv.background as GradientDrawable).setColor(resources.getColor(R.color.color_1aee674c, null))
+        val lastDays = (System.currentTimeMillis()-time)/DAY
+        val expirationDate = String.format(getString(R.string.my_account_expiration_date), lastDays)
+        val expirationDateSp = SpannableString(expirationDate)
+        expirationDateSp.setSpan(AbsoluteSizeSpan(26, true), 6, 7, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        expirationDateSp.setSpan(StyleSpan(Typeface.BOLD), 6, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        expireTitleTv.text = expirationDateSp
+        expireDateTv.text = String.format(resources.getString(R.string.my_account_expiration), TimeUtils.formatData(time))
     }
 
     private fun showPasswordDialog() {
@@ -178,5 +234,11 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>(R.layout.fragmen
         super.onResume()
         mViewModel.setValue()
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun activationSuccess(eventActivationSuccess: EventActivationSuccess) {
+        mViewModel.getExpireTime()
+    }
+
 
 }

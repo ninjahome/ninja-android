@@ -64,7 +64,7 @@
                 android:adjustViewBounds="true"
                 android:maxWidth="200dp"
                 android:maxHeight="200dp"
-                android:scaleType="centerCrop"
+                android:scaleType="centerInside"
                 app:bubble_angle="10dp"
                 app:bubble_arrowHeight="10dp"
                 app:bubble_arrowLocation="right"

@@ -92,7 +92,7 @@
                         android:layout_height="40dp"
                         android:background="@drawable/shape_session_btn_voice_normal"
                         android:stateListAnimator="@null"
-                        android:text="@string/please_to_talk"
+                        android:text="@string/conversation_please_to_talk"
                         android:textColor="@color/color_26253c"
                         android:textStyle="bold"
                         android:translationZ="1dp"

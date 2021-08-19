@@ -7,9 +7,9 @@ import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityGroupChatDetailBinding
+import com.ninjahome.ninja.db.GroupDBManager
 import com.ninjahome.ninja.model.bean.GroupInfo
 import com.ninjahome.ninja.model.bean.GroupMember
-import com.ninjahome.ninja.db.GroupDBManager
 import com.ninjahome.ninja.utils.fromJson
 import com.ninjahome.ninja.viewmodel.GroupChatDetailItemViewModel
 import com.ninjahome.ninja.viewmodel.GroupChatDetailViewModel
@@ -29,6 +29,7 @@ class GroupChatDetailActivity : BaseActivity<GroupChatDetailViewModel, ActivityG
     override fun initData() {
         val groupDetail = intent.getParcelableExtra<GroupInfo>(IntentKey.GROUPCHAT)
         mViewModel.groupDetail.value = groupDetail
+        mViewModel.banned.value = groupDetail?.isBanned
         mViewModel.title.set(groupDetail?.groupName)
         mViewModel.isLord.value = groupDetail?.owner.equals(NinjaApp.instance.account.address)
     }

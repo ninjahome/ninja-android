@@ -13,6 +13,7 @@ import com.ninjahome.ninja.R
 import com.ninjahome.ninja.view.ConversationMoreActionPop
 import com.ninjahome.ninja.view.CreateGroupChatPop
 import com.ninjahome.ninja.view.PasswordPop
+import com.ninjahome.ninja.view.RechargePop
 import com.orhanobut.logger.Logger
 
 /**
@@ -77,6 +78,10 @@ object DialogUtils {
 
     fun showCreateGroupChatDialog(activity: AppCompatActivity, listener: CreateGroupChatPop.ClickListener): BasePopupView {
         return XPopup.Builder(activity).dismissOnBackPressed(true).asCustom(CreateGroupChatPop(activity, listener)).show()
+    }
+
+    fun showRechargeDialog(activity: AppCompatActivity, listener: RechargePop.ClickListener): BasePopupView {
+        return XPopup.Builder(activity).dismissOnBackPressed(true).asCustom(RechargePop(activity, listener)).show()
     }
 
 }

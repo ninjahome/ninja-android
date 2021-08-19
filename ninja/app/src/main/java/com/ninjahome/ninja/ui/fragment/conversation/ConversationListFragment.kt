@@ -71,7 +71,6 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
 
         rxLifeScope.launch {
             ConversationDBManager.all().collect {
-                println("========ConversationDBManager.all()")
                 mViewModel.items.clear()
                 it?.forEach {
                     mViewModel.items.add(ConversationItemViewModel(mViewModel, it))
@@ -93,10 +92,7 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
         mViewModel.showPop.observe(this) {
             animator.start()
             showPop()
-
         }
-
-
     }
 
     private fun showPop() {
@@ -144,6 +140,11 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun netWorkChange(eventNetWorkChange: EventNetWorkChange) {
+        mViewModel.refreshCommand.execute()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun activationSuccess(eventActivationSuccess: EventActivationSuccess) {
         mViewModel.refreshCommand.execute()
     }
 

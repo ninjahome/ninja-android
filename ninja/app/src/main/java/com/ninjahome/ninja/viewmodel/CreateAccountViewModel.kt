@@ -13,11 +13,11 @@ import com.ninja.android.lib.utils.SharedPref
 import com.ninjahome.ninja.Constants
 import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
-import com.ninjahome.ninja.event.EventChangeAccount
-import com.ninjahome.ninja.model.CreateAccountModel
 import com.ninjahome.ninja.db.ContactDBManager
 import com.ninjahome.ninja.db.ConversationDBManager
 import com.ninjahome.ninja.db.MessageDBManager
+import com.ninjahome.ninja.event.EventChangeAccount
+import com.ninjahome.ninja.model.CreateAccountModel
 import com.ninjahome.ninja.ui.activity.edituserinfo.EditUserInfoActivity
 import com.ninjahome.ninja.utils.AccountUtils
 import com.ninjahome.ninja.utils.fromJson
@@ -93,18 +93,15 @@ class CreateAccountViewModel(val model: CreateAccountModel) : BaseViewModel() {
         }
     })
 
-    private fun createAccountSuccess(account: String) {
+    private suspend fun createAccountSuccess(account: String) {
         AccountUtils.saveAccountToPath(AccountUtils.getAccountPath(context()), account)
         NinjaApp.instance.account = account.fromJson()!!
         dismissDialog()
         openFingerPrint = false
         userName = ""
-        rxLifeScope.launch {
-            ConversationDBManager.deleteAll()
-            ContactDBManager.deleteAll()
-            MessageDBManager.deleteAll()
-        }
-
+        ConversationDBManager.deleteAll()
+        ContactDBManager.deleteAll()
+        MessageDBManager.deleteAll()
         EventBus.getDefault().post(EventChangeAccount())
         startActivityAndFinish(EditUserInfoActivity::class.java)
 

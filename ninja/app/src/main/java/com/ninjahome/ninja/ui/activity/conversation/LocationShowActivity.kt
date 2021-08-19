@@ -36,7 +36,7 @@ class LocationShowActivity : BaseActivity<LocationShowViewModel, ActivityLocatio
     override val mViewModel: LocationShowViewModel by viewModel()
 
     override fun initView() {
-        mViewModel.title.set(resources.getString(R.string.location_info))
+        mViewModel.title.set(resources.getString(R.string.conversation_location_info))
         mLocationManager = TencentLocationManager.getInstance(this)
         mLocationRequest = TencentLocationRequest.create()
         mTencentMap = map.map

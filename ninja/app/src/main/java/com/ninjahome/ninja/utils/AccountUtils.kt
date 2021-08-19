@@ -40,7 +40,7 @@ object AccountUtils {
         if (file.exists()) {
             file.delete()
         }
-        CoroutineScope(Dispatchers.IO).launch {
+        MainScope().launch {
             withContext(Dispatchers.IO) {
                 val encryptedFile = getEncryptedFile(path)
                 saveAccountToFile(encryptedFile, data)

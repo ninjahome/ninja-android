@@ -94,6 +94,31 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/gourpqrTv" />
 
+        <TextView
+            android:id="@+id/bannedTv"
+            isVisible="@{viewModel.isLord}"
+            android:layout_width="0dp"
+            android:layout_height="54dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:gravity="center_vertical"
+            android:text="@string/group_chat_banned"
+            android:textColor="@color/color_26253c"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/deleteTv" />
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/fingerprintSwitch"
+            style="@style/SwitchStyle"
+            android:layout_height="30dp"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/bannedTv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/bannedTv"
+            app:onCheckedChangeCommand="@{viewModel.onCheckedBanned}"
+            app:switchState="@{viewModel.banned}" />
+
         <Button
             style="?android:attr/borderlessButtonStyle"
             onClickCommand="@{viewModel.clickSignOut}"
@@ -106,6 +131,6 @@
             android:textColor="@color/color_ee674c"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/deleteTv" />
+            app:layout_constraintTop_toBottomOf="@+id/bannedTv" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

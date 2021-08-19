@@ -40,7 +40,7 @@
                     android:layout_below="@id/ivAlbum"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="7dp"
-                    android:text="@string/album"
+                    android:text="@string/conversation_album"
                     android:textSize="12sp"
                     android:visibility="gone" />
             </RelativeLayout>
@@ -66,7 +66,7 @@
                     android:layout_below="@id/ivShot"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="7dp"
-                    android:text="@string/shot"
+                    android:text="@string/conversation_shot"
                     android:textSize="12sp"
                     android:visibility="gone" />
             </RelativeLayout>
@@ -93,7 +93,7 @@
                     android:layout_below="@id/ivLocation"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="7dp"
-                    android:text="@string/location"
+                    android:text="@string/conversation_location"
                     android:textSize="12sp"
                     android:visibility="gone" />
             </RelativeLayout>

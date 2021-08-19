@@ -9,13 +9,17 @@ import chatLib.ChatLib
 import com.ninja.android.lib.base.BaseViewModel
 import com.ninja.android.lib.command.BindingAction
 import com.ninja.android.lib.command.BindingCommand
+import com.ninja.android.lib.command.BindingConsumer
 import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.IntentKey
+import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.bean.GroupInfo
 import com.ninjahome.ninja.db.GroupDBManager
 import com.ninjahome.ninja.ui.activity.groupchat.GroupChatRemoveMemberActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import me.tatarka.bindingcollectionadapter2.ItemBinding
 
 /**
@@ -26,6 +30,7 @@ import me.tatarka.bindingcollectionadapter2.ItemBinding
 class GroupChatDetailViewModel : BaseViewModel() {
     val groupDetail = MutableLiveData<GroupInfo>()
     val isLord = MutableLiveData<Boolean>()
+    val banned = MutableLiveData<Boolean>()
 
     val memberIconItem: ObservableList<GroupChatDetailItemViewModel> = ObservableArrayList()
     val itemBinding = ItemBinding.of<GroupChatDetailItemViewModel>(BR.item, R.layout.item_group_chat_detail_icon)
@@ -33,6 +38,25 @@ class GroupChatDetailViewModel : BaseViewModel() {
         override fun call() {
             showToast("修改群名称")
         }
+    })
+
+    val onCheckedBanned = BindingCommand(bindConsumer = object : BindingConsumer<Boolean> {
+        override fun call(t: Boolean) {
+            showDialog()
+            rxLifeScope.launch({
+                withContext(Dispatchers.IO){
+                    ChatLib.banTalking(groupDetail.value!!.memberIdList, NinjaApp.instance.account.address,groupDetail.value!!.groupId,t)
+                    groupDetail.value!!.isBanned = t
+                    GroupDBManager.updateGroup(groupDetail.value!!)
+                    dismissDialog()
+
+                }
+            },{
+                dismissDialog()
+                showToast(R.string.group_chat_banned_error)
+            })
+        }
+
     })
 
     val clickShowQRCode = BindingCommand<Any>(object : BindingAction {
@@ -53,9 +77,13 @@ class GroupChatDetailViewModel : BaseViewModel() {
         override fun call() {
             rxLifeScope.launch({
                 showDialog()
-                ChatLib.quitGroup(groupDetail.value?.memberIdList, groupDetail.value?.groupId)
-                GroupDBManager.delete(groupDetail.value!!)
-                dismissDialog()
+                withContext(Dispatchers.IO){
+                    ChatLib.quitGroup(groupDetail.value?.memberIdList, groupDetail.value?.groupId)
+                    GroupDBManager.delete(groupDetail.value!!)
+                    dismissDialog()
+                }
+
+
             }, {
                 dismissDialog()
                 it.message?.let { it1 -> toast(it1) }

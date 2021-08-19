@@ -71,7 +71,7 @@
                 onClickCommand="@{viewModel.clickSearch}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/search"
+                android:text="@string/conversation_search"
                 android:textSize="16sp"
                 app:drawableLeftCompat="@drawable/location_search_icon"
                 app:layout_constraintBottom_toBottomOf="@+id/searchIv"

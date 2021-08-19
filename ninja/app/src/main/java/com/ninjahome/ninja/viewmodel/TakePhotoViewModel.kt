@@ -16,7 +16,7 @@ import com.ninjahome.ninja.R
 class TakePhotoViewModel : BaseViewModel() {
     val backEvent = SingleLiveEvent<Any>()
     val sendEvent = SingleLiveEvent<Any>()
-    val sendUserName = MutableLiveData<String>(context().getString(R.string.take_photo_send_user_name))
+    val sendUserName = MutableLiveData<String>(context().getString(R.string.conversation_take_photo_send_user_name))
 
     val clickBack = BindingCommand<Any>(object : BindingAction {
         override fun call() {

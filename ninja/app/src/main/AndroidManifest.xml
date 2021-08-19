@@ -139,6 +139,9 @@
         <activity
             android:name=".ui.activity.groupchat.GroupChatAddMemberActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.activation.ActivationActivity"
+            android:screenOrientation="portrait" />
 
 
         <meta-data

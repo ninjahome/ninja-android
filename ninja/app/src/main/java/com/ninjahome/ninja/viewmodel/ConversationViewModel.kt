@@ -18,13 +18,13 @@ import com.ninjahome.ninja.Constants
 import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
+import com.ninjahome.ninja.db.ContactDBManager
+import com.ninjahome.ninja.db.ConversationDBManager
+import com.ninjahome.ninja.db.MessageDBManager
 import com.ninjahome.ninja.model.ConversationModel
 import com.ninjahome.ninja.model.bean.Conversation
 import com.ninjahome.ninja.model.bean.GroupInfo
 import com.ninjahome.ninja.model.bean.Message
-import com.ninjahome.ninja.db.ContactDBManager
-import com.ninjahome.ninja.db.ConversationDBManager
-import com.ninjahome.ninja.db.MessageDBManager
 import com.ninjahome.ninja.ui.activity.contact.ContactDetailActivity
 import com.ninjahome.ninja.ui.activity.contact.ScanContactSuccessActivity
 import com.ninjahome.ninja.ui.activity.groupchat.GroupChatDetailActivity
@@ -154,6 +154,10 @@ class ConversationViewModel(val model: ConversationModel) : BaseViewModel() {
         if (!groupIsExist()) {
             return
         }
+        if (banned()) {
+            showToast(R.string.group_chat_banned)
+            return
+        }
         val message = Message(0, 0, NinjaApp.instance.account.address, id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.TEXT, unRead = false, msg = data)
         rxLifeScope.launch({
             val conversationId = getConversationId(data)
@@ -175,11 +179,19 @@ class ConversationViewModel(val model: ConversationModel) : BaseViewModel() {
 
     }
 
+    private fun banned(): Boolean {
+        return isGroup && groupChat != null && groupChat!!.isBanned
+    }
+
     fun sendImage(path: String, compress: Boolean) {
         if (!groupIsExist()) {
             return
         }
-        val message =Message(0, 0, NinjaApp.instance.account.address, id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.IMAGE, unRead = false, uri = path, msg = context().getString(R.string.message_type_image))
+        if (banned()) {
+            showToast(R.string.group_chat_banned)
+            return
+        }
+        val message = Message(0, 0, NinjaApp.instance.account.address, id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.IMAGE, unRead = false, uri = path, msg = context().getString(R.string.conversation_message_type_image))
         rxLifeScope.launch({
 
             var imageFileSource: File? = null
@@ -188,13 +200,12 @@ class ConversationViewModel(val model: ConversationModel) : BaseViewModel() {
             }
             imageFileSource = imageFileSource ?: File(path)
             message.uri = imageFileSource.path
-            val conversationId = getConversationId(context().getString(R.string.message_type_image))
+            val conversationId = getConversationId(context().getString(R.string.conversation_message_type_image))
             message.conversationId = conversationId
             message.id = MessageDBManager.insert(message)
             if (isGroup) {
                 model.sendGroupImageMessage(id, imageFileSource.path)
             } else {
-
                 model.sendImageMessage(id, imageFileSource.path)
             }
             message.sentStatus = Message.SentStatus.SENT
@@ -212,10 +223,14 @@ class ConversationViewModel(val model: ConversationModel) : BaseViewModel() {
         if (!groupIsExist()) {
             return
         }
-        val message = Message(0, 0, NinjaApp.instance.account.address, id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.VOICE, unRead = false, uri = audioPath.path.toString(), duration = duration, msg = context().getString(R.string.message_type_voice))
+        if (banned()) {
+            showToast(R.string.group_chat_banned)
+            return
+        }
+        val message = Message(0, 0, NinjaApp.instance.account.address, id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.VOICE, unRead = false, uri = audioPath.path.toString(), duration = duration, msg = context().getString(R.string.conversation_message_type_voice))
         rxLifeScope.launch({
             audioPath.path?.let {
-                val conversationId = getConversationId(context().getString(R.string.message_type_voice))
+                val conversationId = getConversationId(context().getString(R.string.conversation_message_type_voice))
                 message.conversationId = conversationId
                 message.id = MessageDBManager.insert(message)
                 if (isGroup) {
@@ -240,9 +255,13 @@ class ConversationViewModel(val model: ConversationModel) : BaseViewModel() {
         if (!groupIsExist()) {
             return
         }
-        val message = Message(0, 0, NinjaApp.instance.account.address, id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.LOCATION, unRead = false, lat = lat, lng = lng, locationAddress = poi, msg = context().getString(R.string.message_type_location))
+        if (banned()) {
+            showToast(R.string.group_chat_banned)
+            return
+        }
+        val message = Message(0, 0, NinjaApp.instance.account.address, id, Message.MessageDirection.SEND, Message.SentStatus.SENDING, System.currentTimeMillis(), Message.Type.LOCATION, unRead = false, lat = lat, lng = lng, locationAddress = poi, msg = context().getString(R.string.conversation_message_type_location))
         rxLifeScope.launch({
-            val conversationId = getConversationId(context().getString(R.string.message_type_location))
+            val conversationId = getConversationId(context().getString(R.string.conversation_message_type_location))
             message.conversationId = conversationId
             message.id = MessageDBManager.insert(message)
             if (isGroup) {

@@ -282,7 +282,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
     fun checkPermissions(): Boolean {
         if (!EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO)) {
-            EasyPermissions.requestPermissions(this, getString(R.string.rationale_extra_write), Constants.RC_LOCAL_MEMORY_PERM, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO)
+            EasyPermissions.requestPermissions(this, getString(R.string.conversation_rationale_extra_write), Constants.RC_LOCAL_MEMORY_PERM, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO)
             return false
         }
         return true
@@ -508,7 +508,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
             override fun setTimeoutTipView(counter: Int) {
                 if (mRecordWindow != null) {
-                    stateTV.setText(R.string.voice_rec)
+                    stateTV.setText(R.string.conversation_voice_rec)
                     voiceBg?.setBackgroundResource(R.drawable.pop_voice_bg)
 
                 }
@@ -516,7 +516,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
             override fun setRecordingTipView() {
                 if (mRecordWindow != null) {
-                    stateTV.setText(R.string.voice_rec)
+                    stateTV.setText(R.string.conversation_voice_rec)
                     voiceBg?.setBackgroundResource(R.drawable.pop_voice_bg)
 
                 }
@@ -524,13 +524,13 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
 
             override fun setAudioShortTipView() {
                 if (mRecordWindow != null) {
-                    stateTV.setText(R.string.voice_short)
+                    stateTV.setText(R.string.conversation_voice_short)
                 }
             }
 
             override fun setCancelTipView() {
                 if (mRecordWindow != null) {
-                    stateTV.setText(R.string.voice_cancel)
+                    stateTV.setText(R.string.conversation_voice_cancel)
                     voiceBg?.setBackgroundResource(R.drawable.pop_voice_cancle_bg)
                 }
             }
