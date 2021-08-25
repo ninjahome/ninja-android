@@ -10,6 +10,7 @@ import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityMainBinding
+import com.ninjahome.ninja.event.EventOffline
 import com.ninjahome.ninja.ui.activity.activation.ActivationActivity
 import com.ninjahome.ninja.ui.adapter.MainFragmentPagerAdapter
 import com.ninjahome.ninja.utils.ConnectionStateMonitor
@@ -18,6 +19,7 @@ import com.ninjahome.ninja.utils.DialogUtils
 import com.ninjahome.ninja.view.RechargePop
 import com.ninjahome.ninja.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import org.greenrobot.eventbus.EventBus
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.activity_main) {
@@ -60,6 +62,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
     override fun initObserve() {
         mViewModel.expireTime.observe(this) {
             if (it * 1000 < System.currentTimeMillis()) {
+                EventBus.getDefault().postSticky(EventOffline())
                 DialogUtils.showRechargeDialog(this@MainActivity, object : RechargePop.ClickListener {
                     override fun clickSure() {
                         startActivationActivity()
@@ -69,6 +72,8 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
                     }
 
                 })
+            }else{
+                mViewModel.online()
             }
         }
 

@@ -1,20 +1,21 @@
 package com.ninjahome.ninja
 
+import android.util.Log
 import chatLib.MulticastCallBack
 import chatLib.UnicastCallBack
 import coil.load
 import com.lqr.emoji.LQREmotionKit
 import com.ninja.android.lib.base.BaseApplication
+import com.ninjahome.ninja.db.GroupDBManager
 import com.ninjahome.ninja.event.*
 import com.ninjahome.ninja.imageloader.GlideImageLoader
 import com.ninjahome.ninja.imageloader.ImageLoaderProxy
+import com.ninjahome.ninja.model.ActivationModel
 import com.ninjahome.ninja.model.ConversationModel
 import com.ninjahome.ninja.model.CreateAccountModel
 import com.ninjahome.ninja.model.UnlockModel
 import com.ninjahome.ninja.model.bean.*
 import com.ninjahome.ninja.push.PushHelper
-import com.ninjahome.ninja.db.GroupDBManager
-import com.ninjahome.ninja.model.ActivationModel
 import com.ninjahome.ninja.utils.*
 import com.ninjahome.ninja.viewmodel.*
 import com.orhanobut.logger.*
@@ -36,6 +37,7 @@ import org.koin.dsl.module
  *Description:
  */
 class NinjaApp : BaseApplication(), UnicastCallBack {
+    private val TAG = "NinjaApp"
     val rxLifeScope = RxLifeScope()
     lateinit var account: Account
 
@@ -53,8 +55,8 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
         UMConfigure.setLogEnabled(true)
         UMConfigure.init(this, "609ce659c9aacd3bd4d3f092", "Umeng", UMConfigure.DEVICE_TYPE_PHONE, "")
         LQREmotionKit.init(this) { _, path, imageView -> imageView.load(path) }
-    }
 
+    }
 
 
     private fun initPush() {
@@ -121,10 +123,10 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
 
     fun configApp() {
         chatLib.ChatLib.configApp("", this, object : MulticastCallBack {
-            override fun banTalking(groupId: String,isBanned:Boolean) {
+            override fun banTalking(groupId: String, isBanned: Boolean) {
                 rxLifeScope.launch {
                     withContext(Dispatchers.IO) {
-                        val groupInfo =GroupDBManager.queryByGroupId(groupId)
+                        val groupInfo = GroupDBManager.queryByGroupId(groupId)
                         groupInfo?.let {
                             it.isBanned = isBanned
                             GroupDBManager.updateGroup(it)
@@ -155,7 +157,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
 
             override fun quitGroup(from: String, groupId: String, quitId: String) {
                 rxLifeScope.launch {
-                    withContext(Dispatchers.IO){
+                    withContext(Dispatchers.IO) {
                         val group = GroupDBManager.queryByGroupId(groupId)
                         if (group != null) {
                             val newIds = ArrayList<String>()
@@ -181,7 +183,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
             override fun syncGroup(groupId: String): String {
                 var syncGroup: SyncGroup? = null
                 rxLifeScope.launch {
-                    withContext(Dispatchers.IO){
+                    withContext(Dispatchers.IO) {
                         val groupInfo = GroupDBManager.queryByGroupId(groupId)
                         if (groupInfo != null) {
                             syncGroup = SyncGroup(groupInfo.groupId, groupInfo.groupName, groupInfo.owner, groupInfo.isBanned, MoshiUtils.listFromJson(groupInfo.memberIdList), MoshiUtils.listFromJson(groupInfo.memberNickNameList))
@@ -200,14 +202,16 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
                 this@NinjaApp.createGroup(groupId, groupName, owner, memberIdList, memberNickNameList)
             }
 
-            override fun joinGroup(from: String?, groupId: String, groupName: String?, owner: String?, memberIdList: String, memberNickNameList: String, newIdList: String, banTalkding: Boolean) {
+            override fun joinGroup(from: String?, groupId: String, groupName: String, owner: String, memberIdList: String, memberNickNameList: String, newIdList: String, banTalkding: Boolean) {
                 rxLifeScope.launch {
-                    withContext(Dispatchers.IO){
+                    withContext(Dispatchers.IO) {
                         val groupInfo = GroupDBManager.queryByGroupId(groupId)
                         if (groupInfo != null) {
                             groupInfo.memberIdList = memberIdList
                             groupInfo.memberNickNameList = memberNickNameList
                             GroupDBManager.updateGroup(groupInfo)
+                        }else{
+                            this@NinjaApp.createGroup(groupId, groupName, owner, memberIdList, memberNickNameList)
                         }
                     }
 
@@ -218,7 +222,12 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
                 rxLifeScope.launch {
                     withContext(Dispatchers.IO) {
                         val group = GroupDBManager.queryByGroupId(groupId)
+
                         if (group != null) {
+                            if(kickIds.contains(NinjaApp.instance.account.address)){
+                                GroupDBManager.delete(group)
+                                return@withContext
+                            }
                             val newIds = ArrayList<String>()
                             val newNicKName = ArrayList<String>()
                             val kickIdList = MoshiUtils.listFromJson<String>(kickIds)
@@ -246,6 +255,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
 
 
             override fun textMessage(from: String, groupId: String, payload: String, time: Long) {
+                Log.d(TAG, "receiveTextMessage: ")
                 ConversationManager.receiveGroupTextMessage(from, groupId, payload, time)
             }
 
@@ -269,7 +279,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
 
     private fun createGroup(groupId: String, groupName: String, owner: String, memberIdList: String, memberNickNameList: String) {
         rxLifeScope.launch {
-            withContext(Dispatchers.IO){
+            withContext(Dispatchers.IO) {
                 val group = GroupDBManager.queryByGroupId(groupId)
                 if (group == null) {
                     val groupConversation = GroupInfo(0, groupId, groupName, owner, memberIdList, memberNickNameList)
@@ -294,6 +304,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
 
 
     override fun textMessage(from: String, to: String, data: String, time: Long) {
+        Log.d(TAG, "receiveTextMessage: ")
         ConversationManager.receiveTextMessage(from, to, data, time)
     }
 

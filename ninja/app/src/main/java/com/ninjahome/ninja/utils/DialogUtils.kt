@@ -81,7 +81,7 @@ object DialogUtils {
     }
 
     fun showRechargeDialog(activity: AppCompatActivity, listener: RechargePop.ClickListener): BasePopupView {
-        return XPopup.Builder(activity).dismissOnBackPressed(true).asCustom(RechargePop(activity, listener)).show()
+        return XPopup.Builder(activity).dismissOnTouchOutside(false).dismissOnBackPressed(false).asCustom(RechargePop(activity, listener)).show()
     }
 
 }

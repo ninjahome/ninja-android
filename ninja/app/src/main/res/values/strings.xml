@@ -84,6 +84,7 @@
     <!--    info-->
     <string name="edit_user_info_title">个人信息</string>
     <string name="edit_user_info_name">用户名</string>
+    <string name="edit_user_input_info_name">请输入用户名</string>
     <string name="back_up_id_title">您的账号ID已经生成</string>
     <string name="back_up_des">本app使用区块链加密技术，密码一旦丢失，将不可找回。建议您保存二维码到您的手机或其他设备中。</string>
     <string name="back_up_save_local">保存到本地</string>

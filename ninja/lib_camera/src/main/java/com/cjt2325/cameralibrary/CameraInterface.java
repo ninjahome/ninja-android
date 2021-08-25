@@ -772,6 +772,7 @@ public class CameraInterface implements Camera.PreviewCallback {
             sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         }
         sm.unregisterListener(sensorEventListener);
+        sm = null;
     }
 
     void isPreview(boolean res) {

@@ -39,7 +39,7 @@ class UnLockViewModel(val model: UnlockModel) : BaseViewModel() {
             accountJson.value = model.loadAccount(AccountUtils.getAccountPath(context()))
             NinjaApp.instance.account = accountJson.value!!.fromJson()!!
             val iconIndex = ChatLib.iconIndex(NinjaApp.instance.account.address, ColorUtil.colorSize)
-            val iconColor = ColorUtil.colors[iconIndex]
+            val iconColor = ColorUtil.colors[iconIndex.toInt()]
             iconDrawable.value = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(iconColor))
 
         }, {

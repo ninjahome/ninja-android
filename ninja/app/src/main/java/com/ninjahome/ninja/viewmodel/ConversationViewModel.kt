@@ -195,18 +195,20 @@ class ConversationViewModel(val model: ConversationModel) : BaseViewModel() {
         rxLifeScope.launch({
 
             var imageFileSource: File? = null
-            if (compress) {
-                imageFileSource = ImageUtils.compressImage(path)
+            withContext(Dispatchers.IO) {
+                if (compress) {
+                    imageFileSource = ImageUtils.compressImage(path)
+                }
             }
             imageFileSource = imageFileSource ?: File(path)
-            message.uri = imageFileSource.path
+            message.uri = imageFileSource!!.path
             val conversationId = getConversationId(context().getString(R.string.conversation_message_type_image))
             message.conversationId = conversationId
             message.id = MessageDBManager.insert(message)
             if (isGroup) {
-                model.sendGroupImageMessage(id, imageFileSource.path)
+                model.sendGroupImageMessage(id, imageFileSource!!.path)
             } else {
-                model.sendImageMessage(id, imageFileSource.path)
+                model.sendImageMessage(id, imageFileSource!!.path)
             }
             message.sentStatus = Message.SentStatus.SENT
             MessageDBManager.updateMessage(message)

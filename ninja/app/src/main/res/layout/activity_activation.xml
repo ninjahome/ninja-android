@@ -87,6 +87,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/verifyBtn"
             android:layout_margin="15dp"
+            onLongClickCommand="@{viewModel.longClick}"
             android:padding="15dp"
             android:background="@drawable/bg_activation_code"
             android:layout_height="wrap_content"/>

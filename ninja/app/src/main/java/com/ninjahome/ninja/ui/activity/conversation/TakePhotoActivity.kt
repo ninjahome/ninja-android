@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.os.Environment
 import android.os.SystemClock
 import androidx.core.content.ContextCompat
+import com.cjt2325.cameralibrary.CameraInterface
 import com.cjt2325.cameralibrary.JCameraView
 import com.cjt2325.cameralibrary.listener.JCameraListener
 import com.ninja.android.lib.base.BaseActivity
@@ -137,5 +138,9 @@ class TakePhotoActivity : BaseActivity<TakePhotoViewModel, ActivityTakePhotoBind
     override fun onPause() {
         super.onPause()
         if (cameraview != null) cameraview.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 }

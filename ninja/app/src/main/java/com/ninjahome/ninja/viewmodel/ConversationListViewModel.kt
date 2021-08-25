@@ -24,7 +24,7 @@ import me.tatarka.bindingcollectionadapter2.ItemBinding
 class ConversationListViewModel : BaseViewModel() {
     var finishRefreshingEvent = SingleLiveEvent<Any>()
     var showPop = SingleLiveEvent<Any>()
-    val unline = MutableLiveData<Boolean>()
+    val online = MutableLiveData(true)
 
     val items: ObservableList<ConversationItemViewModel> = ObservableArrayList()
     val itemBinding = ItemBinding.of<ConversationItemViewModel>(BR.item, R.layout.item_message)
@@ -51,8 +51,9 @@ class ConversationListViewModel : BaseViewModel() {
                         ChatLib.wsOnline()
                     }
                 }
+                finishRefreshingEvent.call()
             }
-            finishRefreshingEvent.call()
+
         }
     })
 

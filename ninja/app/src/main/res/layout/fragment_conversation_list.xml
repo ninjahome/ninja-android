@@ -55,7 +55,7 @@
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <TextView
-            isVisible="@{viewModel.unline}"
+            isVisible="@{!viewModel.online}"
             android:layout_width="0dp"
             android:layout_height="30dp"
             android:background="@color/color_aaff0000"

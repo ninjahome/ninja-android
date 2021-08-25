@@ -133,7 +133,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel, ActivityConvers
     }
 
     private fun initAdapter() {
-        println("----------initAdapter执行了")
         conversationAdapter = ConversationAdapter(this, mData, mViewModel.isGroup, mViewModel.id, this)
         recycler.adapter = conversationAdapter
         conversationAdapter.onItemClickListener = this

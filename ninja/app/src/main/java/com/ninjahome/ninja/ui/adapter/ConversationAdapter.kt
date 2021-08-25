@@ -27,9 +27,11 @@ import com.ninjahome.ninja.utils.fromJson
 import com.ninjahome.ninja.view.BubbleImageView
 import com.ninjahome.ninja.view.contacts.ColorUtil
 import com.ninjahome.ninja.view.contacts.TextDrawable
+import com.rxlife.coroutine.RxLifeScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * @描述 会话界面的消息列表适配器
@@ -39,8 +41,9 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
     private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(30)
     private val userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "")
     private val conversationIconIndex = ChatLib.iconIndex(NinjaApp.instance.account.address, ColorUtil.colorSize)
-    private val conversationIconColor = ColorUtil.colors[conversationIconIndex]
+    private val conversationIconColor = ColorUtil.colors[conversationIconIndex.toInt()]
     val subName = if (userName.length >= 2) userName.substring(0, 2) else userName
+    val rxLifeScope:RxLifeScope =  RxLifeScope()
     private val myIcon = mDrawableBuilder.textColor(mContext.getColor(R.color.white)).endConfig().buildRound(subName, mContext.resources.getColor(conversationIconColor, null))
 
     interface ClickListener {
@@ -146,29 +149,32 @@ class ConversationAdapter(private val mContext: Context, private val mData: List
     }
 
     private fun setReceiverAvatar(helper: LQRViewHolderForRecyclerView, item: Message) {
-        CoroutineScope(Dispatchers.IO).launch {
+        rxLifeScope.launch {
             var name = item.from
-            if (isGroup) {
-                val group = GroupDBManager.queryByGroupId(groupId)
-                group?.let {
-                    val memberIds = it.memberIdList.fromJson<List<String>>()
-                    val memberNames = it.memberNickNameList.fromJson<List<String>>()
-                    for (index in memberIds!!.indices) {
-                        if (memberIds[index] == item.from) {
-                            name = memberNames!![index]
+            withContext(Dispatchers.IO){
+                if (isGroup) {
+                    val group = GroupDBManager.queryByGroupId(groupId)
+                    group?.let {
+                        val memberIds = it.memberIdList.fromJson<List<String>>()
+                        val memberNames = it.memberNickNameList.fromJson<List<String>>()
+                        for (index in memberIds!!.indices) {
+                            if (memberIds[index] == item.from) {
+                                name = memberNames!![index]
+                            }
                         }
                     }
-                }
 
+                }
+                val contact = ContactDBManager.queryByID(item.from)
+                contact?.let {
+                    name = it.nickName
+                }
             }
-            val contact = ContactDBManager.queryByID(item.from)
-            contact?.let {
-                name = it.nickName
-            }
+
             helper.itemView.findViewById<TextView>(R.id.tvName).text = name
             val subName = if (name.length >= 2) name.substring(0, 2) else name
             val receiverIconIndex = ChatLib.iconIndex(item.from, ColorUtil.colorSize)
-            val receiverIconColor = ColorUtil.colors[receiverIconIndex]
+            val receiverIconColor = ColorUtil.colors[receiverIconIndex.toInt()]
             receiverIcon = mDrawableBuilder.textColor(mContext.getColor(R.color.white)).endConfig().buildRound(subName, mContext.resources.getColor(receiverIconColor, null))
             helper.itemView.findViewById<ImageView>(R.id.ivAvatar).background = receiverIcon
 

@@ -115,26 +115,20 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
         moreActionPop.show()
     }
 
-
-    override fun onShow() {
-        super.onShow()
-        setLineState()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        setLineState()
-    }
-
     fun setLineState() {
         handler.postDelayed({
-            mViewModel.unline.value = !ChatLib.wsIsOnline()
+            mViewModel.online.value = ChatLib.wsIsOnline()
         }, 500)
 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun offline(eventOffline: EventOffline) {
+        setLineState()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun online(eventOnline: EventOnline) {
         setLineState()
     }
 

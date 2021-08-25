@@ -25,7 +25,7 @@ import com.ninjahome.ninja.view.contacts.TextDrawable
  */
 class ConversationItemViewModel(viewModel: ConversationListViewModel, val conversation: Conversation) : ItemViewModel<ConversationListViewModel>(viewModel) {
     val receiverIconIndex = ChatLib.iconIndex(conversation.from, ColorUtil.colorSize)
-    var receiverIconColor = ColorUtil.colors[receiverIconIndex]
+    var receiverIconColor = ColorUtil.colors[receiverIconIndex.toInt()]
     private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(30)
     val subName = if (conversation.title.length >= 2) conversation.title.substring(0, 2) else conversation.title
     var receiverIcon: MutableLiveData<Drawable> = MutableLiveData()

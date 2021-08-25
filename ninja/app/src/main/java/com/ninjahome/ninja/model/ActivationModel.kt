@@ -5,6 +5,7 @@ import chatLib.ChatLib
 import com.ninjahome.ninja.model.bean.LicenseResult
 import com.ninjahome.ninja.utils.fromJson
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 /**
@@ -28,6 +29,7 @@ class ActivationModel {
     suspend fun importLicense(slicense: String): LicenseResult? {
         return withContext(Dispatchers.IO) {
             val result = ChatLib.importLicense(slicense)
+            delay(5000)
             if (TextUtils.isEmpty(result)) {
                 return@withContext null
             } else {

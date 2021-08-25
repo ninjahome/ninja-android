@@ -26,7 +26,7 @@ class EditUserInfoViewModel : BaseViewModel() {
     private val mColorGenerator = ColorGenerator.MATERIAL
     private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(40)
     private val iconIndex = ChatLib.iconIndex(NinjaApp.instance.account.address, ColorUtil.colorSize)
-    private val iconColor = ColorUtil.colors[iconIndex]
+    private val iconColor = ColorUtil.colors[iconIndex.toInt()]
     private var subName = if (TextUtils.isEmpty(userName)) NinjaApp.instance.account.address.subSequence(0, 2).toString() else if (userName.length >= 2) userName.substring(0, 2) else userName
     val iconDrawable = mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(iconColor))
     val name = MutableLiveData("")
@@ -34,6 +34,10 @@ class EditUserInfoViewModel : BaseViewModel() {
 
     val clickSure = BindingCommand<Any>(object : BindingAction {
         override fun call() {
+            if(TextUtils.isEmpty(name.value)){
+                showToast(R.string.edit_user_input_info_name)
+                return
+            }
             userName = name.value!!
             if (isEdit) {
                 finish()

@@ -24,12 +24,14 @@ import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.FragmentMyBinding
 import com.ninjahome.ninja.event.EventActivationSuccess
+import com.ninjahome.ninja.event.EventChangeAccount
 import com.ninjahome.ninja.ui.activity.showidqrcode.ShowIDQRCodeActivity
 import com.ninjahome.ninja.utils.*
 import com.ninjahome.ninja.view.PasswordPop
 import com.ninjahome.ninja.viewmodel.MyViewModel
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.main.fragment_my.*
+import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -52,6 +54,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>(R.layout.fragmen
 
     override val mViewModel: MyViewModel by viewModel()
     override fun initView() {
+        EventBus.getDefault().register(this)
         versionTv.text = String.format(getString(R.string.version), UIUtils.getVersion(mActivity))
 
     }
@@ -105,7 +108,6 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>(R.layout.fragmen
         })
 
         mViewModel.expireTime.observe(this) {
-
             if (it * SECOND < System.currentTimeMillis()) {
                 //已过期
                 expired()
@@ -126,6 +128,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>(R.layout.fragmen
         (memberActivateTv.background as GradientDrawable).setColor(resources.getColor(R.color.color_ee674c, null))
         expireDateTv.text = getString(R.string.my_account_unused)
         expireTitleTv.text =getString(R.string.my_inactivated)
+        memberActivateTv.text = resources.getString(R.string.my_activate)
     }
 
     private fun notExpired(time: Long) {
@@ -137,14 +140,15 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>(R.layout.fragmen
     }
 
     private fun notExpiredLongTime(time: Long) {
-        (bgMemberIv.background as GradientDrawable).setColor(resources.getColor(R.color.color_1a3b877f, null))
-        (memberActivateTv.background as GradientDrawable).setColor(resources.getColor(R.color.color_1aee674c, null))
-        val lastDays = (System.currentTimeMillis()-time)/DAY
+        (bgMemberIv.background as GradientDrawable).setColor(resources.getColor(R.color.color_7ae7e7e7c, null))
+        (memberActivateTv.background as GradientDrawable).setColor(resources.getColor(R.color.color_ee674c, null))
+        val lastDays = (time-System.currentTimeMillis())/DAY
         val expirationDate = String.format(getString(R.string.my_account_expiration_date), lastDays)
         val expirationDateSp = SpannableString(expirationDate)
         expirationDateSp.setSpan(AbsoluteSizeSpan(26, true), 6, 7, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
         expirationDateSp.setSpan(StyleSpan(Typeface.BOLD), 6, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         expireTitleTv.text = expirationDateSp
+        memberActivateTv.text = resources.getString(R.string.my_renew)
         expireDateTv.text = String.format(resources.getString(R.string.my_account_expiration), TimeUtils.formatData(time))
     }
 
@@ -240,5 +244,15 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>(R.layout.fragmen
         mViewModel.getExpireTime()
     }
 
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun changeAccount(eventChangeAccount: EventChangeAccount) {
+        mViewModel.getExpireTime()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
+    }
 
 }

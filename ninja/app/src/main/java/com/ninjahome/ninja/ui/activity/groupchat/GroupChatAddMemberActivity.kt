@@ -57,7 +57,7 @@ class GroupChatAddMemberActivity : BaseActivity<GroupChatAddMemberViewModel, Act
     override fun initData() {
         val groupDetail = intent.getParcelableExtra<GroupInfo>(IntentKey.GROUPCHAT)
         mViewModel.groupDetail.value = groupDetail
-        groupDetail?.let { ids.addAll(it.memberIdList.fromJson<ArrayList<String>>()!!)}
+        groupDetail?.let { ids.addAll(it.memberIdList.fromJson<List<String>>()!!)}
 
     }
 

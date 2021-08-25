@@ -14,6 +14,8 @@ import com.ninjahome.ninja.event.EventActivationSuccess
 import com.ninjahome.ninja.model.ActivationModel
 import com.ninjahome.ninja.model.bean.LicenseResultCode
 import com.ninjahome.ninja.model.bean.Verifylicense
+import com.ninjahome.ninja.utils.CommonUtils
+import kotlinx.coroutines.delay
 import org.greenrobot.eventbus.EventBus
 
 /**
@@ -51,6 +53,16 @@ class ActivationViewModel(val mModel: ActivationModel) : BaseViewModel() {
 
     })
 
+    val longClick = BindingCommand<Any>(object : BindingAction {
+        override fun call() {
+            license.value?.let{
+                CommonUtils.copyToMemory(context(),it)
+                showToast(R.string.copy_success)
+            }
+
+        }
+    })
+
     fun decodeLicense() {
         rxLifeScope.launch {
             license.value = mModel.decodeLicense(activationCode.value!!)
@@ -86,9 +98,11 @@ class ActivationViewModel(val mModel: ActivationModel) : BaseViewModel() {
     })
 
     private fun import() {
+
         rxLifeScope.launch({
             showDialog()
             val licenseResult = mModel.importLicense(activationCode.value!!)
+
             dismissDialog()
             if (licenseResult == null) {
                 showToast(R.string.my_import_license_error)
@@ -96,7 +110,7 @@ class ActivationViewModel(val mModel: ActivationModel) : BaseViewModel() {
                 when (licenseResult.resultCode) {
                     LicenseResultCode.SUCCESS.value -> {
                         showToast(R.string.my_import_license_success)
-                        EventBus.getDefault().post(EventActivationSuccess())
+                        EventBus.getDefault().postSticky(EventActivationSuccess())
                         finish()
                     }
                     LicenseResultCode.ParseJsonErr.value -> {

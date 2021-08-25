@@ -21,6 +21,7 @@ import com.ninjahome.ninja.ui.activity.accountmanager.AccountManagerActivity
 import com.ninjahome.ninja.ui.activity.activation.ActivationActivity
 import com.ninjahome.ninja.ui.activity.edituserinfo.EditUserInfoActivity
 import com.ninjahome.ninja.utils.AccountUtils
+import com.ninjahome.ninja.utils.CommonUtils
 import com.ninjahome.ninja.utils.toJson
 import com.ninjahome.ninja.view.contacts.ColorUtil
 import com.ninjahome.ninja.view.contacts.TextDrawable
@@ -54,6 +55,24 @@ class MyViewModel(val model: UnlockModel) : BaseViewModel() {
         setValue()
     }
 
+    val copyId = BindingCommand<Any>(object : BindingAction {
+        override fun call() {
+            id.value?.let {
+                CommonUtils.copyToMemory(context(), it)
+                showToast(R.string.copy_success)
+            }
+
+
+        }
+    })
+
+
+    val clickFresh = BindingCommand<Any>(object : BindingAction {
+        override fun call() {
+            getExpireTime()
+        }
+    })
+
     fun getExpireTime() {
         rxLifeScope.launch {
             withContext(Dispatchers.IO) {
@@ -65,9 +84,10 @@ class MyViewModel(val model: UnlockModel) : BaseViewModel() {
     fun setValue() {
         name.value = userName
         rxLifeScope.launch {
-            id.postValue(AccountUtils.getAddress(context()))
+            id.value = AccountUtils.getAddress(context())
+            id.postValue(id.value)
             val iconIndex = ChatLib.iconIndex(id.value!!, ColorUtil.colorSize)
-            val iconColor = ColorUtil.colors[iconIndex]
+            val iconColor = ColorUtil.colors[iconIndex.toInt()]
             val subName: String = if (userName.length >= 2) userName.substring(0, 2) else userName
             iconDrawable.postValue(mDrawableBuilder.textColor(context().getColor(R.color.white)).endConfig().buildRound(subName, context().resources.getColor(iconColor, null)))
         }
