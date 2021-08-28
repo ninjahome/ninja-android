@@ -185,17 +185,32 @@
             app:onCheckedChangeCommand="@{viewModel.onCheckedFingerprint}"
             app:switchState="@{viewModel.openFingerPrintObservable}"
             tools:ignore="MissingConstraints" />
-
-        <TextView
-            android:id="@+id/versionTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="40dp"
-            android:textColor="@color/color_0c123d"
-            android:textSize="16sp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <View
+            android:id="@+id/line"
+            android:layout_width="0dp"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/fingerprint"
+            android:background="@color/color_eff2f1"
+            android:layout_height="8dp"/>
+        <TextView
+            android:id="@+id/destroyTv"
+            style="@style/NextTextViewStyle"
+            android:text="@string/my_destroy"
+            app:drawableEndCompat="@null"
+            app:layout_constraintTop_toBottomOf="@+id/line"
+            tools:ignore="MissingConstraints" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/destroySwitch"
+            style="@style/SwitchStyle"
+            android:layout_height="30dp"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/destroyTv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/destroyTv"
+            app:onCheckedChangeCommand="@{viewModel.onCheckedDestroy}"
+            app:switchState="@{viewModel.destroyObservable}"
+            tools:ignore="MissingConstraints" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

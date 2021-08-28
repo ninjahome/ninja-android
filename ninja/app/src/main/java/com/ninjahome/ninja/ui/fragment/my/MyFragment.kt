@@ -8,6 +8,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
@@ -27,6 +28,7 @@ import com.ninjahome.ninja.event.EventActivationSuccess
 import com.ninjahome.ninja.event.EventChangeAccount
 import com.ninjahome.ninja.ui.activity.showidqrcode.ShowIDQRCodeActivity
 import com.ninjahome.ninja.utils.*
+import com.ninjahome.ninja.view.DestroyAccountPop
 import com.ninjahome.ninja.view.PasswordPop
 import com.ninjahome.ninja.viewmodel.MyViewModel
 import com.orhanobut.logger.Logger
@@ -55,7 +57,6 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>(R.layout.fragmen
     override val mViewModel: MyViewModel by viewModel()
     override fun initView() {
         EventBus.getDefault().register(this)
-        versionTv.text = String.format(getString(R.string.version), UIUtils.getVersion(mActivity))
 
     }
 
@@ -86,6 +87,8 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>(R.layout.fragmen
                 showPasswordDialog()
             }
         })
+
+        mViewModel.destroyEvent.observe(this, { showDestroyAccountDialog() })
 
 
         mViewModel.showFingerPrintDialogEvent.observe(this, { password ->
@@ -122,12 +125,31 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>(R.layout.fragmen
 
     }
 
+    private fun showDestroyAccountDialog() {
+        DialogUtils.showDestroyAccountDialog(mActivity, object : DestroyAccountPop.ClickListener {
+            override fun clickSure(password: String) {
+                toast(getString(R.string.my_open_destroy))
+                mViewModel.openDestroy = true
+            }
+
+            override fun clickClose() {
+                mViewModel.destroyObservable.set(false)
+            }
+
+        }, object : SimpleCallback() {
+            override fun onBackPressed(popupView: BasePopupView?): Boolean {
+                mViewModel.destroyObservable.set(false)
+                return false
+            }
+        })
+    }
+
 
     private fun expired() {
         (bgMemberIv.background as GradientDrawable).setColor(resources.getColor(R.color.color_7ae7e7e7c, null))
         (memberActivateTv.background as GradientDrawable).setColor(resources.getColor(R.color.color_ee674c, null))
         expireDateTv.text = getString(R.string.my_account_unused)
-        expireTitleTv.text =getString(R.string.my_inactivated)
+        expireTitleTv.text = getString(R.string.my_inactivated)
         memberActivateTv.text = resources.getString(R.string.my_activate)
     }
 
@@ -142,11 +164,12 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>(R.layout.fragmen
     private fun notExpiredLongTime(time: Long) {
         (bgMemberIv.background as GradientDrawable).setColor(resources.getColor(R.color.color_7ae7e7e7c, null))
         (memberActivateTv.background as GradientDrawable).setColor(resources.getColor(R.color.color_ee674c, null))
-        val lastDays = (time-System.currentTimeMillis())/DAY
+        val lastDays = (time - System.currentTimeMillis()) / DAY
         val expirationDate = String.format(getString(R.string.my_account_expiration_date), lastDays)
         val expirationDateSp = SpannableString(expirationDate)
         expirationDateSp.setSpan(AbsoluteSizeSpan(26, true), 6, 7, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
         expirationDateSp.setSpan(StyleSpan(Typeface.BOLD), 6, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        expirationDateSp.setSpan(ForegroundColorSpan(resources.getColor(R.color.color_ee674c, null)), 0, 8, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         expireTitleTv.text = expirationDateSp
         memberActivateTv.text = resources.getString(R.string.my_renew)
         expireDateTv.text = String.format(resources.getString(R.string.my_account_expiration), TimeUtils.formatData(time))

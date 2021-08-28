@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_more_action"
+    android:paddingStart="30dp"
+    android:paddingEnd="30dp"
+    android:paddingBottom="85dp"
+    app:cardBackgroundColor="@android:color/transparent">
+
+    <ImageView
+        android:id="@+id/closeIv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="21dp"
+        android:src="@drawable/close_pop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/titleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="37dp"
+        android:text="@string/my_set_destroy_title"
+        android:textColor="@color/color_26253c"
+        android:textSize="26sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/destroyAccountEt"
+        style="@style/PasswordEditTextStyle"
+        android:layout_marginTop="16dp"
+        android:hint="@string/create_account_input_password"
+        app:layout_constraintTop_toBottomOf="@+id/titleTv"
+        tools:ignore="Autofill,MissingConstraints" />
+
+    <EditText
+        android:id="@+id/destroyAccount2Et"
+        style="@style/PasswordEditTextStyle"
+        android:layout_marginTop="16dp"
+        android:hint="@string/create_account_input_repassword"
+        app:layout_constraintTop_toBottomOf="@+id/destroyAccountEt"
+        tools:ignore="Autofill,MissingConstraints" />
+
+    <TextView
+        android:id="@+id/sureTv"
+        style="@style/ButtonStyle"
+        android:layout_marginTop="23dp"
+        android:text="@string/create_account_sure"
+        app:layout_constraintTop_toBottomOf="@+id/destroyAccount2Et"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="170dp"
+        android:background="@drawable/bg_destroy_account_tip"
+        android:padding="12dp"
+        android:text="@string/my_set_destroy_tip"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sureTv" />
+</androidx.constraintlayout.widget.ConstraintLayout>

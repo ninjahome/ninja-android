@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -15,7 +16,6 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.impl.LoadingPopupView
 import com.lxj.xpopup.interfaces.SimpleCallback
-import com.lxj.xpopup.interfaces.XPopupCallback
 import com.ninja.android.lib.R
 import com.ninja.android.lib.utils.AppManager
 import com.ninja.android.lib.utils.toast
@@ -160,19 +160,19 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding>(@LayoutRes
         AppManager.removeActivity(this)
     }
 
-    protected fun gone(vararg view:View){
+    protected fun gone(vararg view: View){
         view.forEach {
           it.visibility = View.GONE
         }
     }
 
-    protected fun visible(vararg view:View){
+    protected fun visible(vararg view: View){
         view.forEach {
             it.visibility = View.VISIBLE
         }
     }
 
-    protected fun inVisible(vararg view:View){
+    protected fun inVisible(vararg view: View){
         view.forEach {
             it.visibility = View.INVISIBLE
         }

@@ -12,16 +12,38 @@
             type="com.ninjahome.ninja.viewmodel.ConversationItemViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        onClickCommand="@{item.clickItem}"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="54dp">
+        <LinearLayout
+            android:id="@+id/actionLl"
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="end"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/deleteTv"
+                android:layout_width="80dp"
+                onClickCommand="@{item.clickDelete}"
+                android:text="@string/conversation_delete_item"
+                android:background="@color/color_aaff0000"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contentCl"
+        onClickCommand="@{item.clickItem}"
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/iconIv"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="8dp"
             android:background="@{item.receiverIcon}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -81,4 +103,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/timeTv" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 </layout>

@@ -58,4 +58,10 @@ class ConversationItemViewModel(viewModel: ConversationListViewModel, val conver
             viewModel.startActivity(ConversationActivity::class.java, bundle)
         }
     })
+
+    val clickDelete = BindingCommand<Any>(object : BindingAction {
+        override fun call() {
+            viewModel.removeItemAt(conversation)
+        }
+    })
 }

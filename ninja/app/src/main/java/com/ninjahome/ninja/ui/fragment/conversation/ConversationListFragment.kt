@@ -4,8 +4,6 @@ import android.animation.ObjectAnimator
 import android.os.Handler
 import android.os.Looper
 import android.widget.ImageView
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.rxLifeScope
 import chatLib.ChatLib
 import com.lxj.xpopup.XPopup
@@ -17,20 +15,23 @@ import com.ninja.android.lib.base.BaseFragment
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.FragmentConversationListBinding
+import com.ninjahome.ninja.db.ConversationDBManager
 import com.ninjahome.ninja.event.*
 import com.ninjahome.ninja.model.bean.*
-import com.ninjahome.ninja.db.ConversationDBManager
 import com.ninjahome.ninja.ui.activity.groupchat.GroupChatCreateActivity
 import com.ninjahome.ninja.ui.activity.search.SearchContactActivity
+import com.ninjahome.ninja.ui.adapter.ItemTouchHelperCallback
+import com.ninjahome.ninja.utils.itemtouchhelper.ItemTouchHelper
 import com.ninjahome.ninja.viewmodel.ConversationItemViewModel
 import com.ninjahome.ninja.viewmodel.ConversationListViewModel
 import com.zhy.autolayout.utils.ScreenUtils
+import kotlinx.android.synthetic.main.activity_apply_list.*
 import kotlinx.android.synthetic.main.activity_conversation.*
 import kotlinx.android.synthetic.main.fragment_contact_list.*
 import kotlinx.android.synthetic.main.fragment_conversation_list.*
+import kotlinx.android.synthetic.main.fragment_conversation_list.recyclerView
 import kotlinx.android.synthetic.main.fragment_conversation_list.status_bar_view
 import kotlinx.android.synthetic.main.fragment_conversation_list.swipeRefreshLayout
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -58,6 +59,8 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
         animator = ObjectAnimator.ofFloat(rightIv, "rotation", 0.0F, 45.0F)
         animatorRecover = ObjectAnimator.ofFloat(rightIv, "rotation", -45.0F, 0.0F)
         recyclerView.itemAnimator = null
+        val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback())
+        itemTouchHelper.attachToRecyclerView(recyclerView)
         initMarginTop()
     }
 
@@ -146,9 +149,9 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
         return false
     }
 
-
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
     }
+
 }

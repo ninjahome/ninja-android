@@ -55,6 +55,7 @@
     <string name="conversation_album">相册</string>
     <string name="conversation_file">文件</string>
     <string name="conversation_search">search</string>
+    <string name="conversation_delete_item">删除</string>
 
     <string name="conversation_voice_rec">手指上滑，取消发送</string>
     <string name="conversation_voice_cancel">松开手指，取消发送</string>
@@ -123,6 +124,9 @@
     <string name="my_change_account">切换账号</string>
     <string name="my_id">我的ID</string>
     <string name="my_fingerprint">指纹识别</string>
+    <string name="my_destroy">自毁模式</string>
+    <string name="my_set_destroy_title">设置自毁密码</string>
+    <string name="my_set_destroy_tip">⚠️\n自毁模式开启并使用后，现有账号将被替换，建议您保存现有二维码到相册。以免账号丢失。</string>
     <string name="my_user_name">用户名</string>
     <string name="my_account_manager">管理账号</string>
     <string name="my_no_support_fingerprint">当前手机不支持指纹识别</string>
@@ -142,6 +146,8 @@
     <string name="my_license_verify">验证</string>
     <string name="my_verify_error">验证失败</string>
     <string name="my_verify_success">License 可以正常使用</string>
+    <string name="my_open_destroy">自毁模式已开启</string>
+    <string name="my_close_destroy">自毁模式已关闭</string>
 
     <!--    accountManager-->
     <string name="account_manager_new_account">新建账号</string>

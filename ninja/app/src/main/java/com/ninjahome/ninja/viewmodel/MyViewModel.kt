@@ -43,11 +43,14 @@ class MyViewModel(val model: UnlockModel) : BaseViewModel() {
 
     val iconDrawable = MutableLiveData<TextDrawable>()
     val fingerPrintEvent = SingleLiveEvent<Boolean>()
+    val destroyEvent = SingleLiveEvent<Boolean>()
     val showFingerPrintDialogEvent = SingleLiveEvent<String>()
     val dismissPasswordDialogEvent = SingleLiveEvent<Boolean>()
     var openFingerPrint: Boolean by SharedPref(context(), Constants.KEY_OPEN_FINGERPRINT, false)
+    var openDestroy: Boolean by SharedPref(context(), Constants.KEY_DESTROY, false)
     var openFingerPrintObservable: ObservableBoolean = ObservableBoolean(openFingerPrint)
-    val userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "")
+    var destroyObservable: ObservableBoolean = ObservableBoolean(openDestroy)
+    private val userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "")
 
     private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(40)
 
@@ -125,6 +128,16 @@ class MyViewModel(val model: UnlockModel) : BaseViewModel() {
             openFingerPrintObservable.set(t)
             if (t) {
                 fingerPrintEvent.postValue(t)
+            }
+        }
+
+    })
+
+    val onCheckedDestroy = BindingCommand(bindConsumer = object : BindingConsumer<Boolean> {
+        override fun call(t: Boolean) {
+            destroyObservable.set(t)
+            if (t) {
+                destroyEvent.postValue(t)
             }
         }
 

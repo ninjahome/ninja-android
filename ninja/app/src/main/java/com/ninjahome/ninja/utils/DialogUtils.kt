@@ -10,10 +10,7 @@ import com.lxj.xpopup.interfaces.OnSelectListener
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.R
-import com.ninjahome.ninja.view.ConversationMoreActionPop
-import com.ninjahome.ninja.view.CreateGroupChatPop
-import com.ninjahome.ninja.view.PasswordPop
-import com.ninjahome.ninja.view.RechargePop
+import com.ninjahome.ninja.view.*
 import com.orhanobut.logger.Logger
 
 /**
@@ -82,6 +79,10 @@ object DialogUtils {
 
     fun showRechargeDialog(activity: AppCompatActivity, listener: RechargePop.ClickListener): BasePopupView {
         return XPopup.Builder(activity).dismissOnTouchOutside(false).dismissOnBackPressed(false).asCustom(RechargePop(activity, listener)).show()
+    }
+
+    fun showDestroyAccountDialog(activity: AppCompatActivity, listener: DestroyAccountPop.ClickListener, xpopListener: SimpleCallback): BasePopupView {
+        return XPopup.Builder(activity).dismissOnTouchOutside(false).moveUpToKeyboard(false).setPopupCallback(xpopListener).asCustom(DestroyAccountPop(activity, listener)).show()
     }
 
 }

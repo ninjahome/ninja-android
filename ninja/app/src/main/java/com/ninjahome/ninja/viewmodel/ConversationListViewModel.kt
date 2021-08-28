@@ -12,8 +12,11 @@ import com.ninja.android.lib.event.SingleLiveEvent
 import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.R
+import com.ninjahome.ninja.db.ConversationDBManager
+import com.ninjahome.ninja.model.bean.Conversation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import me.tatarka.bindingcollectionadapter2.ItemBinding
 
 /**
@@ -43,16 +46,28 @@ class ConversationListViewModel : BaseViewModel() {
 
     }
 
+    fun removeItemAt(conversation: Conversation) {
+        rxLifeScope.launch {
+            withContext(Dispatchers.IO){
+                ConversationDBManager.delete(conversation)
+            }
+        }
+
+    }
+
     val refreshCommand = BindingCommand<Any>(object : BindingAction {
         override fun call() {
-            rxLifeScope.launch {
-                withContext(Dispatchers.IO) {
-                    if (!ChatLib.wsIsOnline()) {
+            rxLifeScope.launch({
+                withTimeout(3000){
+                    withContext(Dispatchers.IO) {
                         ChatLib.wsOnline()
                     }
+                    finishRefreshingEvent.call()
                 }
+
+            },{
                 finishRefreshingEvent.call()
-            }
+            })
 
         }
     })

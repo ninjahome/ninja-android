@@ -132,6 +132,7 @@ dependencies {
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation 'com.github.xfans:VoiceWaveView:1.0.2'
     implementation 'com.tencent.map.geolocation:TencentLocationSdk-openplatform:7.3.0'
+//    implementation 'com.loopeer.library:itemtouchhelperextension:1.0.6'
 
     //友盟基础库相关依赖（必须）
     api 'com.umeng.umsdk:common:9.3.8'

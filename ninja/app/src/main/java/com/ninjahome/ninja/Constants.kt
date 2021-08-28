@@ -11,6 +11,7 @@ import rxhttp.wrapper.annotation.DefaultDomain
 object Constants {
     val KEY_USER_NAME: String = "key_user_name"
     val KEY_OPEN_FINGERPRINT: String = "key_open_fingerprint"
+    val KEY_DESTROY: String = "key_destroy"
     const val KEY_NINJA_BIOMETRIC = "key_ninja_biometric"
     const val KEY_ENCRYPTED_PASSWORD = "key_password"
     const val KEY_BIOMETRIC_PASSWORD = "key_biometric_password"
