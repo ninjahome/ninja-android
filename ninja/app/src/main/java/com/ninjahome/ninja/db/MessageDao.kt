@@ -23,6 +23,9 @@ interface MessageDao {
     @Query("UPDATE message SET unRead = 0 where conversationId = :conversationId ")
     fun updateMessage2Read(conversationId: Long)
 
+    @Query("UPDATE message SET unRead = 0")
+    fun updateAllMessage2Read()
+
     @Insert
     fun insert(msg: Message): Long
 

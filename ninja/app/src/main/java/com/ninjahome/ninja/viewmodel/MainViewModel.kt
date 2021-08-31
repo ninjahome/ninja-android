@@ -4,6 +4,8 @@ import androidx.lifecycle.rxLifeScope
 import chatLib.ChatLib
 import com.ninja.android.lib.base.BaseViewModel
 import com.ninja.android.lib.event.SingleLiveEvent
+import com.ninjahome.ninja.db.ConversationDBManager
+import com.ninjahome.ninja.db.MessageDBManager
 import com.ninjahome.ninja.event.EventOnline
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -30,6 +32,15 @@ class MainViewModel : BaseViewModel() {
             withContext(Dispatchers.IO) {
                 ChatLib.wsOnline()
                 EventBus.getDefault().post(EventOnline())
+            }
+        }
+    }
+
+    fun clearUnreadNumber() {
+        rxLifeScope.launch {
+            withContext(Dispatchers.IO) {
+                MessageDBManager.updateAllMessage2Read()
+                ConversationDBManager.clearUnreadNumber()
             }
         }
     }

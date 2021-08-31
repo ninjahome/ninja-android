@@ -12,32 +12,13 @@
             type="com.ninjahome.ninja.viewmodel.ConversationItemViewModel" />
     </data>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="54dp">
-        <LinearLayout
-            android:id="@+id/actionLl"
-            android:layout_width="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="end"
-            android:layout_height="match_parent">
-            <TextView
-                android:id="@+id/deleteTv"
-                android:layout_width="80dp"
-                onClickCommand="@{item.clickDelete}"
-                android:text="@string/conversation_delete_item"
-                android:background="@color/color_aaff0000"
-                android:gravity="center"
-                android:textSize="18sp"
-                android:textColor="@color/white"
-                android:layout_height="match_parent"/>
-        </LinearLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/contentCl"
         onClickCommand="@{item.clickItem}"
         android:layout_width="match_parent"
-        android:background="@color/white"
-        android:layout_height="match_parent">
+        android:clipChildren="false"
+        android:layout_height="54dp">
 
         <ImageView
             android:id="@+id/iconIv"
@@ -90,18 +71,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            isVisible="@{item.conversation.unreadCount != 0}"
+        <com.ninja.android.lib.view.MessageBubbleView
+            android:id="@+id/bubbleView"
+            isVisible="@{item.conversation.unreadCount!= 0}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            onDragCommand="@{item.onDragBubleView}"
             android:layout_marginEnd="15dp"
-            android:background="@drawable/circledot"
-            android:gravity="center"
-            android:text="@{String.valueOf(item.conversation.unreadCount)}"
-            android:textColor="@color/white"
-            android:textSize="14sp"
+            app:textNumber="@{item.conversation.unreadCount}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/timeTv" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-    </FrameLayout>
 </layout>

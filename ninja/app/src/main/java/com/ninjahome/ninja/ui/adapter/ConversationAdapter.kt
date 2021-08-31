@@ -39,12 +39,10 @@ import kotlinx.coroutines.withContext
 class ConversationAdapter(private val mContext: Context, private val mData: List<Message>, val isGroup: Boolean, val groupId: String, val clickListener: ClickListener) : LQRAdapterForRecyclerView<Message>(mContext, mData) {
     var receiverIcon: TextDrawable? = null
     private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(30)
-    private val userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "")
     private val conversationIconIndex = ChatLib.iconIndex(NinjaApp.instance.account.address, ColorUtil.colorSize)
     private val conversationIconColor = ColorUtil.colors[conversationIconIndex.toInt()]
-    val subName = if (userName.length >= 2) userName.substring(0, 2) else userName
     val rxLifeScope:RxLifeScope =  RxLifeScope()
-    private val myIcon = mDrawableBuilder.textColor(mContext.getColor(R.color.white)).endConfig().buildRound(subName, mContext.resources.getColor(conversationIconColor, null))
+    private val myIcon = mDrawableBuilder.textColor(mContext.getColor(R.color.white)).endConfig().buildRound(mContext.getString(R.string.own), mContext.resources.getColor(conversationIconColor, null))
 
     interface ClickListener {
         fun clickItemReCommit(item: Message)

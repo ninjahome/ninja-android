@@ -38,6 +38,7 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding>(@LayoutRes
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        create(savedInstanceState)
         AppManager.addActivity(this)
         mDataBinding = DataBindingUtil.setContentView(this, layoutId)
         mDataBinding.lifecycleOwner = this
@@ -58,6 +59,9 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding>(@LayoutRes
         initObserve()
     }
 
+    open fun create(savedInstanceState: Bundle?){
+
+    }
     abstract fun initView()
 
     abstract fun initData()

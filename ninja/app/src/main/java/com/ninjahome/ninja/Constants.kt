@@ -12,6 +12,7 @@ object Constants {
     val KEY_USER_NAME: String = "key_user_name"
     val KEY_OPEN_FINGERPRINT: String = "key_open_fingerprint"
     val KEY_DESTROY: String = "key_destroy"
+    val KEY_DESTROY_PASSWORD: String = "key_destroy_password"
     const val KEY_NINJA_BIOMETRIC = "key_ninja_biometric"
     const val KEY_ENCRYPTED_PASSWORD = "key_password"
     const val KEY_BIOMETRIC_PASSWORD = "key_biometric_password"
@@ -22,6 +23,7 @@ object Constants {
     const val CODE_LOCATION = 102
 
     const val RC_LOCAL_MEMORY_PERM = 123
+    const val TAB_CONVERSATION = 0
 
     @DefaultDomain
     const val URL = "http://39.99.198.143:60998"

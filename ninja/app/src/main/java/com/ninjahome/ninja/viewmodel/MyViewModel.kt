@@ -48,6 +48,7 @@ class MyViewModel(val model: UnlockModel) : BaseViewModel() {
     val dismissPasswordDialogEvent = SingleLiveEvent<Boolean>()
     var openFingerPrint: Boolean by SharedPref(context(), Constants.KEY_OPEN_FINGERPRINT, false)
     var openDestroy: Boolean by SharedPref(context(), Constants.KEY_DESTROY, false)
+    var destroyPassword: String by SharedPref(context(), Constants.KEY_DESTROY_PASSWORD, "")
     var openFingerPrintObservable: ObservableBoolean = ObservableBoolean(openFingerPrint)
     var destroyObservable: ObservableBoolean = ObservableBoolean(openDestroy)
     private val userName: String by SharedPref(context(), Constants.KEY_USER_NAME, "")

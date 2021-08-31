@@ -1,5 +1,6 @@
 package com.ninjahome.ninja.ui.activity.groupchat
 
+import android.text.TextUtils
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lxj.xpopup.core.BasePopupView
@@ -70,12 +71,16 @@ class GroupChatCreateActivity : BaseActivity<CreateGroupChatViewModel, ActivityC
         mViewModel.showCreateGroupChatPop.observe(this) {
             createGroupChatDialog = DialogUtils.showCreateGroupChatDialog(this@GroupChatCreateActivity, object : CreateGroupChatPop.ClickListener {
                 override fun clickSure(name: String) {
+                    if(TextUtils.isEmpty(name)){
+                        toast(getString(R.string.create_group_input_group_name))
+                        return
+                    }
                     mViewModel.createGroupChat(name, contactAdapter.contactBeanList)
                     createGroupChatDialog.dismiss()
                 }
 
                 override fun clickNoName() {
-                    toast("没有群名创建")
+                    mViewModel.createGroupChat("", contactAdapter.contactBeanList)
                     createGroupChatDialog.dismiss()
                 }
 

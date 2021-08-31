@@ -34,4 +34,8 @@ interface ConversationDao {
     @Query("UPDATE  conversation SET msg = '' where unreadCount = 0")
     fun deleteReadConversation()
 
+
+    @Query("UPDATE  conversation SET unreadCount = 0")
+    fun clearUnreadNumber()
+
 }

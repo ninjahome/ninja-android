@@ -11,8 +11,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
+        android:layout_height="match_parent">
 
         <View
             android:id="@+id/status_bar_view"
@@ -47,6 +46,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
+                android:clipChildren="false"
                 android:layout_height="match_parent"
                 android:overScrollMode="never"
                 app:itemBinding="@{viewModel.itemBinding}"

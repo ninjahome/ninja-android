@@ -26,4 +26,33 @@ public class ScreenUtils {
         wm.getDefaultDisplay().getMetrics(metric);
         return metric.widthPixels;
     }
+    public static float dpToPx(Context context, float dp) {
+        if (context == null) {
+            return -1;
+        }
+        return dp * context.getResources().getDisplayMetrics().density;
+    }
+
+    public static float spTopx(Context context, float sp) {
+        final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
+        return (int) (sp * fontScale + 0.5f);
+    }
+
+    public static int getStatusHeight(Context context)
+    {
+
+        int statusHeight = -1;
+        try
+        {
+            Class<?> clazz = Class.forName("com.android.internal.R$dimen");
+            Object object = clazz.newInstance();
+            int height = Integer.parseInt(clazz.getField("status_bar_height")
+                    .get(object).toString());
+            statusHeight = context.getResources().getDimensionPixelSize(height);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return statusHeight;
+    }
 }

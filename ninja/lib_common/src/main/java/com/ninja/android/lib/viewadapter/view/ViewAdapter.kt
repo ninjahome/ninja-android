@@ -7,6 +7,7 @@ import androidx.databinding.BindingAdapter
 import com.ninja.android.lib.command.BindingCommand
 import com.ninja.android.lib.command.ResponseCommand
 import com.ninja.android.lib.utils.clickWithTrigger
+import com.ninja.android.lib.view.MessageBubbleView
 
 /**
  * requireAll 是意思是是否需要绑定全部参数, false为否
@@ -31,6 +32,8 @@ fun onLongClickCommand(view: View, clickCommand: BindingCommand<*>) {
         false
     }
 }
+
+
 
 /**
  * 回调控件本身

@@ -129,6 +129,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>(R.layout.fragmen
         DialogUtils.showDestroyAccountDialog(mActivity, object : DestroyAccountPop.ClickListener {
             override fun clickSure(password: String) {
                 toast(getString(R.string.my_open_destroy))
+                mViewModel.destroyPassword = password
                 mViewModel.openDestroy = true
             }
 

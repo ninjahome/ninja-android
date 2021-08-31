@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.ImageView
 import androidx.lifecycle.rxLifeScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import chatLib.ChatLib
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
@@ -12,6 +13,7 @@ import com.lxj.xpopup.enums.PopupAnimation
 import com.lxj.xpopup.impl.AttachListPopupView
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.ninja.android.lib.base.BaseFragment
+import com.ninja.android.lib.event.TotalUnReadNumber
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.FragmentConversationListBinding
@@ -21,7 +23,6 @@ import com.ninjahome.ninja.model.bean.*
 import com.ninjahome.ninja.ui.activity.groupchat.GroupChatCreateActivity
 import com.ninjahome.ninja.ui.activity.search.SearchContactActivity
 import com.ninjahome.ninja.ui.adapter.ItemTouchHelperCallback
-import com.ninjahome.ninja.utils.itemtouchhelper.ItemTouchHelper
 import com.ninjahome.ninja.viewmodel.ConversationItemViewModel
 import com.ninjahome.ninja.viewmodel.ConversationListViewModel
 import com.zhy.autolayout.utils.ScreenUtils
@@ -44,12 +45,14 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  *Time:
  *Description:
  */
-class ConversationListFragment : BaseFragment<ConversationListViewModel, FragmentConversationListBinding>(R.layout.fragment_conversation_list), Handler.Callback {
+class ConversationListFragment : BaseFragment<ConversationListViewModel, FragmentConversationListBinding>(R.layout.fragment_conversation_list), Handler.Callback, ItemTouchHelperCallback.RemoveCallBack {
     val ADD_FRIEND = 0
+    var sumUnreadNumber = 0
     lateinit var animator: ObjectAnimator
     lateinit var animatorRecover: ObjectAnimator
     lateinit var rightIv: ImageView
     lateinit var moreActionPop: AttachListPopupView
+    var delayRunnable : DelayRunnable? = null
 
     override val mViewModel: ConversationListViewModel by viewModel()
     private val handler: Handler by lazy { Handler(Looper.getMainLooper(), this@ConversationListFragment) }
@@ -59,7 +62,7 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
         animator = ObjectAnimator.ofFloat(rightIv, "rotation", 0.0F, 45.0F)
         animatorRecover = ObjectAnimator.ofFloat(rightIv, "rotation", -45.0F, 0.0F)
         recyclerView.itemAnimator = null
-        val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback())
+        val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(this))
         itemTouchHelper.attachToRecyclerView(recyclerView)
         initMarginTop()
     }
@@ -74,12 +77,27 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
 
         rxLifeScope.launch {
             ConversationDBManager.all().collect {
-                mViewModel.items.clear()
-                it?.forEach {
-                    mViewModel.items.add(ConversationItemViewModel(mViewModel, it))
+                if(delayRunnable!=null){
+                    handler.removeCallbacks(delayRunnable!!)
                 }
+                delayRunnable = DelayRunnable(it)
+                handler.postDelayed(delayRunnable!!, 100)
             }
 
+        }
+
+    }
+
+    inner class DelayRunnable(val list: List<Conversation>?) : Runnable {
+        override fun run() {
+            print("执行了-======================")
+            mViewModel.items.clear()
+            sumUnreadNumber = 0
+            list?.forEach {
+                sumUnreadNumber += it.unreadCount
+                mViewModel.items.add(ConversationItemViewModel(mViewModel, it))
+            }
+            EventBus.getDefault().post(TotalUnReadNumber(sumUnreadNumber))
         }
 
     }
@@ -152,6 +170,10 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
+    }
+
+    override fun remove(index: Int) {
+        mViewModel.removeItemAt(mViewModel.items.get(index).conversation)
     }
 
 }

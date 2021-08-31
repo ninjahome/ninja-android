@@ -55,6 +55,12 @@ object MessageDBManager {
         }
     }
 
+    suspend fun updateAllMessage2Read() {
+        withContext(Dispatchers.IO) {
+            msgDao.updateAllMessage2Read()
+        }
+    }
+
     suspend fun delete(vararg msg: Message) {
         withContext(Dispatchers.IO) {
             msgDao.delete(*msg)

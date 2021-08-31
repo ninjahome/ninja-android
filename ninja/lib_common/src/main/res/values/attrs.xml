@@ -171,4 +171,12 @@
     <declare-styleable name="ControlDistributeLinearLayout">
         <attr name="distribute_event" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="MessageBubble">
+        <attr name="radius" format="dimension" />
+        <attr name="textSize" format="dimension" />
+        <attr name="circleColor" format="color" />
+        <attr name="textColor" format="color" />
+        <attr name="textNumber" format="string" />
+    </declare-styleable>
 </resources>

@@ -41,7 +41,7 @@ class DestroyAccountPop(context: Context, val listener: ClickListener) : BottomP
             if(TextUtils.isEmpty(destroyAccountEt.text)){
                 Toast.makeText(context(),context().getString(R.string.create_account_input_password),Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
-            }else if(!TextUtils.isEmpty(destroyAccountEt.text).equals(TextUtils.isEmpty(destroyAccount2Et.text))){
+            }else if(!destroyAccountEt.text.toString().trim().equals(destroyAccount2Et.text.toString().trim())){
                 Toast.makeText(context(),context().getString(R.string.create_account_password_not_equal),Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }

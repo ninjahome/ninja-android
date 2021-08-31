@@ -60,4 +60,9 @@ object ConversationDBManager {
             conversationDao.deleteReadConversation()
         }
     }
+    suspend fun clearUnreadNumber() {
+        withContext(Dispatchers.IO) {
+            conversationDao.clearUnreadNumber()
+        }
+    }
 }
