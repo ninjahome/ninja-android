@@ -34,10 +34,10 @@ import org.koin.core.component.inject
  *Time:
  *Description:
  */
-class UnLockViewModel(val model: UnlockModel) : BaseViewModel() , KoinComponent {
+class UnLockViewModel(val model: UnlockModel) : BaseViewModel(), KoinComponent {
     val password = MutableLiveData("")
     val accountJson = MutableLiveData("")
-    val createAccountModel : CreateAccountModel by inject()
+    val createAccountModel: CreateAccountModel by inject()
     val iconDrawable = MutableLiveData<TextDrawable>()
     var openDestroy: Boolean by SharedPref(context(), Constants.KEY_DESTROY, false)
     var destroyPassword: String by SharedPref(context(), Constants.KEY_DESTROY_PASSWORD, "")
@@ -47,7 +47,7 @@ class UnLockViewModel(val model: UnlockModel) : BaseViewModel() , KoinComponent 
     var openFingerPrint: Boolean by SharedPref(context(), Constants.KEY_OPEN_FINGERPRINT, false)
 
     fun loadAccount() {
-       val job= rxLifeScope.launch({
+        val job = rxLifeScope.launch({
             accountJson.value = model.loadAccount(AccountUtils.getAccountPath(context()))
             NinjaApp.instance.account = accountJson.value!!.fromJson()!!
             val iconIndex = ChatLib.iconIndex(NinjaApp.instance.account.address, ColorUtil.colorSize)
@@ -67,14 +67,18 @@ class UnLockViewModel(val model: UnlockModel) : BaseViewModel() , KoinComponent 
                 showToast(R.string.create_account_input_password)
                 return
             }
-            if(openDestroy && password.value.equals(destroyPassword)){
+            if (openDestroy && password.value.equals(destroyPassword)) {
                 createAccount(password.value)
                 return
             }
-            val job=rxLifeScope.launch({
+            val job = rxLifeScope.launch({
                 NinjaApp.instance.configApp()
                 model.openAccount(accountJson.value!!, password.value!!)
-                startActivityAndFinish(MainActivity::class.java)
+                if (TextUtils.isEmpty(userName)) {
+                    startActivityAndFinish(EditUserInfoActivity::class.java)
+                } else {
+                    startActivityAndFinish(MainActivity::class.java)
+                }
                 dismissDialog()
             }, {
                 dismissDialog()

@@ -1,28 +1,23 @@
 package com.ninjahome.ninja.ui.activity.main
 
 import android.content.Intent
-import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import chatLib.ChatLib
-import com.ninjahome.ninja.view.navigator.BottomNavigatorAdapter
-import com.ninjahome.ninja.view.navigator.FragmentNavigator
 import com.ninja.android.lib.base.BaseActivity
 import com.ninja.android.lib.event.TotalUnReadNumber
 import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.BR
-import com.ninjahome.ninja.Constants
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityMainBinding
 import com.ninjahome.ninja.event.EventOffline
 import com.ninjahome.ninja.ui.activity.activation.ActivationActivity
-import com.ninjahome.ninja.ui.fragment.contact.ContactListFragment
-import com.ninjahome.ninja.ui.fragment.conversation.ConversationListFragment
-import com.ninjahome.ninja.ui.fragment.my.MyFragment
+import com.ninjahome.ninja.ui.adapter.MainFragmentPagerAdapter
 import com.ninjahome.ninja.utils.ConnectionStateMonitor
 import com.ninjahome.ninja.utils.ConversationManager
 import com.ninjahome.ninja.utils.DialogUtils
 import com.ninjahome.ninja.view.RechargePop
-import com.ninjahome.ninja.view.navigator.BottomNavigatorView
 import com.ninjahome.ninja.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.greenrobot.eventbus.EventBus
@@ -31,52 +26,38 @@ import org.greenrobot.eventbus.ThreadMode
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.activity_main) {
-    private val mFragmentArray = arrayOf(ConversationListFragment::class.java, ContactListFragment::class.java, MyFragment::class.java)
-    private lateinit var mNavigator: FragmentNavigator
+    private val tabIcons = arrayListOf(R.drawable.tab_message, R.drawable.tab_contact, R.drawable.tab_my)
+    private val tabName = arrayListOf(R.string.message, R.string.contact, R.string.my)
     val connectionStateMonitor = ConnectionStateMonitor()
 
 
     override val mViewModel: MainViewModel by viewModel()
 
-    override fun create(savedInstanceState: Bundle?) {
-        initNavigator(savedInstanceState)
-    }
 
-    private fun initNavigator(savedInstanceState: Bundle?) {
-        val bottomNavigatorAdapter = BottomNavigatorAdapter(this)
-        for (fragment in mFragmentArray) {
-            bottomNavigatorAdapter.addTab(BottomNavigatorAdapter.TabInfo(fragment.simpleName, fragment, null))
-        }
-        mNavigator = FragmentNavigator(supportFragmentManager, bottomNavigatorAdapter, R.id.content_frame)
-        mNavigator.setDefaultPosition(Constants.TAB_CONVERSATION)
-        mNavigator.onCreate(savedInstanceState)
-    }
     override fun initView() {
-        EventBus.getDefault().register(this)
+        viewPager.adapter = MainFragmentPagerAdapter(supportFragmentManager)
+        viewPager.offscreenPageLimit = 2
+        tabLayout.setupWithViewPager(viewPager)
+        initTabLayout()
         lifecycle.addObserver(ConversationManager)
         connectionStateMonitor.enable(this)
-        setCurrentTab(Constants.TAB_CONVERSATION)
-        navigatorView.setOnBottomNavigatorViewItemClickListener(object : BottomNavigatorView.OnBottomNavigatorViewItemClickListener {
-            override fun onBottomNavigatorViewItemClick(position: Int, view: View?) {
-                setCurrentTab(position)
-            }
-        })
-        navigatorView.badgeDragListener = object : BottomNavigatorView.BadgeDragListener{
-            override fun onDisappear(index: Int) {
-                mViewModel.clearUnreadNumber()
-            }
-
-        }
-
 
     }
 
-    private fun setCurrentTab(position: Int) {
-        mNavigator.showFragment(position)
-        if (null != navigatorView) {
-            navigatorView.select(position)
+    private fun initTabLayout() {
+        tabIcons.forEachIndexed { index, _ ->
+            tabLayout.getTabAt(index)!!.customView = getTabItemView(index)
         }
+
     }
+
+    private fun getTabItemView(index: Int): View {
+        val item = View.inflate(this, R.layout.tab_item, null)
+        item.findViewById<TextView>(R.id.tabName).setText(tabName[index])
+        item.findViewById<ImageView>(R.id.tabIcon).setBackgroundResource(tabIcons[index])
+        return item
+    }
+
     override fun initData() {
         mViewModel.getExpireTime()
     }
@@ -131,7 +112,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun showUnreadNumber(number: TotalUnReadNumber){
-        navigatorView.showBadgeView(0,number.number,true)
+//        navigatorView.showBadgeView(0,number.number,true)
     }
     override fun onDestroy() {
         super.onDestroy()

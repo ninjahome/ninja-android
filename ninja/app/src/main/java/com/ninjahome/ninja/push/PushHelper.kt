@@ -36,6 +36,8 @@ object PushHelper {
             builder.setAppKey("umeng:" + PushConstants.APP_KEY)
             builder.setAppSecret(PushConstants.MESSAGE_SECRET)
             builder.setTag(AccsClientConfig.DEFAULT_CONFIGTAG)
+            println("=======PushConstants.APP_KEY:"+PushConstants.APP_KEY)
+            println("=======PushConstants.MESSAGE_SECRET:"+PushConstants.MESSAGE_SECRET)
             ACCSClient.init(context, builder.build())
             TaobaoRegister.setAccsConfigTag(context, AccsClientConfig.DEFAULT_CONFIGTAG)
         } catch (e: Exception) {
@@ -71,11 +73,13 @@ object PushHelper {
             override fun onSuccess(deviceToken: String) {
                 //注册成功会返回deviceToken deviceToken是推送消息的唯一标志
                 Logger.i("deviceToken --> $deviceToken")
+                println("=============${deviceToken}")
                 token = deviceToken
 
             }
 
             override fun onFailure(errCode: String, errDesc: String) {
+                println("============register failure：--> code:$errCode,desc:$errDesc")
                 Logger.e("register failure：--> code:$errCode,desc:$errDesc")
             }
         })

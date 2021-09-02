@@ -43,6 +43,7 @@
 -keep class com.ninjahome.ninja.db.Converters{*;}
 -keep class com.ninjahome.ninja.ui.adapter.ConversationAdapter{*;}
 -keep class com.ninjahome.ninja.view.contacts.TextDrawable{*;}
+-keep class com.ninjahome.ninja.push.**{*;}
 
  #EventBus
  -keepattributes *Annotation*
@@ -52,8 +53,8 @@
  -keep enum org.greenrobot.eventbus.ThreadMode { *; }
 
 
--keep class com.umeng.** {*;}
 -keep class com.ninjahome.ninja.model.bean.** {*;}
+-keep class com.ninja.android.lib.utils.** {*;}
 
 -dontwarn com.umeng.**
 -dontwarn com.taobao.**
@@ -67,10 +68,19 @@
 
 -keepattributes *Annotation*
 
+-keep public interface com.facebook.**
+-keep public interface com.tencent.**
+-keep public interface com.umeng.socialize.**
+-keep public interface com.umeng.socialize.sensor.**
+-keep public interface com.umeng.scrshot.**
+
+-keep public class com.umeng.socialize.*{*;}
+
 -keep class com.taobao.** {*;}
 -keep class org.android.** {*;}
 -keep class anet.channel.** {*;}
 -keep class com.umeng.** {*;}
+-keep class com.umeng.scrshot.**
 -keep class com.xiaomi.** {*;}
 -keep class com.huawei.** {*;}
 -keep class com.meizu.** {*;}
@@ -81,6 +91,9 @@
 -keep class com.uc.** {*;}
 -keep class com.ta.** {*;}
 
+-keep public class **.R$* {
+    public static final int *;
+}
 
 -keepclassmembers class * {
    public <init> (org.json.JSONObject);
@@ -142,4 +155,5 @@
 
 -dontwarn  org.eclipse.jdt.annotation.**
 -dontwarn  c.t.**
+
 
