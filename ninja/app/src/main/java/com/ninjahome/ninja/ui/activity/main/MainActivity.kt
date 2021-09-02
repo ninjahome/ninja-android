@@ -8,6 +8,7 @@ import chatLib.ChatLib
 import com.ninja.android.lib.base.BaseActivity
 import com.ninja.android.lib.event.TotalUnReadNumber
 import com.ninja.android.lib.utils.toast
+import com.ninja.android.lib.view.MessageBubbleView
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityMainBinding
@@ -20,6 +21,7 @@ import com.ninjahome.ninja.utils.DialogUtils
 import com.ninjahome.ninja.view.RechargePop
 import com.ninjahome.ninja.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.tab_item.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -35,6 +37,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
 
 
     override fun initView() {
+        EventBus.getDefault().register(this)
         viewPager.adapter = MainFragmentPagerAdapter(supportFragmentManager)
         viewPager.offscreenPageLimit = 2
         tabLayout.setupWithViewPager(viewPager)
@@ -55,6 +58,23 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
         val item = View.inflate(this, R.layout.tab_item, null)
         item.findViewById<TextView>(R.id.tabName).setText(tabName[index])
         item.findViewById<ImageView>(R.id.tabIcon).setBackgroundResource(tabIcons[index])
+        if(index==0){
+            item.findViewById<MessageBubbleView>(R.id.bubbleView).setOnActionListener(object:MessageBubbleView.ActionListener{
+                override fun onDrag() {
+                }
+
+                override fun onDisappear() {
+                    mViewModel.clearUnreadNumber()
+                }
+
+                override fun onRestore() {
+                }
+
+                override fun onMove() {
+                }
+
+            })
+        }
         return item
     }
 
@@ -112,7 +132,15 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun showUnreadNumber(number: TotalUnReadNumber){
-//        navigatorView.showBadgeView(0,number.number,true)
+        val bubbleView = tabLayout.getChildAt(0).bubbleView
+        if(number.number==0){
+            bubbleView.visibility = View.GONE
+        }else{
+            bubbleView.visibility = View.VISIBLE
+            bubbleView.resetBezierView()
+        }
+
+        bubbleView.setNumber(number.number.toString())
     }
     override fun onDestroy() {
         super.onDestroy()

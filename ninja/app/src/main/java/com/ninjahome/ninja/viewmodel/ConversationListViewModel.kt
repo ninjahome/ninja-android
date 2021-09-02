@@ -48,7 +48,7 @@ class ConversationListViewModel : BaseViewModel() {
 
     fun removeItemAt(conversation: Conversation) {
         rxLifeScope.launch {
-            withContext(Dispatchers.IO){
+            withContext(Dispatchers.IO) {
                 ConversationDBManager.delete(conversation)
             }
         }
@@ -58,19 +58,22 @@ class ConversationListViewModel : BaseViewModel() {
     val refreshCommand = BindingCommand<Any>(object : BindingAction {
         override fun call() {
             rxLifeScope.launch({
-                withTimeout(3000){
+                withTimeout(3000) {
                     withContext(Dispatchers.IO) {
-                        ChatLib.wsOnline()
+                        online()
                     }
                     finishRefreshingEvent.call()
                 }
 
-            },{
+            }, {
                 finishRefreshingEvent.call()
             })
 
         }
     })
 
+    suspend fun online() {
+        ChatLib.wsOnline()
+    }
 
 }

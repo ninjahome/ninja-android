@@ -81,6 +81,7 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
                     handler.removeCallbacks(delayRunnable!!)
                 }
                 delayRunnable = DelayRunnable(it)
+                println("执行了 获取到消息")
                 handler.postDelayed(delayRunnable!!, 100)
             }
 
@@ -90,13 +91,13 @@ class ConversationListFragment : BaseFragment<ConversationListViewModel, Fragmen
 
     inner class DelayRunnable(val list: List<Conversation>?) : Runnable {
         override fun run() {
-            print("执行了-======================")
             mViewModel.items.clear()
             sumUnreadNumber = 0
             list?.forEach {
                 sumUnreadNumber += it.unreadCount
                 mViewModel.items.add(ConversationItemViewModel(mViewModel, it))
             }
+            println("执行了消息刷新")
             EventBus.getDefault().post(TotalUnReadNumber(sumUnreadNumber))
         }
 
