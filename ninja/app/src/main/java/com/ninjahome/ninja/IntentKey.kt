@@ -15,5 +15,6 @@ object IntentKey {
     const val LOCATION_LAT = "location_lat"
     const val LOCATION_LNG = "location_lng"
     const val LOCATION_ADDRESS = "location_ADDRESS"
+    const val EXPIRE_TIME = "expireTime"
 
 }

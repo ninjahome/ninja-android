@@ -10,10 +10,7 @@ import com.ninjahome.ninja.db.GroupDBManager
 import com.ninjahome.ninja.event.*
 import com.ninjahome.ninja.imageloader.GlideImageLoader
 import com.ninjahome.ninja.imageloader.ImageLoaderProxy
-import com.ninjahome.ninja.model.ActivationModel
-import com.ninjahome.ninja.model.ConversationModel
-import com.ninjahome.ninja.model.CreateAccountModel
-import com.ninjahome.ninja.model.UnlockModel
+import com.ninjahome.ninja.model.*
 import com.ninjahome.ninja.model.bean.*
 import com.ninjahome.ninja.push.PushHelper
 import com.ninjahome.ninja.utils.*
@@ -106,11 +103,17 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
             viewModel { GroupChatRemoveMemberViewModel() }
             viewModel { GroupChatAddMemberViewModel() }
             viewModel { ActivationViewModel(get()) }
+            viewModel { AuthorizationViewModel() }
+            viewModel { AuthorizationAccountViewModel(get()) }
+            viewModel { AuthorizationSuccessViewModel() }
+            viewModel { AuthorizationFriendViewModel() }
+            viewModel { AuthorizationFriendDaysViewModel(get()) }
 
             single { UnlockModel() }
             single { CreateAccountModel() }
             single { ConversationModel() }
             single { ActivationModel() }
+            single { AuthorizationFriendModel() }
         }
 
         startKoin {
@@ -210,7 +213,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
                             groupInfo.memberIdList = memberIdList
                             groupInfo.memberNickNameList = memberNickNameList
                             GroupDBManager.updateGroup(groupInfo)
-                        }else{
+                        } else {
                             this@NinjaApp.createGroup(groupId, groupName, owner, memberIdList, memberNickNameList)
                         }
                     }
@@ -224,7 +227,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
                         val group = GroupDBManager.queryByGroupId(groupId)
 
                         if (group != null) {
-                            if(kickIds.contains(NinjaApp.instance.account.address)){
+                            if (kickIds.contains(NinjaApp.instance.account.address)) {
                                 GroupDBManager.delete(group)
                                 return@withContext
                             }

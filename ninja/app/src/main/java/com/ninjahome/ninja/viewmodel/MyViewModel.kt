@@ -19,6 +19,7 @@ import com.ninjahome.ninja.R
 import com.ninjahome.ninja.model.UnlockModel
 import com.ninjahome.ninja.ui.activity.accountmanager.AccountManagerActivity
 import com.ninjahome.ninja.ui.activity.activation.ActivationActivity
+import com.ninjahome.ninja.ui.activity.authorization.AuthorizationActivity
 import com.ninjahome.ninja.ui.activity.edituserinfo.EditUserInfoActivity
 import com.ninjahome.ninja.utils.AccountUtils
 import com.ninjahome.ninja.utils.CommonUtils
@@ -121,6 +122,11 @@ class MyViewModel(val model: UnlockModel) : BaseViewModel() {
     val clickAccountManager = BindingCommand<Any>(object : BindingAction {
         override fun call() {
             startActivity(AccountManagerActivity::class.java)
+        }
+    })
+    val clickAuthorizationFriend = BindingCommand<Any>(object : BindingAction {
+        override fun call() {
+            startActivity(AuthorizationActivity::class.java)
         }
     })
 

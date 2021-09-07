@@ -73,13 +73,11 @@ object PushHelper {
             override fun onSuccess(deviceToken: String) {
                 //注册成功会返回deviceToken deviceToken是推送消息的唯一标志
                 Logger.i("deviceToken --> $deviceToken")
-                println("=============${deviceToken}")
                 token = deviceToken
 
             }
 
             override fun onFailure(errCode: String, errDesc: String) {
-                println("============register failure：--> code:$errCode,desc:$errDesc")
                 Logger.e("register failure：--> code:$errCode,desc:$errDesc")
             }
         })

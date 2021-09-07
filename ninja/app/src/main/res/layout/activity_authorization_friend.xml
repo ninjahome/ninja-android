@@ -8,11 +8,12 @@
 
         <variable
             name="viewModel"
-            type="com.ninjahome.ninja.viewmodel.CreateGroupChatViewModel" />
+            type="com.ninjahome.ninja.viewmodel.AuthorizationFriendViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
+        android:background="@color/white"
         android:layout_height="match_parent">
 
         <include
@@ -20,53 +21,14 @@
             app:viewModel="@{viewModel}" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/selectedContactRv"
+            android:id="@+id/friendRecyclerView"
             android:layout_width="0dp"
-            android:layout_height="46dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="19dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="19dp"
-            android:clipChildren="false"
+            android:layout_height="0dp"
             android:overScrollMode="never"
-            app:itemBinding="@{viewModel.itemBinding}"
-            app:items="@{viewModel.contactIconItem}"
-            app:layout_constraintBottom_toTopOf="@+id/line"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/titleLayout" />
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/contactsRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:overScrollMode="never"
-            app:layout_constraintBottom_toTopOf="@+id/bottomLine"
-            app:layout_constraintTop_toBottomOf="@+id/selectedContactRv" />
-
-        <View
-            android:id="@+id/bottomLine"
-            android:layout_width="0dp"
-            android:layout_height="6dp"
-            android:layout_marginBottom="83dp"
-            android:background="@drawable/split_line"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <Button
-            android:id="@+id/createBtn"
-            onClickCommand="@{viewModel.clickSure}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/bg_create_group_chat_btn"
-            android:enabled="false"
-            android:text="@string/contact_group_chat_complete"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bottomLine" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

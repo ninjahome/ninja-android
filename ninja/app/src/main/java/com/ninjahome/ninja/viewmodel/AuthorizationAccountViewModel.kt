@@ -12,9 +12,10 @@ import com.ninja.android.lib.event.SingleLiveEvent
 import com.ninjahome.ninja.Constants
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.event.EventAuthorizationSuccess
-import com.ninjahome.ninja.model.AuthorizationSingleFriendModel
+import com.ninjahome.ninja.model.AuthorizationFriendModel
 import com.ninjahome.ninja.ui.activity.authorization.AuthorizationSuccessActivity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 
@@ -23,7 +24,7 @@ import org.greenrobot.eventbus.EventBus
  *Time:2021/9/6
  *Description:
  */
-class AuthorizationSingleFriendViewModel(model: AuthorizationSingleFriendModel) : BaseViewModel() {
+class AuthorizationAccountViewModel(model: AuthorizationFriendModel) : BaseViewModel() {
     val address = MutableLiveData<String>()
     val days = MutableLiveData<String>()
     val scan = SingleLiveEvent<Any>()
@@ -63,8 +64,8 @@ class AuthorizationSingleFriendViewModel(model: AuthorizationSingleFriendModel) 
             rxLifeScope.launch({
                 address.value?.let {
                     model.transferLicense(it, days.value!!.toLong())
+                    delay(2000)
                     dismissDialog()
-                    //TODO 让我的界面刷新剩余日期、跳转授权成功界面
                     EventBus.getDefault().post(EventAuthorizationSuccess())
                     startActivity(AuthorizationSuccessActivity::class.java)
                 }

@@ -7,10 +7,10 @@ import com.ninja.android.lib.base.BaseActivity
 import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.R
-import com.ninjahome.ninja.databinding.ActivityAuthorizationSingleFriendBinding
+import com.ninjahome.ninja.databinding.ActivityAuthorizationAccountBinding
 import com.ninjahome.ninja.ui.activity.scan.ScanActivity
-import com.ninjahome.ninja.viewmodel.AuthorizationSingleFriendViewModel
-import kotlinx.android.synthetic.main.activity_authorization_single_friend.*
+import com.ninjahome.ninja.viewmodel.AuthorizationAccountViewModel
+import kotlinx.android.synthetic.main.activity_authorization_account.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -18,8 +18,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  *Time:2021/9/6
  *Description:
  */
-class AuthorizationSingleFriendActivity : BaseActivity<AuthorizationSingleFriendViewModel, ActivityAuthorizationSingleFriendBinding>(R.layout.activity_authorization_single_friend) {
-    override val mViewModel: AuthorizationSingleFriendViewModel by viewModel()
+class AuthorizationAccountActivity : BaseActivity<AuthorizationAccountViewModel, ActivityAuthorizationAccountBinding>(R.layout.activity_authorization_account) {
+    override val mViewModel: AuthorizationAccountViewModel by viewModel()
 
     override fun initView() {
         mViewModel.title.set(getString(R.string.authorization_friends))

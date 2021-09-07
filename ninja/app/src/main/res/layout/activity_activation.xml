@@ -75,6 +75,7 @@
             android:layout_marginBottom="80dp"
             android:background="@drawable/bg_activation_sure"
             android:text="@string/my_license_verify"
+            android:visibility="gone"
             android:textColor="@color/white"
             app:layout_goneMarginBottom="8dp"
             android:layout_marginTop="8dp"
@@ -83,6 +84,7 @@
         <TextView
             android:id="@+id/slienseTv"
             android:layout_width="0dp"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/verifyBtn"

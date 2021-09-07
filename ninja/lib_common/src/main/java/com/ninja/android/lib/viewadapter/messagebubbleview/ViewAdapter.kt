@@ -32,7 +32,7 @@ fun onDragCommand(view: View, clickCommand: BindingCommand<*>) {
 
 }
 
-@BindingAdapter(value = ["app:textNumber"])
+@BindingAdapter(value = ["textNumber"])
 fun textNumber(view: MessageBubbleView,number:Int){
     view.resetBezierView()
     view.setNumber(number.toString())

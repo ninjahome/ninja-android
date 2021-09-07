@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
  *Time:2021/9/6
  *Description:
  */
-class AuthorizationSingleFriendModel {
+class AuthorizationFriendModel {
      suspend fun transferLicense(address:String,days:Long){
         withContext(Dispatchers.IO){
             ChatLib.transferLicense(address,days)

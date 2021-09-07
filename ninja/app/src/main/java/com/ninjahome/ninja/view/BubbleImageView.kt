@@ -7,13 +7,12 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.TypedValue
-import android.widget.ImageView
 import com.ninjahome.ninja.R
 
 /**
  * @描述 气泡型ImageView
  */
-class BubbleImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : ImageView(context, attrs, defStyle) {
+class BubbleImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : androidx.appcompat.widget.AppCompatImageView(context, attrs, defStyle) {
     private var mAngle = dp2px(10)
     private var mArrowTop = dp2px(40)
     private var mArrowWidth = dp2px(20)
@@ -98,7 +97,7 @@ class BubbleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
         if (mShowShadow) { //根据是否要画阴影
             // 画阴影部分
             mPaint.color = Color.parseColor("#70000000") // 半透明
-            var shadowRect: Rect? = null
+            var shadowRect: Rect?
             shadowRect = if (mArrowLocation == LOCATION_LEFT) {
                 //如果是在左边
                 Rect(mArrowWidth, 0, width, height - height * percent / 100) //阴影的宽度（图片的宽度）为ImageView的宽度减去箭头的宽度

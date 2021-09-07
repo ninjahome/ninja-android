@@ -41,4 +41,8 @@ object Constants {
 
     //头像保存位置
     val HEADER_SAVE_DIR: String = FileUtils.getDir("header")
+
+    val SECOND = 1000
+    val DAY = 86400000
+    val WEEK = 604800000
 }

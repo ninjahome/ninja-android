@@ -3,7 +3,8 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="sure">确认</string>
+    <string name="sure">确定</string>
+    <string name="confirm">确认</string>
     <string name="message">消息</string>
     <string name="contact">通讯录</string>
     <string name="my">我的</string>
@@ -130,6 +131,7 @@
     <string name="my_set_destroy_tip">⚠️\n自毁模式开启并使用后，现有账号将被替换，建议您保存现有二维码到相册。以免账号丢失。</string>
     <string name="my_user_name">用户名</string>
     <string name="my_account_manager">管理账号</string>
+    <string name="my_authorization_friend">授权好友</string>
     <string name="my_no_support_fingerprint">当前手机不支持指纹识别</string>
     <string name="my_address_title">Ninja Address:</string>
     <string name="my_activate">激活</string>
@@ -181,6 +183,22 @@
 
     <!--   activation -->
     <string name="activation_des">您可以通过导入文件或者输入激活码两种形式，激活账号。</string>
-    <string name="activation_import">导入文件</string>
+    <string name="activation_import">扫描激活码</string>
     <string name="activation_input_activation_code">输入激活码</string>
+
+    <!--    authorization-->
+    <string name="authorization_friends">好友授权</string>
+    <string name="authorization_friends_not_saved">未保存好友</string>
+    <string name="authorization_input_id">输入好友ID</string>
+    <string name="authorization_friends_saved">已保存好友</string>
+    <string name="authorization_select_friend_from_contact">从通讯录选择好友</string>
+    <string name="authorization_input_days">输入授权天数</string>
+    <string name="authorization_all_authorization">全部授权</string>
+    <string name="authorization_remaining_activation_days">剩余激活天数%s天,</string>
+    <string name="authorization_failed">授权失败</string>
+    <string name="authorization_days_error">授权天数超过最大天数</string>
+    <string name="authorization_success">授权成功</string>
+    <string name="authorization_go_chat">去聊天</string>
+    <string name="authorization_continue">继续授权</string>
+    <string name="authorization_select_friend">选择好友</string>
 </resources>

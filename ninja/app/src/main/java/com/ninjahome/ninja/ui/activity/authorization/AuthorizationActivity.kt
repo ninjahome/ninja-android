@@ -4,9 +4,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.ninja.android.lib.base.BaseActivity
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.BR
-import com.ninjahome.ninja.IntentKey
-import com.ninjahome.ninja.databinding.ActivityAuthorizationFriendBinding
-import com.ninjahome.ninja.viewmodel.AuthorizationFriendViewModel
+import com.ninjahome.ninja.databinding.ActivityAuthorizationBinding
+import com.ninjahome.ninja.viewmodel.AuthorizationViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -14,8 +13,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  *Time:2021/9/6
  *Description:
  */
-class AuthorizationFriendActivity:BaseActivity<AuthorizationFriendViewModel,ActivityAuthorizationFriendBinding>(R.layout.activity_authorization_friend) {
-    override val mViewModel: AuthorizationFriendViewModel by viewModel()
+class AuthorizationActivity:BaseActivity<AuthorizationViewModel, ActivityAuthorizationBinding>(R.layout.activity_authorization) {
+    override val mViewModel: AuthorizationViewModel by viewModel()
 
     override fun initView() {
         mViewModel.title.set(getString(R.string.authorization_friends))

@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.ninjahome.ninja.viewmodel.AuthorizationSingleFriendViewModel" />
+            type="com.ninjahome.ninja.viewmodel.AuthorizationAccountViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -59,7 +59,6 @@
             app:layout_constraintTop_toBottomOf="@+id/idEt" />
         <EditText
             android:id="@+id/daysEt"
-            textChanged="@{viewModel.idChange}"
             android:layout_width="0dp"
             android:layout_height="45dp"
             android:layout_marginStart="16dp"

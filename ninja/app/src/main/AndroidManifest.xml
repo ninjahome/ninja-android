@@ -142,7 +142,21 @@
         <activity
             android:name=".ui.activity.activation.ActivationActivity"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name=".ui.activity.authorization.AuthorizationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.authorization.AuthorizationAccountActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.authorization.AuthorizationSuccessActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.authorization.AuthorizationFriendActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.authorization.AuthorizationFriendDaysActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="android.max_aspect"

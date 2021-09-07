@@ -7,94 +7,114 @@
 
         <variable
             name="viewModel"
-            type="com.ninjahome.ninja.viewmodel.AuthorizationAccountViewModel" />
+            type="com.ninjahome.ninja.viewmodel.AuthorizationFriendDaysViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:background="@color/white"
+
         android:layout_height="match_parent">
 
         <include
             layout="@layout/title_layout"
             app:viewModel="@{viewModel}" />
 
-        <EditText
-            android:id="@+id/idEt"
-            textChanged="@{viewModel.idChange}"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="80dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/transparent"
-            android:drawableBottom="@drawable/edittext_bottom_line"
-            android:importantForAutofill="no"
-            android:text="@={viewModel.address}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/titleLayout"
-            tools:ignore="LabelFor,TextFields" />
-
-        <ImageView
-            onClickCommand="@{viewModel.clickScan}"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/idqr"
-            android:layout_marginBottom="3dp"
-            app:layout_constraintBottom_toBottomOf="@+id/idEt"
-            app:layout_constraintEnd_toEndOf="@+id/idEt"
+            android:layout_marginTop="50dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginStart="15dp"
+            android:text="@string/my_authorization_friend"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleLayout" />
+
+        <ImageView
+            android:id="@+id/contactIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@{viewModel.icon}"
+            app:layout_constraintBottom_toBottomOf="@+id/addressTv"
+            app:layout_constraintEnd_toStartOf="@+id/addressTv"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="@+id/addressTv"
             tools:ignore="ContentDescription" />
 
+        <TextView
+            android:id="@+id/addressTv"
+            android:layout_width="109dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="28dp"
+            android:layout_marginTop="50dp"
+            android:singleLine="true"
+            android:ellipsize="middle"
+            android:text="@{viewModel.contact.uid}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleLayout" />
+
+        <View
+            android:id="@+id/bottomView"
+            android:layout_width="0dp"
+            app:layout_constraintTop_toBottomOf="@+id/contactIcon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/bg_more_action"
+            android:layout_marginTop="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="0dp"/>
         <TextView
             android:id="@+id/inputDaysLab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginStart="23dp"
+            android:layout_marginTop="44dp"
             android:text="@string/authorization_input_days"
             android:textColor="@color/color_26253c"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/idEt" />
+            app:layout_constraintTop_toTopOf="@+id/bottomView" />
+
         <EditText
             android:id="@+id/daysEt"
-            textChanged="@{viewModel.idChange}"
             android:layout_width="0dp"
             android:layout_height="45dp"
-            android:layout_marginStart="16dp"
-            android:maxLength="20"
-            android:layout_marginEnd="16dp"
-            android:inputType="number"
+            android:layout_marginStart="23dp"
+            android:layout_marginTop="10dp"
+            textChanged="@{viewModel.daysChange}"
+            android:layout_marginEnd="23dp"
             android:background="@color/transparent"
             android:drawableBottom="@drawable/edittext_bottom_line"
             android:importantForAutofill="no"
+            android:inputType="number"
+            android:maxLength="20"
             android:text="@={viewModel.days}"
-            android:layout_marginTop="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/inputDaysLab"
             tools:ignore="LabelFor,TextFields" />
+
         <TextView
             android:id="@+id/allAuthorizationTv"
-            android:layout_width="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:textColor="@color/color_3b877f"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="6dp"
             onClickCommand="@{viewModel.clickAllAuthorization}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="16dp"
             android:text="@string/authorization_all_authorization"
-            app:layout_constraintTop_toBottomOf="@+id/daysEt"
-            android:layout_height="wrap_content"/>
+            android:textColor="@color/color_3b877f"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/daysEt" />
+
         <TextView
             android:id="@+id/remainingActivationDaysTv"
             android:layout_width="wrap_content"
-            android:textColor="@color/color_86868a"
-            app:layout_constraintEnd_toStartOf="@+id/allAuthorizationTv"
+            android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:text="@string/authorization_remaining_activation_days"
-            app:layout_constraintTop_toBottomOf="@+id/daysEt"
-            android:layout_height="wrap_content"/>
+            android:textColor="@color/color_86868a"
+            app:layout_constraintEnd_toStartOf="@+id/allAuthorizationTv"
+            app:layout_constraintTop_toBottomOf="@+id/daysEt" />
 
         <Button
             android:id="@+id/authorizationrBtn"
@@ -104,7 +124,7 @@
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="83dp"
             android:background="@drawable/bg_create_group_chat_btn"
-            android:enabled="false"
+            android:enabled="@{viewModel.enable}"
             android:text="@string/sure"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"

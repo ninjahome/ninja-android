@@ -171,6 +171,7 @@
             style="@style/NextTextViewStyle"
             android:text="@string/my_fingerprint"
             app:drawableEndCompat="@null"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/accountManagerTv"
             tools:ignore="MissingConstraints" />
 
@@ -178,6 +179,7 @@
             android:id="@+id/fingerprintSwitch"
             style="@style/SwitchStyle"
             android:layout_height="30dp"
+            android:visibility="gone"
             android:layout_marginEnd="20dp"
             app:layout_constraintBottom_toBottomOf="@+id/fingerprint"
             app:layout_constraintEnd_toEndOf="parent"
@@ -213,5 +215,21 @@
             app:onCheckedChangeCommand="@{viewModel.onCheckedDestroy}"
             app:switchState="@{viewModel.destroyObservable}"
             tools:ignore="MissingConstraints" />
+        <TextView
+            android:id="@+id/authorizationrFriendTv"
+            style="@style/NextTextViewStyle"
+            onClickCommand="@{viewModel.clickAuthorizationFriend}"
+            android:text="@string/my_authorization_friend"
+            app:layout_constraintTop_toBottomOf="@+id/destroyTv"
+            tools:ignore="MissingConstraints" />
+        <TextView
+            android:id="@+id/versionTv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="28dp"
+            android:textColor="@color/color_26253c"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -5,4 +5,4 @@ package com.ninjahome.ninja.event
  *Time:2021/8/19
  *Description:
  */
-class EventActivationSuccess
+class EventAuthorizationSuccess

@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.ninjahome.ninja.viewmodel.AuthorizationFriendViewModel" />
+            type="com.ninjahome.ninja.viewmodel.AuthorizationViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,6 +24,7 @@
                 android:layout_marginTop="14dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginStart="15dp"
+                onClickCommand="@{viewModel.clickInputId}"
                 android:background="@drawable/round_rect_white_8"
                 android:layout_marginEnd="15dp"
                 android:layout_height="72dp"/>
@@ -45,7 +46,6 @@
             app:layout_constraintTop_toBottomOf="@+id/friendsNotSavedTv"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            onClickCommand="@{viewModel.clickInputId}"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/color_26253c"
@@ -60,6 +60,7 @@
             android:layout_marginTop="14dp"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="15dp"
+            onClickCommand="@{viewModel.clickSelectFriend}"
             android:background="@drawable/round_rect_white_8"
             android:layout_marginEnd="15dp"
             android:layout_height="72dp"/>
@@ -75,13 +76,12 @@
             android:layout_height="wrap_content"/>
         <TextView
             android:layout_width="0dp"
-            android:text="@string/authorization_select_friend"
+            android:text="@string/authorization_select_friend_from_contact"
             app:layout_constraintStart_toStartOf="@+id/friendsSavedView"
             app:layout_constraintEnd_toEndOf="@+id/friendsSavedView"
             app:layout_constraintTop_toBottomOf="@+id/friendsSavedTv"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            onClickCommand="@{viewModel.clickSelectFriend}"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/color_26253c"
