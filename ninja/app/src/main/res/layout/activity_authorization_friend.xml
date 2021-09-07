@@ -4,9 +4,11 @@
 
     <data>
 
+        <import type="com.ninja.android.lib.viewadapter.recyclerview.LineManagers" />
+
         <variable
             name="viewModel"
-            type="com.ninjahome.ninja.viewmodel.AuthorizationFriendViewModel" />
+            type="com.ninjahome.ninja.viewmodel.CreateGroupChatViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,76 +18,55 @@
         <include
             layout="@layout/title_layout"
             app:viewModel="@{viewModel}" />
-            <View
-                android:id="@+id/friendsNotSavedView"
-                android:layout_width="0dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/titleLayout"
-                android:layout_marginTop="14dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginStart="15dp"
-                android:background="@drawable/round_rect_white_8"
-                android:layout_marginEnd="15dp"
-                android:layout_height="72dp"/>
-        <TextView
-            android:id="@+id/friendsNotSavedTv"
-            android:layout_width="wrap_content"
-            android:text="@string/authorization_friends_not_saved"
-            app:layout_constraintStart_toStartOf="@+id/friendsNotSavedView"
-            app:layout_constraintTop_toTopOf="@+id/friendsNotSavedView"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
-            android:textColor="@color/color_86868a"
-            android:layout_height="wrap_content"/>
-        <TextView
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/selectedContactRv"
             android:layout_width="0dp"
-            android:text="@string/authorization_input_id"
-            app:layout_constraintStart_toStartOf="@+id/friendsNotSavedView"
-            app:layout_constraintEnd_toEndOf="@+id/friendsNotSavedView"
-            app:layout_constraintTop_toBottomOf="@+id/friendsNotSavedTv"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            onClickCommand="@{viewModel.clickInputId"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/color_26253c"
-            android:layout_height="wrap_content"
-            app:drawableEndCompat="@drawable/next_icon" />
+            android:layout_height="46dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="19dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="19dp"
+            android:clipChildren="false"
+            android:overScrollMode="never"
+            app:itemBinding="@{viewModel.itemBinding}"
+            app:items="@{viewModel.contactIconItem}"
+            app:layout_constraintBottom_toTopOf="@+id/line"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleLayout" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/contactsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:overScrollMode="never"
+            app:layout_constraintBottom_toTopOf="@+id/bottomLine"
+            app:layout_constraintTop_toBottomOf="@+id/selectedContactRv" />
 
         <View
-            android:id="@+id/friendsSavedView"
+            android:id="@+id/bottomLine"
             android:layout_width="0dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/friendsNotSavedView"
-            android:layout_marginTop="14dp"
+            android:layout_height="6dp"
+            android:layout_marginBottom="83dp"
+            android:background="@drawable/split_line"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginStart="15dp"
-            android:background="@drawable/round_rect_white_8"
-            android:layout_marginEnd="15dp"
-            android:layout_height="72dp"/>
-        <TextView
-            android:id="@+id/friendsSavedTv"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/createBtn"
+            onClickCommand="@{viewModel.clickSure}"
             android:layout_width="wrap_content"
-            android:text="@string/authorization_friends_saved"
-            app:layout_constraintStart_toStartOf="@+id/friendsSavedView"
-            app:layout_constraintTop_toTopOf="@+id/friendsSavedView"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
-            android:textColor="@color/color_86868a"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:layout_width="0dp"
-            android:text="@string/authorization_select_friend"
-            app:layout_constraintStart_toStartOf="@+id/friendsSavedView"
-            app:layout_constraintEnd_toEndOf="@+id/friendsSavedView"
-            app:layout_constraintTop_toBottomOf="@+id/friendsSavedTv"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            onClickCommand="@{viewModel.clickSelectFriend"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/color_26253c"
             android:layout_height="wrap_content"
-            app:drawableEndCompat="@drawable/next_icon" />
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_create_group_chat_btn"
+            android:enabled="false"
+            android:text="@string/contact_group_chat_complete"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bottomLine" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

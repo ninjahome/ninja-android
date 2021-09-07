@@ -5,4 +5,4 @@ package com.ninjahome.ninja.ui.activity.authorization
  *Time:2021/9/7
  *Description:
  */
-class AuthorizationFriendActivity {}
+class AuthorizationFriendDaysActivity {}
