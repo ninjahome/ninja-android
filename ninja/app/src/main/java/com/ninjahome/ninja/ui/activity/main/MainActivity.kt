@@ -10,14 +10,17 @@ import com.ninja.android.lib.event.TotalUnReadNumber
 import com.ninja.android.lib.utils.toast
 import com.ninja.android.lib.view.MessageBubbleView
 import com.ninjahome.ninja.BR
+import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityMainBinding
 import com.ninjahome.ninja.event.EventOffline
 import com.ninjahome.ninja.ui.activity.activation.ActivationActivity
+import com.ninjahome.ninja.ui.activity.unlock.UnLockActivity
 import com.ninjahome.ninja.ui.adapter.MainFragmentPagerAdapter
 import com.ninjahome.ninja.utils.ConnectionStateMonitor
 import com.ninjahome.ninja.utils.ConversationManager
 import com.ninjahome.ninja.utils.DialogUtils
+import com.ninjahome.ninja.utils.ScreenListener
 import com.ninjahome.ninja.view.RechargePop
 import com.ninjahome.ninja.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -27,10 +30,12 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.activity_main) {
+class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.activity_main), ScreenListener.ScreenStateListener {
     private val tabIcons = arrayListOf(R.drawable.tab_message, R.drawable.tab_contact, R.drawable.tab_my)
     private val tabName = arrayListOf(R.string.message, R.string.contact, R.string.my)
     val connectionStateMonitor = ConnectionStateMonitor()
+    lateinit var screenListener : ScreenListener
+    var screenOff = false
 
 
     override val mViewModel: MainViewModel by viewModel()
@@ -44,6 +49,8 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
         initTabLayout()
         lifecycle.addObserver(ConversationManager)
         connectionStateMonitor.enable(this)
+         screenListener = ScreenListener(this)
+        screenListener.begin(this)
 
     }
 
@@ -58,8 +65,8 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
         val item = View.inflate(this, R.layout.tab_item, null)
         item.findViewById<TextView>(R.id.tabName).setText(tabName[index])
         item.findViewById<ImageView>(R.id.tabIcon).setBackgroundResource(tabIcons[index])
-        if(index==0){
-            item.findViewById<MessageBubbleView>(R.id.bubbleView).setOnActionListener(object:MessageBubbleView.ActionListener{
+        if (index == 0) {
+            item.findViewById<MessageBubbleView>(R.id.bubbleView).setOnActionListener(object : MessageBubbleView.ActionListener {
                 override fun onDrag() {
                 }
 
@@ -95,7 +102,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
                     }
 
                 })
-            }else{
+            } else {
                 mViewModel.online()
             }
         }
@@ -131,23 +138,40 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun showUnreadNumber(number: TotalUnReadNumber){
+    fun showUnreadNumber(number: TotalUnReadNumber) {
         val bubbleView = tabLayout.getChildAt(0).bubbleView
-        if(number.number==0){
+        if (number.number == 0) {
             bubbleView.visibility = View.GONE
-        }else{
+        } else {
             bubbleView.visibility = View.VISIBLE
             bubbleView.resetBezierView()
         }
 
         bubbleView.setNumber(number.number.toString())
     }
+
     override fun onDestroy() {
         super.onDestroy()
         ChatLib.wsOffline()
+        screenListener.unregisterListener()
         EventBus.getDefault().unregister(this)
+    }
 
+    override fun onScreenOn() {
+        if (screenOff) {
+            screenOff = false
+            val intent = Intent(this, UnLockActivity::class.java)
+            intent.putExtra(IntentKey.FORBIDEN_RETURN, true)
+            startActivity(intent)
 
+        }
+    }
+
+    override fun onScreenOff() {
+        screenOff = true
+    }
+
+    override fun onUserPresent() {
     }
 
 

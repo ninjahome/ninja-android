@@ -16,5 +16,6 @@ object IntentKey {
     const val LOCATION_LNG = "location_lng"
     const val LOCATION_ADDRESS = "location_ADDRESS"
     const val EXPIRE_TIME = "expireTime"
+    const val FORBIDEN_RETURN = "forbiden_return"
 
 }

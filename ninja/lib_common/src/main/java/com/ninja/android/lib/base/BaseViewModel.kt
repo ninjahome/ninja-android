@@ -32,7 +32,7 @@ abstract class BaseViewModel : ViewModel(), IBaseViewModel {
 
     val jobs = mutableListOf<Job>()
 
-    val clickBackCommand = BindingCommand<Any>(object : BindingAction {
+    open var clickBackCommand = BindingCommand<Any>(object : BindingAction {
         override fun call() {
             finish()
         }

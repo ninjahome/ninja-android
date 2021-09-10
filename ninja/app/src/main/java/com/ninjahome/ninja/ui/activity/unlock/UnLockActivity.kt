@@ -8,6 +8,7 @@ import com.ninja.android.lib.base.BaseActivity
 import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.Constants
+import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityUnlockBinding
 import com.ninjahome.ninja.db.ConversationDBManager
@@ -32,6 +33,7 @@ class UnLockActivity : BaseActivity<UnLockViewModel, ActivityUnlockBinding>(R.la
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
     private lateinit var cryptographyManager: CryptographyManager
 
+
     override val mViewModel: UnLockViewModel by viewModel()
 
 
@@ -40,7 +42,11 @@ class UnLockActivity : BaseActivity<UnLockViewModel, ActivityUnlockBinding>(R.la
     }
 
     override fun initData() {
-        clearReadMessage()
+        mViewModel.isForbidenReturn = intent.getBooleanExtra(IntentKey.FORBIDEN_RETURN, false)
+        mViewModel.showBackImage.set(!mViewModel.isForbidenReturn)
+        if(!mViewModel.isForbidenReturn){
+            clearReadMessage()
+        }
         mViewModel.loadAccount()
         if (mViewModel.openFingerPrint) {
             cryptographyManager = CryptographyManager()
@@ -60,15 +66,16 @@ class UnLockActivity : BaseActivity<UnLockViewModel, ActivityUnlockBinding>(R.la
 
         }
     }
+
     private fun clearReadMessage() {
-        rxLifeScope.launch{
+        rxLifeScope.launch {
 
             val readMessages = MessageDBManager.queryReadMessage()
             var file: File
             readMessages.forEach {
-                if(!TextUtils.isEmpty(it.uri)){
+                if (!TextUtils.isEmpty(it.uri)) {
                     file = File(it.uri)
-                    if(file.exists()){
+                    if (file.exists()) {
                         file.delete()
                     }
                 }
@@ -125,5 +132,11 @@ class UnLockActivity : BaseActivity<UnLockViewModel, ActivityUnlockBinding>(R.la
     override fun cancelJob() {
         super.cancelJob()
         mViewModel.jobs.forEach { it.cancel() }
+    }
+
+    override fun onBackPressed() {
+        if(!mViewModel.isForbidenReturn){
+            super.onBackPressed()
+        }
     }
 }

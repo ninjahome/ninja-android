@@ -45,6 +45,8 @@ class UnLockViewModel(val model: UnlockModel) : BaseViewModel(), KoinComponent {
     private val subName: String = if (userName.length >= 2) userName.substring(0, 2) else userName
     private val mDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(40)
     var openFingerPrint: Boolean by SharedPref(context(), Constants.KEY_OPEN_FINGERPRINT, false)
+    var isForbidenReturn = false
+
 
     fun loadAccount() {
         val job = rxLifeScope.launch({
@@ -77,7 +79,12 @@ class UnLockViewModel(val model: UnlockModel) : BaseViewModel(), KoinComponent {
                 if (TextUtils.isEmpty(userName)) {
                     startActivityAndFinish(EditUserInfoActivity::class.java)
                 } else {
-                    startActivityAndFinish(MainActivity::class.java)
+                    if(isForbidenReturn){
+                        model.online()
+                        finish()
+                    }else{
+                        startActivityAndFinish(MainActivity::class.java)
+                    }
                 }
                 dismissDialog()
             }, {
