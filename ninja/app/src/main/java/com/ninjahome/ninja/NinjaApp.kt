@@ -1,5 +1,6 @@
 package com.ninjahome.ninja
 
+import android.app.Activity
 import android.util.Log
 import chatLib.MulticastCallBack
 import chatLib.UnicastCallBack
@@ -37,6 +38,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
     private val TAG = "NinjaApp"
     val rxLifeScope = RxLifeScope()
     lateinit var account: Account
+    var isForeground = true
 
     companion object {
         lateinit var instance: NinjaApp
@@ -52,7 +54,17 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
         UMConfigure.setLogEnabled(true)
         UMConfigure.init(this, "609ce659c9aacd3bd4d3f092", "Umeng", UMConfigure.DEVICE_TYPE_PHONE, "")
         LQREmotionKit.init(this) { _, path, imageView -> imageView.load(path) }
+        registerActivityLifecycleCallbacks(object : DefaultActivityLifecycleCallbacks() {
+            override fun onActivityStarted(activity: Activity) {
+                super.onActivityStarted(activity)
+                isForeground = true
+            }
 
+            override fun onActivityStopped(activity: Activity) {
+                super.onActivityStopped(activity)
+                isForeground = false
+            }
+        })
     }
 
 

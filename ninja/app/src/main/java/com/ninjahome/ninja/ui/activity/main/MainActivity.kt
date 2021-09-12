@@ -11,6 +11,7 @@ import com.ninja.android.lib.utils.toast
 import com.ninja.android.lib.view.MessageBubbleView
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.IntentKey
+import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityMainBinding
 import com.ninjahome.ninja.event.EventOffline
@@ -34,7 +35,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
     private val tabIcons = arrayListOf(R.drawable.tab_message, R.drawable.tab_contact, R.drawable.tab_my)
     private val tabName = arrayListOf(R.string.message, R.string.contact, R.string.my)
     val connectionStateMonitor = ConnectionStateMonitor()
-    lateinit var screenListener : ScreenListener
+    lateinit var screenListener: ScreenListener
     var screenOff = false
 
 
@@ -42,6 +43,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
 
 
     override fun initView() {
+
         EventBus.getDefault().register(this)
         viewPager.adapter = MainFragmentPagerAdapter(supportFragmentManager)
         viewPager.offscreenPageLimit = 2
@@ -49,9 +51,8 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
         initTabLayout()
         lifecycle.addObserver(ConversationManager)
         connectionStateMonitor.enable(this)
-         screenListener = ScreenListener(this)
+        screenListener = ScreenListener(this)
         screenListener.begin(this)
-
     }
 
     private fun initTabLayout() {
@@ -150,6 +151,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
         bubbleView.setNumber(number.number.toString())
     }
 
+
     override fun onDestroy() {
         super.onDestroy()
         ChatLib.wsOffline()
@@ -158,13 +160,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
     }
 
     override fun onScreenOn() {
-        if (screenOff) {
-            screenOff = false
-            val intent = Intent(this, UnLockActivity::class.java)
-            intent.putExtra(IntentKey.FORBIDEN_RETURN, true)
-            startActivity(intent)
 
-        }
     }
 
     override fun onScreenOff() {
@@ -172,7 +168,13 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
     }
 
     override fun onUserPresent() {
-    }
+        if (screenOff &&NinjaApp.instance.isForeground) {
+            screenOff = false
+            val intent = Intent(this, UnLockActivity::class.java)
+            intent.putExtra(IntentKey.FORBIDEN_RETURN, true)
+            startActivity(intent)
 
+        }
+    }
 
 }
