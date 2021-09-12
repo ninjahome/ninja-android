@@ -164,11 +164,10 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
     }
 
     override fun onScreenOff() {
-        screenOff = true
     }
 
     override fun onUserPresent() {
-        if (screenOff &&NinjaApp.instance.isForeground) {
+        if (NinjaApp.instance.isForeground) {
             screenOff = false
             val intent = Intent(this, UnLockActivity::class.java)
             intent.putExtra(IntentKey.FORBIDEN_RETURN, true)
