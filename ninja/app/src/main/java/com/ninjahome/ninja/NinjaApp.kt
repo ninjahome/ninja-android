@@ -1,6 +1,7 @@
 package com.ninjahome.ninja
 
 import android.app.Activity
+import android.content.Intent
 import android.util.Log
 import chatLib.MulticastCallBack
 import chatLib.UnicastCallBack
@@ -14,6 +15,7 @@ import com.ninjahome.ninja.imageloader.ImageLoaderProxy
 import com.ninjahome.ninja.model.*
 import com.ninjahome.ninja.model.bean.*
 import com.ninjahome.ninja.push.PushHelper
+import com.ninjahome.ninja.ui.activity.unlock.UnLockActivity
 import com.ninjahome.ninja.utils.*
 import com.ninjahome.ninja.viewmodel.*
 import com.orhanobut.logger.*
@@ -38,7 +40,8 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
     private val TAG = "NinjaApp"
     val rxLifeScope = RxLifeScope()
     lateinit var account: Account
-    var isForeground = true
+    var onScreenOff = false
+    var currentActivityName=""
 
     companion object {
         lateinit var instance: NinjaApp
@@ -57,14 +60,24 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
         registerActivityLifecycleCallbacks(object : DefaultActivityLifecycleCallbacks() {
             override fun onActivityStarted(activity: Activity) {
                 super.onActivityStarted(activity)
-                isForeground = true
+                if(currentActivityName == activity.componentName.toString()&&onScreenOff){
+                    startUnLockActivity(activity)
+                    onScreenOff = false
+                }
             }
 
             override fun onActivityStopped(activity: Activity) {
                 super.onActivityStopped(activity)
-                isForeground = false
+                currentActivityName = activity.componentName.toString()
             }
         })
+    }
+
+    private fun startUnLockActivity(activity: Activity) {
+        val intent = Intent(activity, UnLockActivity::class.java)
+        intent.putExtra(IntentKey.FORBIDEN_RETURN, true)
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK )
+        startActivity(intent)
     }
 
 
@@ -239,7 +252,7 @@ class NinjaApp : BaseApplication(), UnicastCallBack {
                         val group = GroupDBManager.queryByGroupId(groupId)
 
                         if (group != null) {
-                            if (kickIds.contains(NinjaApp.instance.account.address)) {
+                            if (kickIds.contains(instance.account.address)) {
                                 GroupDBManager.delete(group)
                                 return@withContext
                             }

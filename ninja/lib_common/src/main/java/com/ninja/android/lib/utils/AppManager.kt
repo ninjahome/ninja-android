@@ -45,14 +45,15 @@ object AppManager {
     }
 
     fun killAppProcess(context: Context){
-        val activityManager: ActivityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val mList = activityManager.runningAppProcesses
-        for (runningAppProcessInfo in mList) {
-            if (runningAppProcessInfo.pid != Process.myPid()) {
-                Process.killProcess(runningAppProcessInfo.pid)
-            }
-        }
+//        val activityManager: ActivityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+//        val mList = activityManager.runningAppProcesses
+//        for (runningAppProcessInfo in mList) {
+//            if (runningAppProcessInfo.pid != Process.myPid()) {
+//                Process.killProcess(runningAppProcessInfo.pid)
+//            }
+//        }
+        removeAllActivity()
         Process.killProcess(Process.myPid())
-        System.exit(0)
+//        System.exit(0)
     }
 }

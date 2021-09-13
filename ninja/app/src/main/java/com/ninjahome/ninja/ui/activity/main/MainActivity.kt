@@ -10,13 +10,11 @@ import com.ninja.android.lib.event.TotalUnReadNumber
 import com.ninja.android.lib.utils.toast
 import com.ninja.android.lib.view.MessageBubbleView
 import com.ninjahome.ninja.BR
-import com.ninjahome.ninja.IntentKey
 import com.ninjahome.ninja.NinjaApp
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.databinding.ActivityMainBinding
 import com.ninjahome.ninja.event.EventOffline
 import com.ninjahome.ninja.ui.activity.activation.ActivationActivity
-import com.ninjahome.ninja.ui.activity.unlock.UnLockActivity
 import com.ninjahome.ninja.ui.adapter.MainFragmentPagerAdapter
 import com.ninjahome.ninja.utils.ConnectionStateMonitor
 import com.ninjahome.ninja.utils.ConversationManager
@@ -36,7 +34,6 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
     private val tabName = arrayListOf(R.string.message, R.string.contact, R.string.my)
     val connectionStateMonitor = ConnectionStateMonitor()
     lateinit var screenListener: ScreenListener
-    var screenOff = false
 
 
     override val mViewModel: MainViewModel by viewModel()
@@ -164,16 +161,11 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(R.layout.a
     }
 
     override fun onScreenOff() {
+        NinjaApp.instance.onScreenOff = true
     }
 
     override fun onUserPresent() {
-        if (NinjaApp.instance.isForeground) {
-            screenOff = false
-            val intent = Intent(this, UnLockActivity::class.java)
-            intent.putExtra(IntentKey.FORBIDEN_RETURN, true)
-            startActivity(intent)
 
-        }
     }
 
 }

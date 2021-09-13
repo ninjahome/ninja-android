@@ -1,5 +1,6 @@
 package com.ninjahome.ninja.viewmodel
 
+import android.os.Process
 import android.text.TextUtils
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.rxLifeScope
@@ -8,6 +9,7 @@ import com.ninja.android.lib.base.BaseViewModel
 import com.ninja.android.lib.command.BindingAction
 import com.ninja.android.lib.command.BindingCommand
 import com.ninja.android.lib.provider.context
+import com.ninja.android.lib.utils.AppManager
 import com.ninja.android.lib.utils.SharedPref
 import com.ninjahome.ninja.Constants
 import com.ninjahome.ninja.NinjaApp
@@ -47,6 +49,14 @@ class UnLockViewModel(val model: UnlockModel) : BaseViewModel(), KoinComponent {
     var openFingerPrint: Boolean by SharedPref(context(), Constants.KEY_OPEN_FINGERPRINT, false)
     var isForbidenReturn = false
 
+    override var clickBackCommand: BindingCommand<Any>
+        get() = BindingCommand(object : BindingAction {
+            override fun call() {
+                AppManager.killAppProcess(context())
+            }
+
+        })
+        set(value) {}
 
     fun loadAccount() {
         val job = rxLifeScope.launch({
@@ -92,7 +102,7 @@ class UnLockViewModel(val model: UnlockModel) : BaseViewModel(), KoinComponent {
                 Logger.e(it.message!!)
                 showToast(R.string.open_error)
             }, {
-                showDialog()
+                showDialogNotCancel()
             })
             jobs.add(job)
 

@@ -5,6 +5,7 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.rxLifeScope
 import com.ninja.android.lib.base.BaseActivity
+import com.ninja.android.lib.utils.AppManager
 import com.ninja.android.lib.utils.toast
 import com.ninjahome.ninja.BR
 import com.ninjahome.ninja.Constants
@@ -43,7 +44,6 @@ class UnLockActivity : BaseActivity<UnLockViewModel, ActivityUnlockBinding>(R.la
 
     override fun initData() {
         mViewModel.isForbidenReturn = intent.getBooleanExtra(IntentKey.FORBIDEN_RETURN, false)
-        mViewModel.showBackImage.set(!mViewModel.isForbidenReturn)
         if(!mViewModel.isForbidenReturn){
             clearReadMessage()
         }
@@ -134,9 +134,25 @@ class UnLockActivity : BaseActivity<UnLockViewModel, ActivityUnlockBinding>(R.la
         mViewModel.jobs.forEach { it.cancel() }
     }
 
+    private var last: Long = -1
     override fun onBackPressed() {
         if(!mViewModel.isForbidenReturn){
             super.onBackPressed()
+        }else{
+            val now = System.currentTimeMillis()
+            if (last == -1L) {
+                toast(getString(R.string.main_click_exit_application))
+                last = now
+            } else {
+                val doubleClickDifference = 2000
+                if (now - last < doubleClickDifference) {
+                    AppManager.killAppProcess(this)
+                } else {
+                    last = now
+                    toast(getString(R.string.main_click_exit_application))
+                }
+            }
+
         }
     }
 }
