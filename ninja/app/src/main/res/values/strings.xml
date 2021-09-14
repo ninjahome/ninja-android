@@ -42,6 +42,7 @@
     <string name="not_yet">暂不</string>
     <string name="activate">去激活</string>
     <string name="own">自己</string>
+    <string name="share_error">分享失败</string>
 
 
     <!--  conversation  -->

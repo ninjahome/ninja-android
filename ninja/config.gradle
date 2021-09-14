@@ -6,8 +6,8 @@ ext {
             applicationId    : "com.ninjahome.ninja",
             minSdkVersion    : 23,
             targetSdkVersion : 30,
-            versionCode      : 105000,
-            versionName      : "1.5.0"
+            versionCode      : 106000,
+            versionName      : "1.6.0"
 
     ]
     //version配置

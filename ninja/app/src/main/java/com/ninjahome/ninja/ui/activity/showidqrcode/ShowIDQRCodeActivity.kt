@@ -1,5 +1,7 @@
 package com.ninjahome.ninja.ui.activity.showidqrcode
 
+import android.content.Intent
+import android.net.Uri
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import com.google.zxing.BarcodeFormat
@@ -37,6 +39,12 @@ class ShowIDQRCodeActivity : BaseActivity<ShowIDQRCodeViewModel, ActivityShowIdQ
 
     override fun initObserve() {
         mViewModel.finishAfterTransitionEvent.observe(this, { ActivityCompat.finishAfterTransition(this@ShowIDQRCodeActivity) })
+        mViewModel.eventStartShare.observe(this){
+            it?.let {
+                shareImage(it,"Ninja ID")
+            }
+
+        }
 
 
     }
@@ -46,4 +54,11 @@ class ShowIDQRCodeActivity : BaseActivity<ShowIDQRCodeViewModel, ActivityShowIdQ
 
 
     override fun statusBarStyle(): Int = STATUSBAR_STYLE_TRANSPARENT
+
+    fun shareImage(uri: Uri, title: String) {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "image/png"
+        intent.putExtra(Intent.EXTRA_STREAM, uri)
+        startActivity(Intent.createChooser(intent, title))
+    }
 }

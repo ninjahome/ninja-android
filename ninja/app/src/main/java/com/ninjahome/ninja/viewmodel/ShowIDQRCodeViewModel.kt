@@ -1,5 +1,9 @@
 package com.ninjahome.ninja.viewmodel
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.rxLifeScope
 import com.ninja.android.lib.base.BaseViewModel
 import com.ninja.android.lib.command.BindingAction
@@ -9,7 +13,6 @@ import com.ninja.android.lib.provider.context
 import com.ninjahome.ninja.R
 import com.ninjahome.ninja.utils.AccountUtils
 import com.ninjahome.ninja.utils.BitmapUtils
-import com.ninjahome.ninja.utils.ShareUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -21,6 +24,7 @@ import kotlinx.coroutines.withContext
  */
 class ShowIDQRCodeViewModel : BaseViewModel() {
     val id = SingleLiveEvent<String>()
+    val eventStartShare = MutableLiveData<Uri?>()
 
     init {
         rxLifeScope.launch {
@@ -77,11 +81,13 @@ class ShowIDQRCodeViewModel : BaseViewModel() {
                 withContext(Dispatchers.IO) {
                     id.value?.let {
                         val uri = BitmapUtils.saveBitmapToAlbum(context(), BitmapUtils.stringToQRBitmap(it), context().getString(R.string.account_manager_qr_id_name))
-                        uri?.let { ShareUtil.shareImage(context(), it,"Ninja ID") }
-                        dismissDialog()
+                        eventStartShare.postValue(uri)
                     }
-
                 }
+                dismissDialog()
+            },{
+                dismissDialog()
+                showToast(R.string.share_error)
             },onStart = {
                 showDialog()
             })
@@ -89,5 +95,7 @@ class ShowIDQRCodeViewModel : BaseViewModel() {
         }
 
     })
+
+
 
 }
