@@ -54,8 +54,8 @@ class AccountManagerViewModel : BaseViewModel() {
         rxLifeScope.launch({
             withContext(Dispatchers.IO) {
                 val accountJson = NinjaApp.instance.account.toJson()
-                val isSave = BitmapUtils.saveBitmapToAlbum(context(), BitmapUtils.stringToQRBitmap(accountJson), context().getString(R.string.account_manager_qr_name))
-                if (isSave) {
+                val uri = BitmapUtils.saveBitmapToAlbum(context(), BitmapUtils.stringToQRBitmap(accountJson), context().getString(R.string.account_manager_qr_name))
+                if (uri != null) {
                     showToast(R.string.account_manager_save_account_success)
                 } else {
                     showToast(R.string.account_manager_save_account_failure)

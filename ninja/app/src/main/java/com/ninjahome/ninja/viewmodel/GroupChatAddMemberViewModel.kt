@@ -40,7 +40,7 @@ class GroupChatAddMemberViewModel : BaseViewModel() {
     val clickSure = BindingCommand<Any>(object : BindingAction {
         override fun call() {
             rxLifeScope.launch({
-                showDialog()
+
                 withContext(Dispatchers.IO) {
                     newIds.clear()
                     newNickNames.clear()
@@ -63,7 +63,7 @@ class GroupChatAddMemberViewModel : BaseViewModel() {
             }, {
                 dismissDialog()
                 it.message?.let { errMsg -> toast(errMsg) }
-            })
+            },{ showDialog()})
 
         }
     })

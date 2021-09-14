@@ -28,7 +28,7 @@ object BitmapUtils {
         return barcodeEncoder.encodeBitmap(data, BarcodeFormat.QR_CODE, 400.dp.toInt(), 400.dp.toInt())
     }
 
-    fun saveBitmapToAlbum(context: Context, bitmap: Bitmap, bitName: String): Boolean {
+    fun saveBitmapToAlbum(context: Context, bitmap: Bitmap, bitName: String): Uri? {
         val fileName: String
         var file: File
         val brand = Build.BRAND
@@ -46,7 +46,7 @@ object BitmapUtils {
             val mkdirs = file.mkdirs()
             if (!mkdirs) {
                 Logger.e("makeFire", "file.mkdirs error")
-                return false
+                return null
             }
         }
 
@@ -75,23 +75,23 @@ object BitmapUtils {
         } catch (e: FileNotFoundException) {
             Logger.e("FileNotFoundException", "FileNotFoundException:" + e.message.toString())
             e.printStackTrace()
-            return false
+            return null
         } catch (e: IOException) {
             Logger.e("IOException", "IOException:" + e.message.toString())
             e.printStackTrace()
-            return false
+            return null
         } catch (e: Exception) {
             Logger.e("IOException", "IOException:" + e.message.toString())
             e.printStackTrace()
-            return false
+            return null
 
         }
         context.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://$fileName")))
 
-        return true
+        return Uri.parse("file://$fileName")
     }
 
-    private fun saveSignImage(context: Context, bitmap: Bitmap, fileName: String?): Boolean {
+    private fun saveSignImage(context: Context, bitmap: Bitmap, fileName: String?): Uri? {
         try {
             //设置保存参数到ContentValues中
             val contentValues = ContentValues()
@@ -118,10 +118,10 @@ object BitmapUtils {
                     outputStream.close()
                 }
             }
-            return true
+            return uri
         } catch (e: Exception) {
             Logger.e(e.message.toString())
-            return false
+            return null
         }
     }
 }

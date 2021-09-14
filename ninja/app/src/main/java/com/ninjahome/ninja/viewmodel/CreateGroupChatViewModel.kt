@@ -57,7 +57,7 @@ class CreateGroupChatViewModel : BaseViewModel() {
                 names.add(contact.nickName)
             }
             rxLifeScope.launch({
-                showDialog()
+
                 withContext(Dispatchers.IO) {
                     ChatLib.createGroup(ids.toJson().toLowerCase(Locale.getDefault()), names.toJson(), groupId, name)
                     val groupConversation = GroupInfo(0, groupId, name, NinjaApp.instance.account.address, ids.toJson(), names.toJson())
@@ -72,7 +72,7 @@ class CreateGroupChatViewModel : BaseViewModel() {
             }, {
                 dismissDialog()
                 it.message?.let { errMsg -> toast(errMsg) }
-            })
+            },{  showDialog()})
 
         }
 

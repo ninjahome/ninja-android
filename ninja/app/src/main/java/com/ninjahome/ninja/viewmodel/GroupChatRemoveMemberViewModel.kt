@@ -24,7 +24,7 @@ class GroupChatRemoveMemberViewModel : BaseViewModel() {
         override fun call() {
             rxLifeScope.launch({
                 groupChat?.let {
-                    showDialog()
+
                     val kickUserIds = arrayListOf<String>()
                     groupMembers.filter { it.isSelected }.forEach {
                         kickUserIds.add(it.address)
@@ -54,7 +54,7 @@ class GroupChatRemoveMemberViewModel : BaseViewModel() {
             }, {
                 dismissDialog()
                 it.message?.let { it1 -> toast(it1) }
-            })
+            },{showDialog()})
         }
 
     })

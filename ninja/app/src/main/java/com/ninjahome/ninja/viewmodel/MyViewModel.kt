@@ -151,7 +151,6 @@ class MyViewModel(val model: UnlockModel) : BaseViewModel() {
     })
 
     fun openAccount(password: String) {
-        showDialog()
         rxLifeScope.launch({
             model.openAccount(NinjaApp.instance.account.toJson(), password)
 

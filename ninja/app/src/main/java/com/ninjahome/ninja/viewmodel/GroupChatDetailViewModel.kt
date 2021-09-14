@@ -42,7 +42,7 @@ class GroupChatDetailViewModel : BaseViewModel() {
 
     val onCheckedBanned = BindingCommand(bindConsumer = object : BindingConsumer<Boolean> {
         override fun call(t: Boolean) {
-            showDialog()
+
             rxLifeScope.launch({
                 withContext(Dispatchers.IO){
                     ChatLib.banTalking(groupDetail.value!!.memberIdList, NinjaApp.instance.account.address,groupDetail.value!!.groupId,t)
@@ -54,7 +54,7 @@ class GroupChatDetailViewModel : BaseViewModel() {
             },{
                 dismissDialog()
                 showToast(R.string.group_chat_banned_error)
-            })
+            },{ showDialog()})
         }
 
     })
@@ -76,7 +76,7 @@ class GroupChatDetailViewModel : BaseViewModel() {
     val clickSignOut = BindingCommand<Any>(object : BindingAction {
         override fun call() {
             rxLifeScope.launch({
-                showDialog()
+
                 withContext(Dispatchers.IO){
                     ChatLib.quitGroup(groupDetail.value?.memberIdList, groupDetail.value?.groupId)
                     GroupDBManager.delete(groupDetail.value!!)
@@ -87,7 +87,7 @@ class GroupChatDetailViewModel : BaseViewModel() {
             }, {
                 dismissDialog()
                 it.message?.let { it1 -> toast(it1) }
-            })
+            },{showDialog()})
 
 
         }

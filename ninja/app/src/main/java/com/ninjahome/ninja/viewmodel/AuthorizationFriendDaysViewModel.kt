@@ -59,7 +59,7 @@ class AuthorizationFriendDaysViewModel(model: AuthorizationFriendModel) : BaseVi
                 showToast(R.string.authorization_days_error)
                 return
             }
-            showDialog()
+
             rxLifeScope.launch({
                 model.transferLicense(contact.uid, days.value!!.toLong())
                 delay(2000)
@@ -71,7 +71,7 @@ class AuthorizationFriendDaysViewModel(model: AuthorizationFriendModel) : BaseVi
                 it.printStackTrace()
                 showToast(R.string.authorization_failed)
                 dismissDialog()
-            })
+            },{ showDialog()})
         }
     })
 

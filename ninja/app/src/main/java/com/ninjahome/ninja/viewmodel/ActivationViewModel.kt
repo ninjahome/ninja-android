@@ -71,7 +71,7 @@ class ActivationViewModel(val mModel: ActivationModel) : BaseViewModel() {
 
     private fun verivy() {
         rxLifeScope.launch( {
-            showDialog()
+
            val verifyCode = mModel.isValidLicense(activationCode.value!!)
             when (verifyCode) {
                 Verifylicense.ContractErr.value, Verifylicense.CallContractErr.value, Verifylicense.ValidTrue.value -> {
@@ -88,7 +88,7 @@ class ActivationViewModel(val mModel: ActivationModel) : BaseViewModel() {
         },{
             dismissDialog()
             showToast(R.string.my_verify_error)
-        })
+        },{showDialog()})
     }
 
     val clickSure = BindingCommand<Any>(object : BindingAction {
@@ -100,7 +100,7 @@ class ActivationViewModel(val mModel: ActivationModel) : BaseViewModel() {
     private fun import() {
 
         rxLifeScope.launch({
-            showDialog()
+
             val licenseResult = mModel.importLicense(activationCode.value!!)
 
             dismissDialog()
@@ -127,7 +127,7 @@ class ActivationViewModel(val mModel: ActivationModel) : BaseViewModel() {
         }, {
             dismissDialog()
             showToast(R.string.my_import_license_error)
-        })
+        },{showDialog()})
     }
 
 }

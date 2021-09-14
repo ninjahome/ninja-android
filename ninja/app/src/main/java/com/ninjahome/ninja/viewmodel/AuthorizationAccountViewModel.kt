@@ -60,7 +60,7 @@ class AuthorizationAccountViewModel(model: AuthorizationFriendModel) : BaseViewM
                 showToast(R.string.authorization_days_error)
                 return
             }
-            showDialog()
+
             rxLifeScope.launch({
                 address.value?.let {
                     model.transferLicense(it, days.value!!.toLong())
@@ -73,7 +73,7 @@ class AuthorizationAccountViewModel(model: AuthorizationFriendModel) : BaseViewM
                 it.printStackTrace()
                 showToast(R.string.authorization_failed)
                 dismissDialog()
-            })
+            },{showDialog()})
         }
     })
 
